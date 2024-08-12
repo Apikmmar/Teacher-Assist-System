@@ -5,15 +5,15 @@ namespace App\Models;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 
-class Examination extends Model
+class Examination_Grade extends Model
 {
     use HasFactory;
 
     protected $fillable = [
-        'name',
-        'start_date',
-        'end_date',
-        'status',
-        'type',
+        'form_id',
+        'grade',
+        'mark_min',
+        'mark_max',
+        'grade_value',
     ];
 }

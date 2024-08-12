@@ -5,18 +5,18 @@ namespace App\Models;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 
-class Student extends Model
+class Student_Grade extends Model
 {
     use HasFactory;
 
     protected $fillable = [
-        'classroom_id',
+        'examination_id',
+        'subject_id',
         'student_id',
-        'name',
-        'ic',
-        'gender',
-        'dob',
-        'join_school_date',
-        'status',
+        'grade',
+        'marks',
+        'grade_value',
+        'is_passed',
+        'feedback',
     ];
 }
