@@ -8,6 +8,7 @@ use Illuminate\Database\Eloquent\Model;
 class Transition extends Model
 {
     use HasFactory;
+<<<<<<< HEAD
 
     protected $fillable = [
         'student_id',
@@ -17,4 +18,6 @@ class Transition extends Model
         'drop_school_date',
         'reason_drop',
     ];
+=======
+>>>>>>> a64914fbbe6cede6cfb619cffb79dbd7b8287d2a
 }
