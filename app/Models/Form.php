@@ -22,4 +22,8 @@ class Form extends Model
     public function subject(): HasMany {
         return $this->hasMany(Subject::class);
     }
+
+    public function examgrade(): HasMany {
+        return $this->hasMany(Examination_Grade::class);
+    }
 }

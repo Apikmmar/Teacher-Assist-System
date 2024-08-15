@@ -4,6 +4,7 @@ namespace App\Models;
 
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
+use Illuminate\Database\Eloquent\Relations\BelongsTo;
 
 class Examination_Grade extends Model
 {
@@ -16,4 +17,8 @@ class Examination_Grade extends Model
         'mark_max',
         'grade_value',
     ];
+
+    public function form(): BelongsTo {
+        return $this->belongsTo(Examination_Grade::class);
+    }
 }

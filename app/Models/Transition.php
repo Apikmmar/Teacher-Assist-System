@@ -4,6 +4,7 @@ namespace App\Models;
 
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
+use Illuminate\Database\Eloquent\Relations\BelongsTo;
 
 class Transition extends Model
 {
@@ -17,4 +18,8 @@ class Transition extends Model
         'drop_school_date',
         'reason_drop',
     ];
+
+    public function student(): BelongsTo {
+        return $this->belongsTo(Student::class);
+    }
 }

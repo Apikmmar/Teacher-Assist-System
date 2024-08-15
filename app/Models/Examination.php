@@ -4,6 +4,7 @@ namespace App\Models;
 
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
+use Illuminate\Database\Eloquent\Relations\HasMany;
 
 class Examination extends Model
 {
@@ -16,4 +17,12 @@ class Examination extends Model
         'status',
         'type',
     ];
+
+    public function studentgrades():HasMany {
+        return $this->hasMany(Student_Grade::class);
+    }
+
+    public function studentexamreports():HasMany {
+        return $this->hasMany(Student_Examination_Report::class);
+    }
 }

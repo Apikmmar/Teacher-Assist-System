@@ -14,3 +14,4 @@ class Subject_Teacher extends Model
         'subject_id',
     ];
 }
+ 
