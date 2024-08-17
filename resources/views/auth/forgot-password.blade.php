@@ -1,25 +1,42 @@
 <x-guest-layout>
-    <div class="mb-4 text-sm text-gray-600 dark:text-gray-400">
-        {{ __('Forgot your password? No problem. Just let us know your email address and we will email you a password reset link that will allow you to choose a new one.') }}
+    
+    <div class="row mb-4 justify-content-center">
+        <img src="https://upload.wikimedia.org/wikipedia/ms/6/67/UMP.png" style="max-width: 350px" class="img-fluid" alt="SMK Baling.png">
     </div>
-
-    <!-- Session Status -->
-    <x-auth-session-status class="mb-4" :status="session('status')" />
-
-    <form method="POST" action="{{ route('password.email') }}">
-        @csrf
-
-        <!-- Email Address -->
-        <div>
-            <x-input-label for="email" :value="__('Email')" />
-            <x-text-input id="email" class="block mt-1 w-full" type="email" name="email" :value="old('email')" required autofocus />
-            <x-input-error :messages="$errors->get('email')" class="mt-2" />
+    
+    <div class=" fade-in-text">
+        <div class="mb-4 text-sm text-gray-600 dark:text-gray-400">
+            {{ __('Oops! Forgot your password? Don’t worry—just enter your email address below, and we’ll send you a link to quickly reset it. You’ll be back to teaching in no time!') }}
         </div>
-
-        <div class="flex items-center justify-end mt-4">
-            <x-primary-button>
-                {{ __('Email Password Reset Link') }}
-            </x-primary-button>
-        </div>
-    </form>
+    
+        <!-- Session Status -->
+        <x-auth-session-status class="mb-4" :status="session('status')" />
+    
+        <form method="POST" action="{{ route('password.email') }}">
+            @csrf
+    
+    
+            <!-- Email Address -->
+            <div class="row mb-3">
+                <label for="email" class="col-md-4 col-form-label text-md-end fw-bold">{{ __('Registered Email') }}</label>
+                
+                <div class="col-md-6">
+                    <input id="email" type="text" class="form-control @error('email') is-invalid @enderror" name="email" value="{{ old('email') }}" placeholder="Registered Email" required autocomplete="email" autofocus>
+                    
+                    @error('email')
+                    <span class="invalid-feedback text-start" role="alert">
+                        <strong>{{ $message }}</strong>
+                    </span>
+                    @enderror
+    
+                    <div class="d-flex justify-content-end mt-2">
+                        <button type="submit" class="btn text-white fw-bold verification-button">
+                            {{ __('Send Verification') }}
+                        </button>
+                    </div>
+                </div>
+            </div>
+    
+        </form>
+    </div>
 </x-guest-layout>
