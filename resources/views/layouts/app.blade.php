@@ -20,21 +20,18 @@
 </head>
 <body class="font-sans antialiased">
     <div class="min-h-screen bg-gray-100 dark:bg-gray-900">
+        @include('layouts.sidebar')
         @include('layouts.navigation')
 
-        <!-- Page Heading -->
-        @isset($header)
-            <header class="bg-white dark:bg-gray-800 shadow">
-                <div class="max-w-7xl mx-auto py-6 px-4 sm:px-6 lg:px-8">
-                    {{ $header }}
-                </div>
-            </header>
-        @endisset
-
-        <!-- Page Content -->
-        <main>
-            {{ $slot }}
-        </main>
+        <div>
+            <div>
+                @yield('content')
+            </div>
+        </div>
+    
+        <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.0.2/dist/js/bootstrap.bundle.min.js"
+            integrity="sha384-MrcW6ZMFYlzcLA8Nl+NtUVF0sA7MsXsP1UyJoMp4YLEuNSfAP+JcXn/tWtIaxVXM"
+            crossorigin="anonymous"></script>
     </div>
 </body>
 </html>
