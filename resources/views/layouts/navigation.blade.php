@@ -1,5 +1,5 @@
-<nav class="navbar navbar-expand-lg bg-white shadow-sm">
-    <div class="container-fluid">
+<nav class="navbar navbar-expand-lg bg-white shadow-sm fixed-top">
+    <div class="container-fluid h-100">
         <div class="d-flex justify-content-between align-items-center w-100">
             <div class="d-flex flex-grow-1">
                 <p class="navbar-text fw-bold text-dark m-0">Sekolah Menengah Kebangsaan Baling</p>
