@@ -4,7 +4,7 @@
         <img src="https://upload.wikimedia.org/wikipedia/ms/6/67/UMP.png" style="max-width: 350px" class="img-fluid" alt="SMK Baling.png">
     </div>
     
-    <div class=" fade-in-text">
+    <div class="fade-in-text">
         <div class="mb-4 text-sm text-gray-600 dark:text-gray-400">
             {{ __('Oops! Forgot your password? Don’t worry—just enter your email address below, and we’ll send you a link to quickly reset it. You’ll be back to teaching in no time!') }}
         </div>

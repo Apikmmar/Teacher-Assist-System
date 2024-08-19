@@ -1,14 +1,4 @@
 <section>
-    <header>
-        <h2 class="text-lg font-medium text-gray-900 dark:text-gray-100">
-            {{ __('Profile Information') }}
-        </h2>
-
-        <p class="mt-1 text-sm text-gray-600 dark:text-gray-400">
-            {{ __("Update your account's profile information and email address.") }}
-        </p>
-    </header>
-
     <form id="send-verification" method="post" action="{{ route('verification.send') }}">
         @csrf
     </form>
@@ -17,35 +7,106 @@
         @csrf
         @method('patch')
 
-        <div>
-            <x-input-label for="name" :value="__('Name')" />
-            <x-text-input id="name" name="name" type="text" class="mt-1 block w-full" :value="old('name', $user->name)" required autofocus autocomplete="name" />
-            <x-input-error class="mt-2" :messages="$errors->get('name')" />
+        <div class="row mb-3">
+            <label for="ic" class="col-md-4 col-form-label text-md-end fw-bold">{{ __('Identity Card Number') }}</label>
+            
+            <div class="col-md-6">
+                <input id="ic" type="text" class="form-control @error('ic') is-invalid @enderror" name="ic" value="{{ $user->ic }}" placeholder="Identity Card Number" readonly autocomplete="ic" autofocus>
+                
+                @error('ic')
+                <span class="invalid-feedback" role="alert">
+                    <strong>{{ $message }}</strong>
+                </span>
+                @enderror
+            </div>
         </div>
 
-        <div>
-            <x-input-label for="email" :value="__('Email')" />
-            <x-text-input id="email" name="email" type="email" class="mt-1 block w-full" :value="old('email', $user->email)" required autocomplete="username" />
-            <x-input-error class="mt-2" :messages="$errors->get('email')" />
-
-            @if ($user instanceof \Illuminate\Contracts\Auth\MustVerifyEmail && ! $user->hasVerifiedEmail())
-                <div>
-                    <p class="text-sm mt-2 text-gray-800 dark:text-gray-200">
-                        {{ __('Your email address is unverified.') }}
-
-                        <button form="send-verification" class="underline text-sm text-gray-600 dark:text-gray-400 hover:text-gray-900 dark:hover:text-gray-100 rounded-md focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500 dark:focus:ring-offset-gray-800">
-                            {{ __('Click here to re-send the verification email.') }}
-                        </button>
-                    </p>
-
-                    @if (session('status') === 'verification-link-sent')
-                        <p class="mt-2 font-medium text-sm text-green-600 dark:text-green-400">
-                            {{ __('A new verification link has been sent to your email address.') }}
-                        </p>
-                    @endif
-                </div>
-            @endif
+        <div class="row mb-3">
+            <label for="name" class="col-md-4 col-form-label text-md-end fw-bold">{{ __('Name') }} <label class="red-aestrist">*</label></label>
+            
+            <div class="col-md-6">
+                <input id="name" type="text" class="form-control @error('name') is-invalid @enderror" name="name" value="{{ $user->name }}" placeholder="Name" required autocomplete="name" autofocus>
+                
+                @error('name')
+                <span class="invalid-feedback" role="alert">
+                    <strong>{{ $message }}</strong>
+                </span>
+                @enderror
+            </div>
         </div>
+
+        <div class="row mb-3">
+            <label for="ic" class="col-md-4 col-form-label text-md-end fw-bold">{{ __('Teacher ID') }} <label class="red-aestrist">*</label></label>
+            
+            <div class="col-md-6">
+                <input id="ic" type="text" class="form-control @error('ic') is-invalid @enderror" name="ic" value="{{ $user->teacher_id }}" placeholder="Teacher ID" required autocomplete="ic" autofocus>
+                
+                @error('ic')
+                <span class="invalid-feedback" role="alert">
+                    <strong>{{ $message }}</strong>
+                </span>
+                @enderror
+            </div>
+        </div>
+
+        <div class="row mb-3">
+            <label for="ic" class="col-md-4 col-form-label text-md-end fw-bold">{{ __('Gender') }} <label class="red-aestrist">*</label></label>
+            
+            <div class="col-md-6">
+                <input id="ic" type="text" class="form-control @error('ic') is-invalid @enderror" name="ic" value="{{ $user->gender }}" placeholder="Gender" required autocomplete="ic" autofocus>
+                
+                @error('ic')
+                <span class="invalid-feedback" role="alert">
+                    <strong>{{ $message }}</strong>
+                </span>
+                @enderror
+            </div>
+        </div>
+
+        <div class="row mb-3">
+            <label for="ic" class="col-md-4 col-form-label text-md-end fw-bold">{{ __('Contact') }} <label class="red-aestrist">*</label></label>
+            
+            <div class="col-md-6">
+                <input id="ic" type="text" class="form-control @error('ic') is-invalid @enderror" name="ic" value="{{ $user->contact }}" placeholder="Contact" required autocomplete="ic" autofocus>
+                
+                @error('ic')
+                <span class="invalid-feedback" role="alert">
+                    <strong>{{ $message }}</strong>
+                </span>
+                @enderror
+            </div>
+        </div>
+
+        <div class="row mb-3">
+            <label for="ic" class="col-md-4 col-form-label text-md-end fw-bold">{{ __('Email') }} <label class="red-aestrist">*</label></label>
+            
+            <div class="col-md-6">
+                <input id="ic" type="text" class="form-control @error('ic') is-invalid @enderror" name="ic" value="{{ $user->email }}" placeholder="Email" required autocomplete="ic" autofocus>
+                
+                @error('ic')
+                <span class="invalid-feedback" role="alert">
+                    <strong>{{ $message }}</strong>
+                </span>
+                @enderror
+            </div>
+        </div>
+
+        <div class="row mb-3">
+            <label for="ic" class="col-md-4 col-form-label text-md-end fw-bold">{{ __('Verification') }} <label class="red-aestrist">*</label></label>
+            
+            <div class="col-md-6">
+                <input id="ic" type="text" class="form-control @error('ic') is-invalid @enderror" name="ic" value="{{ $user->verification }}" placeholder="Verification" required autocomplete="ic" autofocus>
+                
+                @error('ic')
+                <span class="invalid-feedback" role="alert">
+                    <strong>{{ $message }}</strong>
+                </span>
+                @enderror
+            </div>
+        </div>
+        <button type="submit" class="btn text-white fw-bold user-save-button">Save</button>
+        <button type="button" class="btn btn-outline-primary">Save</button>
+
 
         <div class="flex items-center gap-4">
             <x-primary-button>{{ __('Save') }}</x-primary-button>
@@ -61,4 +122,5 @@
             @endif
         </div>
     </form>
+    <hr>
 </section>

@@ -17,6 +17,12 @@ input.form-control {
     border-radius: 15px;
 }
 
+.user-save-button {
+    background-image: linear-gradient(to right, rgb(0, 60, 255), rgb(60, 242, 255));
+    min-width: 80px;
+    border-radius: 15px;
+}
+
 .verification-button {
     background-color: rgb(71, 78, 255);
     border-radius: 15px;
@@ -44,10 +50,6 @@ input.form-control {
 
 .navbar-text {
     font-size: 1.8rem;
-}
-
-.fade-in-text {
-    animation: fadeIn 1s ease-out;
 }
 
 .btn-sidebar {
@@ -85,6 +87,15 @@ input.form-control {
     display: none; /* Hides scrollbar in Chrome, Safari, and Opera */
 }
 
+.fade-in-text {
+    animation: fadeIn 1s ease-out;
+}
+
+.red-aestrist {
+    color: #FF0000;
+}
+
+
 @media (max-width: 990px) {
     .navbar {
         display: none;
@@ -105,7 +116,7 @@ input.form-control {
 @keyframes fadeIn {
     from {
         opacity: 0;
-        transform: translateY(25px);
+        transform: translateY(20px);
     }
     to {
         opacity: 1;

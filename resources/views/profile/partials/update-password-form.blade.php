@@ -13,22 +13,49 @@
         @csrf
         @method('put')
 
-        <div>
-            <x-input-label for="update_password_current_password" :value="__('Current Password')" />
-            <x-text-input id="update_password_current_password" name="current_password" type="password" class="mt-1 block w-full" autocomplete="current-password" />
-            <x-input-error :messages="$errors->updatePassword->get('current_password')" class="mt-2" />
+        <div class="row mb-3">
+            <label for="current_password" class="col-md-4 col-form-label text-md-end fw-bold">{{ __('Current Password') }}</label>
+            
+            <div class="col-md-6">
+                <input id="current_password" type="password" class="form-control @error('current_password') is-invalid @enderror" name="current_password"  placeholder="Current Password" required autocomplete="current-password">
+
+                @error('current_password')
+                <span class="invalid-feedback" role="alert">
+                    <strong>{{ $message }}</strong>
+                </span>
+                @enderror
+
+            </div>
         </div>
 
-        <div>
-            <x-input-label for="update_password_password" :value="__('New Password')" />
-            <x-text-input id="update_password_password" name="password" type="password" class="mt-1 block w-full" autocomplete="new-password" />
-            <x-input-error :messages="$errors->updatePassword->get('password')" class="mt-2" />
+        <div class="row mb-3">
+            <label for="password" class="col-md-4 col-form-label text-md-end fw-bold">{{ __('New Password') }}</label>
+            
+            <div class="col-md-6">
+                <input id="password" type="password" class="form-control @error('password') is-invalid @enderror" name="password"  placeholder="Password" required autocomplete="current-password">
+
+                @error('password')
+                <span class="invalid-feedback" role="alert">
+                    <strong>{{ $message }}</strong>
+                </span>
+                @enderror
+                
+            </div>
         </div>
 
-        <div>
-            <x-input-label for="update_password_password_confirmation" :value="__('Confirm Password')" />
-            <x-text-input id="update_password_password_confirmation" name="password_confirmation" type="password" class="mt-1 block w-full" autocomplete="new-password" />
-            <x-input-error :messages="$errors->updatePassword->get('password_confirmation')" class="mt-2" />
+        <div class="row mb-3">
+            <label for="password_confirmation" class="col-md-4 col-form-label text-md-end fw-bold">{{ __('Confirm Password') }}</label>
+            
+            <div class="col-md-6">
+                <input id="password_confirmation" type="password" class="form-control @error('password_confirmation') is-invalid @enderror" name="password_confirmation"  placeholder="Confirm Password" required autocomplete="password_confirmation">
+
+                @error('password_confirmation')
+                <span class="invalid-feedback" role="alert">
+                    <strong>{{ $message }}</strong>
+                </span>
+                @enderror
+                
+            </div>
         </div>
 
         <div class="flex items-center gap-4">
