@@ -1,0 +1,76 @@
+.login-guest-button {
+    background-image: linear-gradient(to right, rgb(99, 210, 245), rgb(178, 209, 255));
+    width: 130px;
+    border-radius: 15px;
+}
+
+.user-save-button {
+    background-image: linear-gradient(to right, rgb(57, 117, 238), rgb(118, 162, 252));
+    min-width: 80px;
+    border-radius: 15px;
+}
+
+.user-save-button:hover {
+    background-image: linear-gradient(to right, rgb(39, 101, 224), rgb(101, 151, 250));
+    min-width: 80px;
+    border-radius: 15px;
+    border: 2px solid rgb(21, 84, 209);
+    font-weight: bold;
+}
+
+.user-reset-button {
+    background-color: rgb(244, 70, 70);
+    min-width: 80px;
+    border-radius: 15px;
+}
+
+.user-reset-button:hover {
+    background-color: rgb(230, 50, 50);
+    min-width: 80px;
+    border-radius: 15px;
+    border: 2px solid rgb(194, 3, 3);
+    font-weight: bold;
+}
+
+.user-update-button {
+    background-color: rgb(70, 232, 244);
+    min-width: 80px;
+    border-radius: 15px;
+}
+
+.user-update-button:hover {
+    background-color: rgb(45, 228, 241);
+    min-width: 80px;
+    border-radius: 15px;
+    border: 2px solid rgb(16, 188, 201);
+    font-weight: bold;
+}
+
+.verification-button {
+    background-color: rgb(71, 78, 255);
+    border-radius: 15px;
+}
+
+.button-sidebar {
+    background-color: rgb(255, 255, 255);
+    border: 1px solid rgb(133, 133, 133);
+    border-radius: 15px;
+    transition: background-color 0.2s ease-in-out;
+    min-width: 220px;
+}
+
+.button-sidebar:hover {
+    background-color: rgb(206, 210, 244);
+    border: 1px solid #858585;
+    font-weight: bold;
+}
+
+.tr-button {
+    border-radius: 15px;
+    min-width: 70px;
+}
+
+.tr-button:hover {
+    border-radius: 15px;
+    font-weight: 600;
+}

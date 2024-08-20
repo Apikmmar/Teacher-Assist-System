@@ -58,18 +58,13 @@
             </div>
         </div>
 
-        <div class="flex items-center gap-4">
-            <x-primary-button>{{ __('Save') }}</x-primary-button>
-
-            @if (session('status') === 'password-updated')
-                <p
-                    x-data="{ show: true }"
-                    x-show="show"
-                    x-transition
-                    x-init="setTimeout(() => show = false, 2000)"
-                    class="text-sm text-gray-600 dark:text-gray-400"
-                >{{ __('Saved.') }}</p>
-            @endif
+        <div class="row">
+            <div class="d-flex justify-content-center align-items-center mt-2 mb-4">
+                <button type="submit" class="btn text-white user-update-button">Update</button>
+                    &nbsp;&nbsp;&nbsp;
+                <button type="reset" class="btn text-white user-reset-button">Reset</button>
+            </div>
         </div>
+        
     </form>
 </section>

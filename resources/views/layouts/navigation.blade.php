@@ -2,13 +2,7 @@
     $user = auth()->user();
     $call = 'null';
 
-    if (($user->gender == 'Men') || ($user->gender == 'men')) {
-        $call = "Mr. ";
-    } elseif (($user->gender == 'Women') || ($user->gender == 'women')) {
-        $call = "Mr. ";
-    } else {
-        $call = "";
-    }
+    $call = ($user->gender === 'Men') ? 'Mr. ' : (($user->gender === 'Women') ? 'Mrs. ' : '');
 @endphp
 
 <nav class="navbar navbar-expand-lg bg-white shadow-sm fixed-top">
