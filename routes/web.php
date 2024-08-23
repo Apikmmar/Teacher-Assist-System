@@ -5,7 +5,7 @@ use App\Http\Controllers\ProfileController;
 use Illuminate\Support\Facades\Route;
 
 Route::get('/', function () {
-    return view('welcome');
+    return view('auth.login');
 });
 
 Route::get('/dashboard', function () {
@@ -19,6 +19,7 @@ Route::middleware('auth')->group(function () {
 
     Route::get('/all_teacher', [ManageAccount::class, 'viewAllTeacher'])->name('all_teacher');
     Route::get('/add_teacher', [ManageAccount::class, 'viewAddTeacher'])->name('add_teacher');
+    Route::get('/teacher_details/{id}', [ManageAccount::class, 'viewTeacherDetails'])->name('view_teacher');
 });
 
 require __DIR__.'/auth.php';

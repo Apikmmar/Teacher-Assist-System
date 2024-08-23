@@ -1,7 +1,13 @@
 <section>
-    <form id="send-verification" method="post" action="{{ route('verification.send') }}">
-        @csrf
-    </form>
+    <header>
+        <h3 class="text-lg font-medium text-gray-900 dark:text-gray-100">
+            {{ __('Update Profile') }}
+        </h3>
+
+        <p class="mt-1 text-sm text-gray-600 dark:text-gray-400">
+            {{ __('Ensure your information is correct.') }}
+        </p>
+    </header>
 
     <form method="post" action="{{ route('profile.update') }}" class="mt-6 space-y-6">
         @csrf

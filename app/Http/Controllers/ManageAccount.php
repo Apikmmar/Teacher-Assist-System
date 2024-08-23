@@ -18,4 +18,10 @@ class ManageAccount extends Controller
     public function viewAddTeacher(): View {
         return view('manageAccount.add_teacher');
     }
+
+    public function viewTeacherDetails($id): View {
+        return view('manageAccount.teacher_details', [
+            'teacher' => User::findOrFail($id)
+        ]);
+    }
 }
