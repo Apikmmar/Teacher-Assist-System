@@ -10,7 +10,7 @@ class ManageAccount extends Controller
 {
     //
     public function viewAllTeacher(): View {
-        $teachers = User::all();
+        $teachers = User::paginate(10);
 
         return view('manageAccount.all_teacher', compact('teachers'));
     }

@@ -43,7 +43,7 @@
                     $num = 1;   
                 @endphp
                 @foreach ($teachers as $teacher) 
-                    <tr class="align-middle">
+                    <tr class="align-middle teacher-list">
                         <th scope="row">{{ $num }}</th>
                         <td>{!! optional($teacher)->teacher_id ?? '<i>N/A</i>' !!}</td>
                         <td>{{ $teacher->ic }}</td>
@@ -60,7 +60,17 @@
                         $num++;
                         @endphp
                 @endforeach
-            </tbody>
+                </tbody>
+            @if ($teachers->total() > 10)
+                <tfoot class="text-center">
+                    <tr>
+                        <td colspan="12" class="text-center">
+                            {{ $teachers->onEachSide(5)->links() }}
+                        </td>
+                    </tr>
+                </tfoot>
+            @endif
+
             </table>
             
             @else
