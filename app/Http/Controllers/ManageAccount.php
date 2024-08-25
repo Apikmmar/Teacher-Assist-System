@@ -5,6 +5,7 @@ namespace App\Http\Controllers;
 use App\Models\User;
 use Illuminate\Contracts\View\View;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Validator;
 
 class ManageAccount extends Controller
 {
@@ -19,9 +20,36 @@ class ManageAccount extends Controller
         return view('manageAccount.add_teacher');
     }
 
-    public function viewTeacherDetails($id): View {
-        return view('manageAccount.teacher_details', [
-            'teacher' => User::findOrFail($id)
+    public function searchTeacherName(Request $request): View {
+        $validator = Validator::make($request->all(), [
+            'search_teacher' => 'required|string|max:100',
         ]);
+
+        if ($validator->fails()) {
+            return redirect()->back()->withErrors($validator)->withInput();
+        }
+
+        $searchTerm = $request->input('search_teacher');
+        $teachers = User::where('name', 'LIKE', '%' . $searchTerm . '%')->paginate(10);
+
+        if ($teachers->isEmpty()) {
+            return $this->viewAllTeacher();
+        }
+        
+        return view('manageAccount.all_teacher', compact('teachers'));
+    }
+
+
+    public function viewTeacherDetails($id): View {
+        $teacher = User::findOrFail($id);
+
+        $ageOnIc = (substr($teacher->ic, 0, 2));
+        
+        $yearNow = date('Y');
+        $century = ($ageOnIc > $yearNow - 2000) ? 1900 : 2000;
+
+        $age = $yearNow - ($century + $ageOnIc);
+
+        return view('manageAccount.teacher_details', compact('teacher', 'age'));
     }
 }

@@ -25,6 +25,14 @@
             </div>
 
             <div class="row mb-3">
+                <label for="ic" class="col-md-4 col-form-label text-md-end fw-bold">{{ __('Age') }}</label>
+                
+                <div class="col-md-6">
+                    <input id="ic" type="text" class="form-control @error('ic') is-invalid @enderror" name="ic" value="{{ $age }} years old" placeholder="Teacher ID" readonly autocomplete="ic" autofocus>
+                </div>
+            </div>
+
+            <div class="row mb-3">
                 <label for="ic" class="col-md-4 col-form-label text-md-end fw-bold">{{ __('Teacher ID') }}</label>
                 
                 <div class="col-md-6">
@@ -33,7 +41,7 @@
             </div>
 
             <div class="row mb-3">
-                <label for="ic" class="col-md-4 col-form-label text-md-end fw-bold">{{ __('Teacher ID') }}</label>
+                <label for="ic" class="col-md-4 col-form-label text-md-end fw-bold">{{ __('Gender') }}</label>
                 
                 <div class="col-md-6">
                     <input id="ic" type="text" class="form-control @error('ic') is-invalid @enderror" name="ic" value="{{ $teacher->gender }}" placeholder="Teacher ID" readonly autocomplete="ic" autofocus>

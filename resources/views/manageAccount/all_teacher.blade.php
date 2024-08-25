@@ -5,19 +5,21 @@
     <div class="container mt-4 fade-in-text">
 
     @if ($teachers->isNotEmpty())
-    <form action="" method="get">
-        <div class="d-flex justify-content-center mt-2">
-            <div class="row mb-3 align-items-center">
-                <div class="col-md-12 d-flex align-items-center">
-                    <label for="ic" class="col-form-label text-md-end fw-bold me-3">{{ __('Name') }}</label>
-        
-                    <input id="ic" type="text" style="width: 500px" class="form-control me-3 @error('ic') is-invalid @enderror" name="ic" value="{{ old('ic') }}" placeholder="Teacher Name" required autocomplete="ic" autofocus>
-        
-                    <button type="submit" class="btn text-white user-save-button">{{ __('Search') }}</button>
+        <form action="{{ route('search_teacher') }}" method="post">
+            @csrf
+            
+            <div class="d-flex justify-content-center mt-2">
+                <div class="row mb-3 align-items-center">
+                    <div class="col-md-12 d-flex align-items-center">
+                        <label for="ic" class="col-form-label text-md-end fw-bold me-3">{{ __('Name') }}</label>
+            
+                        <input id="ic" type="text" style="width: 500px" class="form-control me-3 @error('ic') is-invalid @enderror" name="search_teacher" placeholder="Teacher Name" required autocomplete="ic" autofocus>
+            
+                        <button type="submit" class="btn text-white user-save-button">{{ __('Search') }}</button>
+                    </div>
                 </div>
             </div>
-        </div>
-    </form>
+        </form>
     @endif
 
         <div class="d-flex justify-content-end me-4 mb-2">
@@ -71,14 +73,14 @@
                 </tfoot>
             @endif
 
-            </table>
+        </table>
             
-            @else
-            
-                <div class="d-flex justify-content-center mt-2">
-                    <h4 class="fw-bold">No teacher found</h4>
-                </div>
-            @endif
+    @else
+    
+        <div class="d-flex justify-content-center mt-2">
+            <h4 class="fw-bold">No teacher found</h4>
+        </div>
+    @endif
     </div>
     
 @endsection

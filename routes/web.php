@@ -18,6 +18,7 @@ Route::middleware('auth')->group(function () {
     Route::delete('/profile', [ProfileController::class, 'destroy'])->name('profile.destroy');
 
     Route::get('/all_teacher', [ManageAccount::class, 'viewAllTeacher'])->name('all_teacher');
+    Route::post('/all_teacher', [ManageAccount::class, 'searchTeacherName'])->name('search_teacher');
     Route::get('/add_teacher', [ManageAccount::class, 'viewAddTeacher'])->name('add_teacher');
     Route::get('/teacher_details/{id}', [ManageAccount::class, 'viewTeacherDetails'])->name('view_teacher');
 });
