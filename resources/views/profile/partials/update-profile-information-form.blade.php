@@ -9,14 +9,20 @@
         </p>
     </header>
 
-    <form method="post" action="{{ route('profile.update') }}" class="mt-6 space-y-6">
+    <form method="post" action="{{ route('profile.update') }}" class="mt-6 space-y-6" enctype="multipart/form-data">
         @csrf
         @method('patch')
 
         <div class="row">
             <div class="col-4">
                 <div class="d-flex justify-content-center align-items-center">
+
+                @if (!empty($user->photo))
+                    <img src="{{ asset('storage/asset/profile-photos/' . $user->photo) }}" style="max-width: 250px;" class="img-fluid" alt="SMK Baling.png">
+                @else    
                     <img src="{{ asset('asset/default-image/profile.png') }}" style="max-width: 250px;" class="img-fluid" alt="SMK Baling.png">
+                @endif
+
                 </div>
             </div>
 
@@ -36,6 +42,20 @@
                 </div>
         
                 <div class="row mb-3">
+                    <label for="teacher_id" class="col-md-4 col-form-label text-md-end fw-bold">{{ __('Teacher ID') }}</label>
+                    
+                    <div class="col-md-6">
+                        <input id="teacher_id" type="text" class="form-control @error('teacher_id') is-invalid @enderror" name="teacher_id" value="{{ $user->teacher_id }}" placeholder="Teacher ID" autocomplete="teacher_id" autofocus>
+                        
+                        @error('teacher_id')
+                        <span class="invalid-feedback" role="alert">
+                            <strong>{{ $message }}</strong>
+                        </span>
+                        @enderror
+                    </div>
+                </div>
+
+                <div class="row mb-3">
                     <label for="name" class="col-md-4 col-form-label text-md-end fw-bold">{{ __('Name') }} <label class="red-aestrist">*</label></label>
                     
                     <div class="col-md-6">
@@ -50,21 +70,7 @@
                 </div>
         
                 <div class="row mb-3">
-                    <label for="ic" class="col-md-4 col-form-label text-md-end fw-bold">{{ __('Teacher ID') }} <label class="red-aestrist">*</label></label>
-                    
-                    <div class="col-md-6">
-                        <input id="ic" type="text" class="form-control @error('ic') is-invalid @enderror" name="ic" value="{{ $user->teacher_id }}" placeholder="Teacher ID" required autocomplete="ic" autofocus>
-                        
-                        @error('ic')
-                        <span class="invalid-feedback" role="alert">
-                            <strong>{{ $message }}</strong>
-                        </span>
-                        @enderror
-                    </div>
-                </div>
-        
-                <div class="row mb-3">
-                    <label for="ic" class="col-md-4 col-form-label text-md-end fw-bold">{{ __('Gender') }} <label class="red-aestrist">*</label></label>
+                    <label for="gender" class="col-md-4 col-form-label text-md-end fw-bold">{{ __('Gender') }} <label class="red-aestrist">*</label></label>
         
                         <div class="col-md-6">
                             <select id="user_gender" name="gender" class="form-select" aria-label="Gender">
@@ -75,12 +81,12 @@
                     </div>
         
                 <div class="row mb-3">
-                    <label for="ic" class="col-md-4 col-form-label text-md-end fw-bold">{{ __('Contact') }} <label class="red-aestrist">*</label></label>
+                    <label for="contact" class="col-md-4 col-form-label text-md-end fw-bold">{{ __('Contact') }} <label class="red-aestrist">*</label></label>
                     
                     <div class="col-md-6">
-                        <input id="ic" type="text" class="form-control @error('ic') is-invalid @enderror" name="ic" value="{{ $user->contact }}" placeholder="Contact" required autocomplete="ic" autofocus>
+                        <input id="contact" type="text" class="form-control @error('contact') is-invalid @enderror" name="contact" value="{{ $user->contact }}" placeholder="Contact" required autocomplete="contact" autofocus>
                         
-                        @error('ic')
+                        @error('contact')
                         <span class="invalid-feedback" role="alert">
                             <strong>{{ $message }}</strong>
                         </span>
@@ -89,31 +95,38 @@
                 </div>
         
                 <div class="row mb-3">
-                    <label for="ic" class="col-md-4 col-form-label text-md-end fw-bold">{{ __('Email') }} <label class="red-aestrist">*</label></label>
+                    <label for="email" class="col-md-4 col-form-label text-md-end fw-bold">{{ __('Email') }} <label class="red-aestrist">*</label></label>
                     
                     <div class="col-md-6">
-                        <input id="ic" type="text" class="form-control @error('ic') is-invalid @enderror" name="ic" value="{{ $user->email }}" placeholder="Email" required autocomplete="ic" autofocus>
+                        <input id="email" type="text" class="form-control @error('email') is-invalid @enderror" name="email" value="{{ $user->email }}" placeholder="Email" required autocomplete="email" autofocus>
                         
-                        @error('ic')
+                        @error('email')
                         <span class="invalid-feedback" role="alert">
                             <strong>{{ $message }}</strong>
                         </span>
                         @enderror
                     </div>
                 </div>
-        
+
                 <div class="row mb-3">
-                    <label for="ic" class="col-md-4 col-form-label text-md-end fw-bold">{{ __('Verification') }} <label class="red-aestrist">*</label></label>
-                    
+                    <label for="verification" class="col-md-4 col-form-label text-md-end fw-bold">{{ __('Verification') }} <label class="red-aestrist">*</label></label>
+
                     <div class="col-md-6">
-                        <input id="ic" type="text" class="form-control @error('ic') is-invalid @enderror" name="ic" value="{{ $user->verification }}" placeholder="Verification" required autocomplete="ic" autofocus>
-                        
-                        @error('ic')
-                        <span class="invalid-feedback" role="alert">
-                            <strong>{{ $message }}</strong>
-                        </span>
-                        @enderror
+                        <input id="verification" type="file" class="form-control" name="verification">
+                        @if($user->verification)
+                            <small class="d-flex justify-content-end"><a href="{{ asset('storage/asset/verification-files/' . $user->verification) }}" download>View Current Verification</a></small>
+                        @endif
                     </div>
+                    
+                </div>
+
+                <div class="row mb-3">
+                    <label for="verification" class="col-md-4 col-form-label text-md-end fw-bold">{{ __('New Photo') }}</label>
+
+                    <div class="col-md-6">
+                        <input id="photo" type="file" class="form-control" name="photo" value="{{ $user->photo }}">
+                    </div>
+                    
                 </div>
 
             </div>

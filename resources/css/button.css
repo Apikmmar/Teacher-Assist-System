@@ -4,6 +4,13 @@
     border-radius: 15px;
 }
 
+.login-guest-button:hover {
+    background-image: linear-gradient(to right, rgb(99, 210, 245), rgb(178, 209, 255));
+    width: 130px;
+    border-radius: 15px;
+    font-weight: 900;
+}
+
 .user-save-button {
     background-image: linear-gradient(to right, rgb(57, 117, 238), rgb(118, 162, 252));
     min-width: 80px;

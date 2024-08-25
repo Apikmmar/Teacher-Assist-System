@@ -17,7 +17,12 @@ class ProfileUpdateRequest extends FormRequest
     {
         return [
             'name' => ['required', 'string', 'max:255'],
+            'teacher_id' => ['nullable', 'string', 'max:20'],
+            'gender' => ['required', 'string', 'in:Men,Women', 'max:10'],
+            'contact' => ['required', 'string', 'max:15'],
             'email' => ['required', 'string', 'lowercase', 'email', 'max:255', Rule::unique(User::class)->ignore($this->user()->id)],
+            'verification' => ['nullable', 'file', 'mimes:pdf', 'max:10240'],
+            'photo' => ['nullable', 'mimes:jpg,jpeg,png', 'max:10240'],
         ];
     }
 }

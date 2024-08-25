@@ -33,6 +33,10 @@ class RegisteredUserController extends Controller
             'name' => ['required', 'string', 'max:255'],
             'email' => ['required', 'string', 'lowercase', 'email', 'max:255', 'unique:'.User::class],
             'password' => ['required', 'confirmed', Rules\Password::defaults()],
+            'teacher_id' => ['nullable', 'string', 'max:20'],
+            'ic' => ['required', 'string', 'size:12'],
+            'gender' => ['required', 'string', 'in:Men,Women', 'max:10'],
+            'contact' => ['required', 'string', 'max:15'],
             
         ]);
 
@@ -40,16 +44,14 @@ class RegisteredUserController extends Controller
             'name' => $request->name,
             'email' => $request->email,
             'password' => Hash::make($request->password),
-            'ic' => '12345',
-            'gender' => '12345',
-            'contact' => '12345',
-            'verification' => '12345',
+            'teacher_id' => $request->teacher_id,
+            'ic' => $request->ic,
+            'gender' => $request->gender,
+            'contact' => $request->contact,
         ]);
 
         event(new Registered($user));
 
-        Auth::login($user);
-
-        return redirect(route('dashboard', absolute: false));
+        return redirect()->route('add_teacher');
     }
 }

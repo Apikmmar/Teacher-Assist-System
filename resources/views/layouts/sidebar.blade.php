@@ -14,6 +14,11 @@
         <a href="" class="btn button-sidebar" type="button"><i class="bi bi-person-check me-2"></i>Manage Student</a>
         <a href="" class="btn button-sidebar" type="button"><i class="bi bi-book-half me-2"></i>Manage Subject</a>
         <a href="" class="btn button-sidebar" type="button"><i class="bi bi-pen-fill me-2"></i>Manage Examination</a>
-        <a href="" class="btn button-sidebar mt-3" type="button"><i class="bi bi-box-arrow-right me-2"></i>Logout</a>
+
+        <form action="{{ route('logout') }}" method="post">
+            @csrf
+            
+            <button type="submit" class="btn button-sidebar mt-3" type="button"><i class="bi bi-box-arrow-right me-2"></i>Logout</button>
+        </form>
     </div>
 </nav>
