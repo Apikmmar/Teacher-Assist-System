@@ -4,10 +4,11 @@ namespace App\Http\Controllers;
 
 use App\Models\User;
 use Illuminate\Contracts\View\View;
+use Illuminate\Http\RedirectResponse;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Validator;
 
-class ManageAccount extends Controller
+class AccountController extends Controller
 {
     //
     public function viewAllTeacher(): View {
@@ -51,5 +52,15 @@ class ManageAccount extends Controller
         $age = $yearNow - ($century + $ageOnIc);
 
         return view('manageAccount.teacher_details', compact('teacher', 'age'));
+    }
+
+    public function destroyTeacher($id) {
+        dd($id);
+        
+        // $user = User::findOrFail($id);
+
+        // $user->delete();
+
+        // return redirect()->route('all_teacher');
     }
 }

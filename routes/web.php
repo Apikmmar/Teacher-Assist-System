@@ -1,6 +1,7 @@
 <?php
 
-use App\Http\Controllers\ManageAccount;
+use App\Http\Controllers\Auth\RegisteredUserController;
+use App\Http\Controllers\AccountController;
 use App\Http\Controllers\ProfileController;
 use Illuminate\Support\Facades\Route;
 
@@ -17,10 +18,13 @@ Route::middleware('auth')->group(function () {
     Route::patch('/profile', [ProfileController::class, 'update'])->name('profile.update');
     Route::delete('/profile', [ProfileController::class, 'destroy'])->name('profile.destroy');
 
-    Route::get('/all_teacher', [ManageAccount::class, 'viewAllTeacher'])->name('all_teacher');
-    Route::post('/all_teacher', [ManageAccount::class, 'searchTeacherName'])->name('search_teacher');
-    Route::get('/add_teacher', [ManageAccount::class, 'viewAddTeacher'])->name('add_teacher');
-    Route::get('/teacher_details/{id}', [ManageAccount::class, 'viewTeacherDetails'])->name('view_teacher');
+    Route::get('/all_teacher', [AccountController::class, 'viewAllTeacher'])->name('all_teacher');
+    Route::post('/all_teacher', [AccountController::class, 'searchTeacherName'])->name('search_teacher');
+    Route::get('/add_teacher', [AccountController::class, 'viewAddTeacher'])->name('add_teacher');
+    Route::get('/teacher_details/{id}', [AccountController::class, 'viewTeacherDetails'])->name('view_teacher');
+    Route::post('/register', [RegisteredUserController::class, 'store'])->name('register.create');
+    Route::delete('/delete_teacher/{id}', [AccountController::class, 'destroyTeacher'])->name('delete.teacher');
+
 });
 
 require __DIR__.'/auth.php';

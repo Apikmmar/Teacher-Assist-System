@@ -1,7 +1,7 @@
 @extends('layouts.app', ['title' => 'Teacher Details'])
 
 @section('content')
-    <div class="row">
+    <div class="row fade-in-text mt-2">
         <div class="col-4 d-flex justify-content-center align-items-center">
             <img src="{{ asset('storage/asset/profile-photos/' . $teacher->photo) }}" style="max-width: 250px;" class="img-fluid" alt="SMK Baling Teacher.png">
         </div>

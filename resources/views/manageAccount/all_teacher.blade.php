@@ -1,3 +1,5 @@
+
+
 @extends('layouts.app', ['title' => 'List Of Teachers'])
 
 @section('content')
@@ -32,9 +34,9 @@
             <thead>
                 <tr>
                     <th scope="col">No</th>
-                    <th scope="col">Teacher ID</th>
-                    <th scope="col">Identity Card Number</th>
                     <th scope="col">Name</th>
+                    <th scope="col">Identity Card Number</th>
+                    <th scope="col">Teacher ID</th>
                     <th scope="col">Gender</th>
                     <th scope="col">Contact</th>
                     <th scope="col" class="text-center">Operation</th>
@@ -44,19 +46,50 @@
                 @php
                     $num = 1;   
                 @endphp
-                @foreach ($teachers as $teacher) 
+                @foreach ($teachers as $teacher)
+                @php
+                    $call = ($teacher->gender === 'Men') ? 'Mr. ' : (($teacher->gender === 'Women') ? 'Mrs. ' : '');
+
+                    if ($teacher->id == auth()->id()) {
+                        continue;
+                    }
+                @endphp
                     <tr class="align-middle teacher-list">
                         <th scope="row">{{ $num }}</th>
-                        <td>{!! optional($teacher)->teacher_id ?? '<i>N/A</i>' !!}</td>
+                        <td>{{ $call . $teacher->name }}</td>
                         <td>{{ $teacher->ic }}</td>
-                        <td>{{ $teacher->name }}</td>
+                        <td>{!! optional($teacher)->teacher_id ?? '<i>N/A</i>' !!}</td>
                         <td>{{ $teacher->gender }}</td>
                         <td>{{ $teacher->contact }}</td>
                         <td class="text-center">
                             <a href="{{ route('view_teacher', ['id' => $teacher->id]) }}" class="btn btn-success tr-button">View</a>
-                            <a href="" class="btn btn-danger tr-button">Delete</a>
+                            <button data-bs-toggle="modal" data-bs-target="#confirmDelete" data-id="{{ $teacher->id }}" class="btn btn-danger tr-button">Delete</button>
                         </td>
                     </tr>
+
+                    <div class="modal fade" id="confirmDelete" tabindex="-1" role="dialog" aria-labelledby="confirmationModalLabel" aria-hidden="true">
+                        <div class="modal-dialog" role="document">
+                            <div class="modal-content">
+                                <div class="modal-header">
+                                    <h5 class="modal-title" id="confirmationModalLabel">Confirm Delete</h5>
+                                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                                </div>
+                                <div class="modal-body">
+                                    <p>Are you sure you want to delete this teacher?</p>
+                                    <i class="text-secondary">The process cannot be undone.</i>
+                                </div>
+                                <div class="modal-footer">
+                                    <form action="{{ route('delete.teacher', ['id' => $teacher->id]) }}" method="POST">
+                                        @csrf
+                                        @method('DELETE')
+                                        <input type="hidden" name="id" id="teacherId" value="">
+                                        <button type="submit" class="btn btn-danger tr-button">Yes</button>
+                                        <button type="button" class="btn btn-secondary tr-button" data-bs-dismiss="modal">No</button>
+                                    </form>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
                     
                     @php
                         $num++;
@@ -82,5 +115,5 @@
         </div>
     @endif
     </div>
-    
+
 @endsection

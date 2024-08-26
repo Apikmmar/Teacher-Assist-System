@@ -2,7 +2,7 @@
 
 @section('content')
 
-    <form action="{{ route('register') }}" method="post" enctype="multipart/form-data">
+    <form action="{{ route('register.create') }}" method="post" enctype="multipart/form-data">
         @csrf
     
         <div class="container fade-in-text">
