@@ -17,7 +17,7 @@ class ProfileController extends Controller
      */
     public function edit(Request $request): View
     {
-        return view('profile.edit', [
+        return view('manageAccount.profile.edit', [
             'user' => $request->user(),
         ]);
     }
@@ -31,6 +31,7 @@ class ProfileController extends Controller
         
         $user->fill($request->except(['verification', 'photo']));
 
+        // FILE AND IMAGE NOT DELETED
         if ($request->hasFile('verification')) {
             $user->verification = $request->file('verification')->getClientOriginalName();
             $request->file('verification')->storeAs('asset/verification-files', $user->verification, 'public');

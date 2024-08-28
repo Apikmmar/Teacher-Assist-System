@@ -20,7 +20,7 @@ Route::middleware('auth')->group(function () {
 
     Route::get('/all_teacher', [AccountController::class, 'viewAllTeacher'])->name('all_teacher');
     Route::post('/all_teacher', [AccountController::class, 'searchTeacherName'])->name('search_teacher');
-    Route::get('/add_teacher', [AccountController::class, 'viewAddTeacher'])->name('add_teacher');
+    Route::get('/add_teacher', [RegisteredUserController::class, 'viewAddTeacher'])->name('add_teacher');
     Route::get('/teacher_details/{id}', [AccountController::class, 'viewTeacherDetails'])->name('view_teacher');
     Route::post('/register', [RegisteredUserController::class, 'store'])->name('register.create');
     Route::delete('/delete_teacher/{id}', [AccountController::class, 'destroyTeacher'])->name('delete.teacher');

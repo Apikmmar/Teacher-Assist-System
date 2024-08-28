@@ -17,10 +17,6 @@ class AccountController extends Controller
         return view('manageAccount.all_teacher', compact('teachers'));
     }
 
-    public function viewAddTeacher(): View {
-        return view('manageAccount.add_teacher');
-    }
-
     public function searchTeacherName(Request $request): View {
         $validator = Validator::make($request->all(), [
             'search_teacher' => 'required|string|max:100',
@@ -54,6 +50,7 @@ class AccountController extends Controller
         return view('manageAccount.teacher_details', compact('teacher', 'age'));
     }
 
+    // NOT WORKING PROPERLY- IT NOT RECEIVE SELECTED USER INSTEAD OF IT RECEIVE THE USER
     public function destroyTeacher($id) {
         dd($id);
         
@@ -61,6 +58,6 @@ class AccountController extends Controller
 
         // $user->delete();
 
-        // return redirect()->route('all_teacher');
+        // return redirect(route('all_teacher'));
     }
 }

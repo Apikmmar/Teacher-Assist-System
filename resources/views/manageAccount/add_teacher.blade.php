@@ -100,7 +100,7 @@
                     @enderror
 
                     <div class="form-check d-flex justify-content-end mt-1">
-                        <input class="form-check-input" type="checkbox" value="" id="flexCheckChecked">&nbsp;
+                        <input class="form-check-input" type="checkbox" id="flexCheckChecked">&nbsp;
                         <label class="form-check-label" for="flexCheckChecked">
                             Set Password As IC Number
                         </label>
@@ -108,26 +108,17 @@
                 </div>
             </div>
     
-            <div class="row mb-3">
+            <div class="row mb-3 ">
                 <label for="ic" class="col-md-4 col-form-label text-md-end fw-bold">{{ __('Role') }} <label class="red-aestrist">*</label></label>
                 
-                <div class="col-md-6">
-                    <div class="d-inline-block me-3">
-                        <input class="form-check-input" type="checkbox" value="" id="flexCheckExamCoordinator">
-                        <label class="form-check-label" for="flexCheckExamCoordinator">Exam Coordinator</label>
-                    </div>
-                    <div class="d-inline-block me-3">
-                        <input class="form-check-input" type="checkbox" value="" id="flexCheckClassTeacher">
-                        <label class="form-check-label" for="flexCheckClassTeacher">Class Teacher</label>
-                    </div>
-                    <div class="d-inline-block me-3">
-                        <input class="form-check-input" type="checkbox" value="" id="flexCheckSubjectTeacher">
-                        <label class="form-check-label" for="flexCheckSubjectTeacher">Subject Teacher</label>
-                    </div>
-                    <div class="d-inline-block">
-                        <input class="form-check-input" type="checkbox" value="" id="flexCheckManagementOfSchool">
-                        <label class="form-check-label" for="flexCheckManagementOfSchool">Management of School</label>
-                    </div>
+                <div class="col-md-6 mt-2">
+                    @foreach ($roles as $role)
+                        <div class="d-inline-block me-3">
+                            <input class="form-check-input" type="checkbox" name="roles[]" value="{{ $role->name }}" id="role_{{ $role->id }}" 
+                            {{ in_array($role->name, $userRoles) ? 'checked' : '' }}>
+                            <label class="form-check-label" for="role_{{ $role->id }}">{{ $role->name }}</label>
+                        </div>
+                    @endforeach
                 </div>
             </div>
 

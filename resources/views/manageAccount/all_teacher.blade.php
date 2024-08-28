@@ -63,7 +63,7 @@
                         <td>{{ $teacher->contact }}</td>
                         <td class="text-center">
                             <a href="{{ route('view_teacher', ['id' => $teacher->id]) }}" class="btn btn-success tr-button">View</a>
-                            <button data-bs-toggle="modal" data-bs-target="#confirmDelete" data-id="{{ $teacher->id }}" class="btn btn-danger tr-button">Delete</button>
+                            <button data-bs-toggle="modal" data-bs-target="#confirmDelete" class="btn btn-danger tr-button">Delete</button>
                         </td>
                     </tr>
 
@@ -72,20 +72,19 @@
                             <div class="modal-content">
                                 <div class="modal-header">
                                     <h5 class="modal-title" id="confirmationModalLabel">Confirm Delete</h5>
-                                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                                    <button type="button" class="btn-close" data-bs-dismiss="modal" id="confirmNotDelete" aria-label="Close"></button>
                                 </div>
                                 <div class="modal-body">
-                                    <p>Are you sure you want to delete this teacher?</p>
-                                    <i class="text-secondary">The process cannot be undone.</i>
+                                    <p>Are you sure you want to remove {{ $call . $teacher->name }}?</p>
                                 </div>
                                 <div class="modal-footer">
-                                    <form action="{{ route('delete.teacher', ['id' => $teacher->id]) }}" method="POST">
+                                    <form action="{{ route('delete.teacher', ['id' => $teacher->name]) }}" method="POST">
                                         @csrf
                                         @method('DELETE')
-                                        <input type="hidden" name="id" id="teacherId" value="">
-                                        <button type="submit" class="btn btn-danger tr-button">Yes</button>
-                                        <button type="button" class="btn btn-secondary tr-button" data-bs-dismiss="modal">No</button>
+                    
+                                        <button type="submit" class="btn btn-secondary tr-button" id="successDel">Delete</button>
                                     </form>
+                                    <button type="button" class="btn btn-danger tr-button" data-dismiss="modal" id="confirmNotDelete2">Cancel</button>
                                 </div>
                             </div>
                         </div>

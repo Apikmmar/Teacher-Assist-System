@@ -4,6 +4,7 @@ namespace App\Http\Controllers\Auth;
 
 use App\Http\Controllers\Controller;
 use App\Http\Requests\RegisterTeacherRequest;
+use App\Models\Role;
 use App\Models\User;
 use Illuminate\Http\RedirectResponse;
 use Illuminate\Support\Facades\Hash;
@@ -16,6 +17,13 @@ class RegisteredUserController extends Controller
      *
      * @throws \Illuminate\Validation\ValidationException
      */
+    public function viewAddTeacher(): View {
+        $roles = Role::all();
+        $userRoles = [];
+
+        return view('manageAccount.add_teacher', compact('roles', 'userRoles'));
+    }
+
     public function store(RegisterTeacherRequest $request): RedirectResponse
     {
         $request->validated();
@@ -32,6 +40,12 @@ class RegisteredUserController extends Controller
 
         $user->save();
 
-        return redirect()->route('all_teacher');
+        $userRoles = $request->input('roles');
+
+        $roleIds = Role::whereIn('name', $userRoles)->pluck('id');
+
+        $user->roles()->sync($roleIds);
+
+        return redirect(route('all_teacher'));
     }
 }
