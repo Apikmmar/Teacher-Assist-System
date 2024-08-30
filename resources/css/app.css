@@ -51,7 +51,7 @@ input.form-control {
     margin-left:290px;
     width: calc(100% - 310px);
     border-radius: 15px;
-    height:550px;
+    height: calc(100vh - 150px);
     overflow-y: scroll;
     scrollbar-width: none;
     scroll-behavior: smooth;

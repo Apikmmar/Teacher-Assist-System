@@ -36,6 +36,7 @@ class RegisteredUserController extends Controller
             'ic' => $request->ic,
             'gender' => $request->gender,
             'contact' => $request->contact,
+            'verification' => 'testuser.pdf'
         ]);
 
         $user->save();

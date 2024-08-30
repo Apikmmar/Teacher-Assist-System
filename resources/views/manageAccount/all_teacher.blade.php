@@ -24,9 +24,13 @@
         </form>
     @endif
 
+    @can('coordinator')
+        
         <div class="d-flex justify-content-end me-4 mb-2">
             <a href="{{ route('add_teacher') }}" class="btn text-white user-save-button">Add Teacher</a>
         </div>
+        
+    @endcan
 
     @if ($teachers->isNotEmpty())
         
@@ -63,7 +67,9 @@
                         <td>{{ $teacher->contact }}</td>
                         <td class="text-center">
                             <a href="{{ route('view_teacher', ['id' => $teacher->id]) }}" class="btn btn-success tr-button">View</a>
+                        @can('coordinator')
                             <button data-bs-toggle="modal" data-bs-target="#confirmDelete" class="btn btn-danger tr-button">Delete</button>
+                        @endcan
                         </td>
                     </tr>
 
