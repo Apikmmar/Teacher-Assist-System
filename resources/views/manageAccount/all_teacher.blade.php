@@ -5,6 +5,8 @@
 @section('content')
 
     <div class="container mt-4 fade-in-text">
+    
+    @include('layouts.message')
 
     @if ($teachers->isNotEmpty())
         <form action="{{ route('search_teacher') }}" method="post">
@@ -46,70 +48,67 @@
                     <th scope="col" class="text-center">Operation</th>
                 </tr>
             </thead>
-                <tbody>
-                @php
-                    $num = 1;   
-                @endphp
-                @foreach ($teachers as $teacher)
-                @php
-                    $call = ($teacher->gender === 'Men') ? 'Mr. ' : (($teacher->gender === 'Women') ? 'Mrs. ' : '');
+            <tbody>
+            @php
+                $num = 1;   
+            @endphp
+            @foreach ($teachers as $teacher)
+            @php
+                $call = ($teacher->gender === 'Men') ? 'Mr. ' : (($teacher->gender === 'Women') ? 'Mrs. ' : '');
+            @endphp
+                <tr class="align-middle teacher-list">
+                    <th scope="row">{{ $num }}</th>
+                    <td>{{ $call . $teacher->name }}</td>
+                    <td>{{ $teacher->ic }}</td>
+                    <td>{!! optional($teacher)->teacher_id ?? '<i>N/A</i>' !!}</td>
+                    <td>{{ $teacher->gender }}</td>
+                    <td>{{ $teacher->contact }}</td>
+                    <td class="text-center">
+                        <a href="{{ route('view_teacher', ['id' => $teacher->id]) }}" class="btn btn-success tr-button">View</a>
+                    @can('coordinator')
+                        <button data-bs-toggle="modal" data-bs-target="#confirmDelete{{ $teacher->id }}" class="btn btn-danger tr-button">Delete</button>
 
-                    if ($teacher->id == auth()->id()) {
-                        continue;
-                    }
-                @endphp
-                    <tr class="align-middle teacher-list">
-                        <th scope="row">{{ $num }}</th>
-                        <td>{{ $call . $teacher->name }}</td>
-                        <td>{{ $teacher->ic }}</td>
-                        <td>{!! optional($teacher)->teacher_id ?? '<i>N/A</i>' !!}</td>
-                        <td>{{ $teacher->gender }}</td>
-                        <td>{{ $teacher->contact }}</td>
-                        <td class="text-center">
-                            <a href="{{ route('view_teacher', ['id' => $teacher->id]) }}" class="btn btn-success tr-button">View</a>
-                        @can('coordinator')
-                            <button data-bs-toggle="modal" data-bs-target="#confirmDelete" class="btn btn-danger tr-button">Delete</button>
-                        @endcan
-                        </td>
-                    </tr>
+                    @endcan
+                    </td>
+                </tr>
 
-                    <div class="modal fade" id="confirmDelete" tabindex="-1" role="dialog" aria-labelledby="confirmationModalLabel" aria-hidden="true">
-                        <div class="modal-dialog" role="document">
-                            <div class="modal-content">
-                                <div class="modal-header">
-                                    <h5 class="modal-title" id="confirmationModalLabel">Confirm Delete</h5>
-                                    <button type="button" class="btn-close" data-bs-dismiss="modal" id="confirmNotDelete" aria-label="Close"></button>
-                                </div>
-                                <div class="modal-body">
-                                    <p>Are you sure you want to remove {{ $call . $teacher->name }}?</p>
-                                </div>
-                                <div class="modal-footer">
-                                    <form action="{{ route('delete.teacher', ['id' => $teacher->name]) }}" method="POST">
-                                        @csrf
-                                        @method('DELETE')
-                    
-                                        <button type="submit" class="btn btn-secondary tr-button" id="successDel">Delete</button>
-                                    </form>
-                                    <button type="button" class="btn btn-danger tr-button" data-dismiss="modal" id="confirmNotDelete2">Cancel</button>
-                                </div>
+                <div class="modal fade" id="confirmDelete{{ $teacher->id }}" tabindex="-1" role="dialog" aria-labelledby="confirmationModalLabel{{ $teacher->id }}" aria-hidden="true">
+                    <div class="modal-dialog" role="document">
+                        <div class="modal-content">
+                            <div class="modal-header">
+                                <h5 class="modal-title" id="confirmationModalLabel{{ $teacher->id }}">Confirm Delete</h5>
+                                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                            </div>
+                            <div class="modal-body">
+                                <p>Are you sure you want to remove {{ $call . $teacher->name }}?</p>
+                            </div>
+                            <div class="modal-footer">
+                                <form action="{{ route('delete.teacher', ['id' => $teacher->id]) }}" method="POST">
+                                    @csrf
+                                    @method('DELETE')
+        
+                                    <button type="submit" class="btn btn-secondary tr-button">Delete</button>
+                                </form>
+                                <button type="button" class="btn btn-danger tr-button" data-bs-dismiss="modal">Cancel</button>
                             </div>
                         </div>
                     </div>
-                    
-                    @php
-                        $num++;
-                        @endphp
-                @endforeach
-                </tbody>
-            @if ($teachers->total() > 10)
-                <tfoot class="text-center">
-                    <tr>
-                        <td colspan="12" class="text-center">
-                            {{ $teachers->onEachSide(5)->links() }}
-                        </td>
-                    </tr>
-                </tfoot>
-            @endif
+                </div>
+                
+                @php
+                    $num++;
+                    @endphp
+            @endforeach
+            </tbody>
+        @if ($teachers->total() > 10)
+            <tfoot class="text-center">
+                <tr>
+                    <td colspan="12" class="text-center">
+                        {{ $teachers->onEachSide(5)->links() }}
+                    </td>
+                </tr>
+            </tfoot>
+        @endif
 
         </table>
             

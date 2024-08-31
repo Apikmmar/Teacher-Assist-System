@@ -34,5 +34,9 @@ class AppServiceProvider extends ServiceProvider
         Gate::define('coordinator', function($user) {
             return $user->hasRole('Coordinator');
         });
+
+        Gate::define('coordinator-or-management', function($user) {
+            return !$user->can('coordinator') || !$user->can('management');
+        });
     }
 }

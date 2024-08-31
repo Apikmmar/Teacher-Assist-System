@@ -6,18 +6,19 @@ use App\Models\User;
 use Illuminate\Contracts\View\View;
 use Illuminate\Http\RedirectResponse;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Validator;
 
 class AccountController extends Controller
 {
     //
     public function viewAllTeacher(): View {
-        $teachers = User::paginate(10);
+        $teachers = User::where('id', '!=', Auth::id())->paginate(10);
 
         return view('manageAccount.all_teacher', compact('teachers'));
     }
 
-    public function searchTeacherName(Request $request): View {
+    public function searchTeacherName(Request $request): View|RedirectResponse {
         $validator = Validator::make($request->all(), [
             'search_teacher' => 'required|string|max:100',
         ]);
@@ -30,7 +31,7 @@ class AccountController extends Controller
         $teachers = User::where('name', 'LIKE', '%' . $searchTerm . '%')->paginate(10);
 
         if ($teachers->isEmpty()) {
-            return $this->viewAllTeacher();
+            return redirect()->route('all_teacher')->with('red-message', 'Teacher Not Found.');
         }
         
         return view('manageAccount.all_teacher', compact('teachers'));
@@ -50,14 +51,11 @@ class AccountController extends Controller
         return view('manageAccount.teacher_details', compact('teacher', 'age'));
     }
 
-    // NOT WORKING PROPERLY- IT NOT RECEIVE SELECTED USER INSTEAD OF IT RECEIVE THE USER
-    public function destroyTeacher($id) {
-        dd($id);
-        
-        // $user = User::findOrFail($id);
+    public function destroyTeacher($id): RedirectResponse {        
+        $user = User::findOrFail($id);
 
-        // $user->delete();
+        $user->delete();
 
-        // return redirect(route('all_teacher'));
+        return redirect()->route('all_teacher')->with('red-message', 'Successfully Delete Teacher');
     }
 }

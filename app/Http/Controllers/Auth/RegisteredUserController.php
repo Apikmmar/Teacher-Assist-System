@@ -47,6 +47,6 @@ class RegisteredUserController extends Controller
 
         $user->roles()->sync($roleIds);
 
-        return redirect(route('all_teacher'));
+        return redirect()->route('all_teacher')->with('blue-message', 'Successfully Register New Teacher');
     }
 }
