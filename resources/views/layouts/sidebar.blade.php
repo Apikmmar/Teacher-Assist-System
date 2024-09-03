@@ -11,7 +11,7 @@
     <div class="d-grid gap-3 justify-content-center">
         <a href="" class="btn button-sidebar" type="button"><i class="bi bi-people me-2"></i>All Classroom</a>
         <a href="{{ route('all_teacher') }}" class="btn button-sidebar" type="button"><i class="bi bi-person-badge me-2"></i>Manage Teacher</a>
-        <a href="" class="btn button-sidebar" type="button"><i class="bi bi-person-check me-2"></i>Manage Student</a>
+        <a href="{{ route('all_student') }}" class="btn button-sidebar" type="button"><i class="bi bi-person-check me-2"></i>Manage Student</a>
         
     @can('coordinator')
         <a href="" class="btn button-sidebar" type="button"><i class="bi bi-book-half me-2"></i>Manage Subject</a>

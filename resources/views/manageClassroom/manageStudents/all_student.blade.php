@@ -1,0 +1,125 @@
+@extends('layouts.app', ['title' => 'List Of Student'])
+
+@section('content')
+<div class="container mt-4 fade-in-text">
+    
+    @include('layouts.message')
+
+    @if ($students->isNotEmpty())
+    <div class="d-flex justify-content-end mt-2 me-4">
+        <div>
+            <form action="{{ route('search_student') }}" method="post">
+                @csrf
+    
+                <div class="row mb-3 align-items-center">
+                    <div class="col-md-12 d-flex align-items-center">
+            
+                        <input id="ic" type="text" style="width: 200px" class="form-control me-2 @error('ic') is-invalid @enderror" name="search_student" placeholder="Search Student Name" required autocomplete="ic" autofocus>
+                        <button type="submit" class="btn btn-light" style="min-width: 50px; border-radius: 30%"><i class="bi bi-search" style="font-size: 1.2rem;"></i></button>
+                    </div>
+                </div>
+            </form>
+        </div>
+        &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+        <div>
+            {{-- not done yet PS: CONSIDER FILTERING --}}
+            <form action="" method="post">
+                @csrf
+    
+                <div class="row mb-3 align-items-center">
+                    <div class="col-md-12 d-flex align-items-center">
+            
+                        <select class="form-select" aria-label="Default select example">
+                            <option value="" selected disabled>Sort by:</option>
+                            <option value="name">Sort by: Name</option>
+                            <option value="id">Sort by: ID</option>
+                        </select>
+                    </div>
+                </div>
+            </form>
+        </div>
+    </div>
+    @endif
+
+    @can('coordinator')
+        
+        <div class="d-flex justify-content-end me-4 mb-2">
+            <a href="{{ route('add_student') }}" class="btn text-white user-save-button">Register Student</a>
+        </div>
+        
+    @endcan
+
+    @if ($students->isNotEmpty())
+        
+        <table class="table table-hover">
+            <thead>
+                <tr>
+                    <th scope="col">No</th>
+                    <th scope="col">Name</th>
+                    <th scope="col">Identity Card Number</th>
+                    <th scope="col">Student ID</th>
+                    <th scope="col">Gender</th>
+                    <th scope="col">Status</th>
+                    <th scope="col" class="text-center">Operation</th>
+                </tr>
+            </thead>
+            <tbody>
+                @foreach ($students as $student)
+                <tr class="align-middle teacher-list">
+                    <th scope="row">{{ $loop->iteration }}</th>
+                    <td>{{ $student->name }}</td>
+                    <td>{{ $student->ic }}</td>
+                    <td>{{ $student->student_id }}</td>
+                    <td>{{ $student->gender }}</td>
+                    <td>{{ $student->status }}</td>
+                    <td class="text-center">
+                        <a href="{{ route('view_student', ['id' => $student->id ]) }}" class="btn btn-success tr-button">View</a>
+                    @can('coordinator')
+                        <button data-bs-toggle="modal" data-bs-target="#confirmDelete{{ $student->id }}" class="btn btn-danger tr-button">Delete</button>
+                    @endcan
+                    </td>
+                </tr>
+            
+                <div class="modal fade" id="confirmDelete{{ $student->id }}" tabindex="-1" role="dialog" aria-labelledby="confirmationModalLabel{{ $student->id }}" aria-hidden="true">
+                    <div class="modal-dialog" role="document">
+                        <div class="modal-content">
+                            <div class="modal-header">
+                                <h5 class="modal-title" id="confirmationModalLabel{{ $student->id }}">Confirm Delete</h5>
+                                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                            </div>
+                            <div class="modal-body">
+                                <p>Are you sure you want to remove {{ $student->name }}?</p>
+                            </div>
+                            <div class="modal-footer">
+                                <form action="" method="POST">
+                                    @csrf
+                                    @method('DELETE')
+                                    <button type="submit" class="btn btn-secondary tr-button">Delete</button>
+                                </form>
+                                <button type="button" class="btn btn-danger tr-button" data-bs-dismiss="modal">Cancel</button>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            @endforeach
+            
+            @if ($students->total() > 10)
+                <tfoot class="text-center">
+                    <tr>
+                        <td colspan="12" class="text-center">
+                            {{ $students->onEachSide(5)->links() }}
+                        </td>
+                    </tr>
+                </tfoot>
+            @endif
+            
+        </table>
+            
+    @else
+    
+        <div class="d-flex justify-content-center mt-2">
+            <h4 class="fw-bold">Students Not Registered</h4>
+        </div>
+    @endif
+    </div>
+@endsection

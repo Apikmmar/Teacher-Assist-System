@@ -49,15 +49,13 @@
                 </tr>
             </thead>
             <tbody>
-            @php
-                $num = 1;   
-            @endphp
+
             @foreach ($teachers as $teacher)
             @php
                 $call = ($teacher->gender === 'Men') ? 'Mr. ' : (($teacher->gender === 'Women') ? 'Mrs. ' : '');
             @endphp
                 <tr class="align-middle teacher-list">
-                    <th scope="row">{{ $num }}</th>
+                    <th scope="row">{{ $loop->iteration }}</th>
                     <td>{{ $call . $teacher->name }}</td>
                     <td>{{ $teacher->ic }}</td>
                     <td>{!! optional($teacher)->teacher_id ?? '<i>N/A</i>' !!}</td>
@@ -67,7 +65,6 @@
                         <a href="{{ route('view_teacher', ['id' => $teacher->id]) }}" class="btn btn-success tr-button">View</a>
                     @can('coordinator')
                         <button data-bs-toggle="modal" data-bs-target="#confirmDelete{{ $teacher->id }}" class="btn btn-danger tr-button">Delete</button>
-
                     @endcan
                     </td>
                 </tr>
@@ -94,10 +91,7 @@
                         </div>
                     </div>
                 </div>
-                
-                @php
-                    $num++;
-                    @endphp
+
             @endforeach
             </tbody>
         @if ($teachers->total() > 10)
