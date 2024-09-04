@@ -2,7 +2,9 @@
 
 namespace App\Http\Controllers;
 
+use App\Http\Requests\AddStudentRequest;
 use App\Models\Student;
+use Carbon\Carbon;
 use Illuminate\Http\RedirectResponse;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Validator;
@@ -10,7 +12,7 @@ use Illuminate\View\View;
 
 class StudentsController extends Controller
 {
-    public function viewAllStudent() : View {
+    public function viewAllStudent(): View {
         return view('manageClassroom.manageStudents.all_student', [
             'students' => Student::paginate(10)
         ]);
@@ -40,9 +42,25 @@ class StudentsController extends Controller
         return view('manageClassroom.manageStudents.add_student');
     }
 
-    public function viewStudentDetails($id) {
+    public function viewStudentDetails($id): View {
         $std = Student::findOrFail($id);
 
-        return view('manageClassroom.manageStudents.add_student', compact('std'));
+        $ageOnIc = (substr($std->ic, 0, 2));
+        
+        $yearNow = date('Y');
+        $century = ($ageOnIc > $yearNow - 2000) ? 1900 : 2000;
+
+        $age = $yearNow - ($century + $ageOnIc);
+
+        $std->dob = Carbon::parse($std->dob)->format('j F Y');
+        $std->join_school_date = Carbon::parse($std->join_school_date)->format('j F Y');
+
+        return view('manageClassroom.manageStudents.view_student', compact('std', 'age'));
+    }
+
+    public function addNewStudent(AddStudentRequest $request): RedirectResponse {
+        $request->validated();
+
+        return redirect()->route('all_student')->with('blue-message', 'Student Successfully Registered');
     }
 }

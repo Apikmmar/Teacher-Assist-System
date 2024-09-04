@@ -7,7 +7,7 @@
     
         <div class="container fade-in-text">
             <div class="row mb-3">
-                <label for="ic" class="col-md-4 col-form-label text-md-end fw-bold">{{ __('Identity Card Number') }}</label>
+                <label for="ic" class="col-md-4 col-form-label text-md-end fw-bold">{{ __('Identity Card Number') }} <label class="red-aestrist">*</label></label>
                 
                 <div class="col-md-6">
                     <input id="ic" type="text" class="form-control @error('ic') is-invalid @enderror" name="ic" placeholder="Identity Card Number" autocomplete="ic" autofocus>
@@ -53,6 +53,7 @@
     
                     <div class="col-md-6">
                         <select id="user_gender" name="gender" class="form-select" aria-label="Gender">
+                            <option selected disabled>Select Gender</option>
                             <option value="Men">Men</option>
                             <option value="Women">Women</option>
                         </select>

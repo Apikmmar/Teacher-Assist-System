@@ -6,7 +6,7 @@
     @include('layouts.message')
 
     @if ($students->isNotEmpty())
-    <div class="d-flex justify-content-end mt-2 me-4">
+    <div class="d-flex justify-content-end me-4">
         <div>
             <form action="{{ route('search_student') }}" method="post">
                 @csrf
@@ -22,7 +22,7 @@
         </div>
         &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
         <div>
-            {{-- not done yet PS: CONSIDER FILTERING --}}
+            {{-- not done yet PS: CONSIDER FILTERING USE MODAL --}}
             <form action="" method="post">
                 @csrf
     
@@ -32,7 +32,7 @@
                         <select class="form-select" aria-label="Default select example">
                             <option value="" selected disabled>Sort by:</option>
                             <option value="name">Sort by: Name</option>
-                            <option value="id">Sort by: ID</option>
+                            <option value="id">Sort by: Student ID</option>
                         </select>
                     </div>
                 </div>
@@ -59,6 +59,7 @@
                     <th scope="col">Identity Card Number</th>
                     <th scope="col">Student ID</th>
                     <th scope="col">Gender</th>
+                    <th scope="col">Classroom</th>
                     <th scope="col">Status</th>
                     <th scope="col" class="text-center">Operation</th>
                 </tr>
@@ -71,6 +72,7 @@
                     <td>{{ $student->ic }}</td>
                     <td>{{ $student->student_id }}</td>
                     <td>{{ $student->gender }}</td>
+                    <td>{!! optional($student)->classroom_id ?? '<i>N/A</i>' !!}</td>
                     <td>{{ $student->status }}</td>
                     <td class="text-center">
                         <a href="{{ route('view_student', ['id' => $student->id ]) }}" class="btn btn-success tr-button">View</a>
