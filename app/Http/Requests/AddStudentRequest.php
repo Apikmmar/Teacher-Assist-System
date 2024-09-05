@@ -23,7 +23,7 @@ class AddStudentRequest extends FormRequest
     {
         return [
             'ic' => ['required', 'string', 'size:12'],
-            'name' => ['required', 'string', 'min:100'],
+            'name' => ['required', 'string', 'max:100'],
             'gender' => ['required', 'string', 'in:Men,Women', 'max:10'],
             'dob' => ['required', 'date'],
             'jsd' => ['required', 'date'],

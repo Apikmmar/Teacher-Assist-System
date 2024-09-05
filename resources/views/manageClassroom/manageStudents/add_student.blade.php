@@ -2,7 +2,7 @@
 
 @section('content')
 
-    <form action="" method="post" enctype="multipart/form-data">
+    <form action="{{ route('add_student.create') }}" method="post" enctype="multipart/form-data">
         @csrf
     
         <div class="container fade-in-text">
@@ -78,7 +78,7 @@
                 <label for="ic" class="col-md-4 col-form-label text-md-end fw-bold">{{ __('Status') }} <label class="red-aestrist">*</label></label>
                 
                 <div class="col-md-6">
-                    <select id="status" name="gender" class="form-select" aria-label="Gender">
+                    <select id="status" name="status" class="form-select" aria-label="Gender">
                         <option selected value="Active">Active</option>
                         <option value="Inactive">Inactive</option>
                     </select>

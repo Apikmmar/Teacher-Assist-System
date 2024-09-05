@@ -30,6 +30,7 @@ Route::middleware('auth')->group(function () {
     Route::post('/all_student', [StudentsController::class, 'searchStudentName'])->name('search_student');
     Route::get('/add_student', [StudentsController::class, 'viewAddStudent'])->name('add_student');
     Route::get('/view_student/{id}', [StudentsController::class, 'viewStudentDetails'])->name('view_student');
+    Route::post('/new_student', [StudentsController::class, 'addNewStudent'])->name('add_student.create');
 
 });
 

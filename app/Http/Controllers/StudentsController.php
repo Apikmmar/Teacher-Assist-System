@@ -61,6 +61,19 @@ class StudentsController extends Controller
     public function addNewStudent(AddStudentRequest $request): RedirectResponse {
         $request->validated();
 
+        $std = Student::create([
+            'classroom_id' => NULL,
+            'ic' => $request->ic,
+            'student_id' => 'ST'.str_pad(rand(0, 9999), 4, '0', STR_PAD_LEFT),
+            'name' => $request->name,
+            'gender' => $request->gender,
+            'dob' => $request->dob,
+            'join_school_date' => $request->jsd,
+            'status' => $request->status,
+        ]);
+
+        $std->save();
+
         return redirect()->route('all_student')->with('blue-message', 'Student Successfully Registered');
     }
 }
