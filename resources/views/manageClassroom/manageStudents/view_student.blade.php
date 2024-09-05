@@ -26,7 +26,7 @@
                 <label for="ic" class="col-md-4 col-form-label text-md-end fw-bold">{{ __('Classroom') }}</label>
                 
                 <div class="col-md-6">
-                    <input id="ic" type="text" class="form-control @error('ic') is-invalid @enderror" name="ic" value="{{ $std->classroom_id }}" readonly autocomplete="ic" autofocus>
+                    <input id="ic" type="text" class="form-control @error('ic') is-invalid @enderror" name="ic" value="{!! optional($std)->classroom->name ?? 'Not Applicable' !!}" readonly autocomplete="ic" autofocus>
                 </div>
             </div>
 

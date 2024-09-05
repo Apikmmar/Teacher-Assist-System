@@ -2,8 +2,15 @@
 
 @section('content')
 
+
     <form action="{{ route('add_student.create') }}" method="post" enctype="multipart/form-data">
         @csrf
+
+        <header>
+            <h4 class="text-lg font-medium text-gray-900 dark:text-gray-100">
+                {{ __('Student Profile') }}
+            </h4>
+        </header>
     
         <div class="container fade-in-text">
             <div class="row mb-3">
@@ -81,6 +88,28 @@
                     <select id="status" name="status" class="form-select" aria-label="Gender">
                         <option selected value="Active">Active</option>
                         <option value="Inactive">Inactive</option>
+                    </select>
+                </div> 
+            </div>
+
+            <hr>
+
+            <header>
+                <h4 class="text-lg font-medium text-gray-900 dark:text-gray-100">
+                    {{ __('Student Class') }}
+                </h4>
+            </header>
+
+            <div class="row mb-3">
+                <label for="ic" class="col-md-4 col-form-label text-md-end fw-bold">{{ __('Classroom') }} <label class="red-aestrist">*</label></label>
+                
+                <div class="col-md-6">
+                    <select id="status" name="classroom" class="form-select" aria-label="Gender">
+                        <option selected value="">Not Applicable</option>
+
+                    @foreach ($classes as $class)
+                        <option value={{ $class->id }}>{{ $class->name }}</option>
+                    @endforeach
                     </select>
                 </div> 
             </div>

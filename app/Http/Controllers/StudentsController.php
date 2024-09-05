@@ -3,6 +3,7 @@
 namespace App\Http\Controllers;
 
 use App\Http\Requests\AddStudentRequest;
+use App\Models\Classroom;
 use App\Models\Student;
 use Carbon\Carbon;
 use Illuminate\Http\RedirectResponse;
@@ -39,7 +40,9 @@ class StudentsController extends Controller
     }
 
     public function viewAddStudent() {
-        return view('manageClassroom.manageStudents.add_student');
+        return view('manageClassroom.manageStudents.add_student', [
+            'classes' => Classroom::all()
+        ]);
     }
 
     public function viewStudentDetails($id): View {
@@ -61,8 +64,10 @@ class StudentsController extends Controller
     public function addNewStudent(AddStudentRequest $request): RedirectResponse {
         $request->validated();
 
+        // dd($request);
+
         $std = Student::create([
-            'classroom_id' => NULL,
+            'classroom_id' => $request->classroom,
             'ic' => $request->ic,
             'student_id' => 'ST'.str_pad(rand(0, 9999), 4, '0', STR_PAD_LEFT),
             'name' => $request->name,

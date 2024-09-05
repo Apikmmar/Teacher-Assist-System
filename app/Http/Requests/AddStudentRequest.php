@@ -28,6 +28,7 @@ class AddStudentRequest extends FormRequest
             'dob' => ['required', 'date'],
             'jsd' => ['required', 'date'],
             'status' => ['required', 'string', 'in:Active,Inactive', 'max:20'],
+            'classroom' => ['nullable']
         ];
     }
 }

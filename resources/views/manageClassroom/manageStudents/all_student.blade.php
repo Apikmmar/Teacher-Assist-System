@@ -72,7 +72,7 @@
                     <td>{{ $student->ic }}</td>
                     <td>{{ $student->student_id }}</td>
                     <td>{{ $student->gender }}</td>
-                    <td>{!! optional($student)->classroom_id ?? '<i>N/A</i>' !!}</td>
+                    <td>{!! optional($student)->classroom->name ?? '<i>N/A</i>' !!}</td>
                     <td>{{ $student->status }}</td>
                     <td class="text-center">
                         <a href="{{ route('view_student', ['id' => $student->id ]) }}" class="btn btn-success tr-button">View</a>

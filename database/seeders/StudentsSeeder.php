@@ -25,9 +25,15 @@ class StudentsSeeder extends Seeder
             $randName = Arr::random(['Sarah', 'Lisa', 'Hakeem', 'Johnny', 'Dzul', 'Kimi']);
             $randGender = Arr::random(['Men', 'Women']);
             $status = Arr::random(['Active', 'Inactive']);
+
+            if ($status == 'Active') {
+                $class_id = rand(1,5);
+            } else {
+                $class_id = NULL;
+            }
             
             DB::table('students')->insert([
-                ['classroom_id' => NULL, 'student_id' => $stdID, 'name' => $randName, 'ic' => $icFormat, 'gender' => $randGender, 'dob' => $randomDOB, 'join_school_date' => $randomJSD, 'status' => $status, 'created_at' => $now, 'updated_at' => $now],
+                ['classroom_id' => $class_id, 'student_id' => $stdID, 'name' => $randName, 'ic' => $icFormat, 'gender' => $randGender, 'dob' => $randomDOB, 'join_school_date' => $randomJSD, 'status' => $status, 'created_at' => $now, 'updated_at' => $now],
             ]);
         }
     }
