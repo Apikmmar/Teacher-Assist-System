@@ -8,6 +8,7 @@ use Illuminate\Http\RedirectResponse;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Validator;
+use Illuminate\Support\Str;
 
 class AccountController extends Controller
 {
@@ -15,7 +16,13 @@ class AccountController extends Controller
     public function viewAllTeacher(): View {
         $teachers = User::where('id', '!=', Auth::id())->paginate(10);
 
-        return view('manageAccount.all_teacher', compact('teachers'));
+        foreach ($teachers as $teacher) {
+            $teacher->name =  Str::title($teacher->name);
+        }
+
+        return view('manageAccount.all_teacher', [
+            'teachers' => $teachers,
+        ]);
     }
 
     // if more than 10 name it display all at second paginate
@@ -41,6 +48,8 @@ class AccountController extends Controller
 
     public function viewTeacherDetails($id): View {
         $teacher = User::findOrFail($id);
+
+        $teacher->name = Str::title($teacher->name);
 
         $ageOnIc = (substr($teacher->ic, 0, 2));
         

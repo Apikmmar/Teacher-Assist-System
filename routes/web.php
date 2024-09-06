@@ -2,6 +2,7 @@
 
 use App\Http\Controllers\Auth\RegisteredUserController;
 use App\Http\Controllers\AccountController;
+use App\Http\Controllers\ClassroomController;
 use App\Http\Controllers\ProfileController;
 use App\Http\Controllers\StudentsController;
 use Illuminate\Support\Facades\Route;
@@ -31,6 +32,10 @@ Route::middleware('auth')->group(function () {
     Route::get('/add_student', [StudentsController::class, 'viewAddStudent'])->name('add_student');
     Route::get('/view_student/{id}', [StudentsController::class, 'viewStudentDetails'])->name('view_student');
     Route::post('/new_student', [StudentsController::class, 'addNewStudent'])->name('add_student.create');
+    
+    Route::get('all_classroom', [ClassroomController::class, 'viewAllClassroom'])->name('all_classroom');
+    Route::get('/view_classroom/{id}', [ClassroomController::class, 'viewClassroomDetails'])->name('view_classroom');
+    Route::get('/add_classroom', [ClassroomController::class, 'viewAddClassroom'])->name('add_classroom');
 
 });
 

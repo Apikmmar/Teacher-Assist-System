@@ -44,14 +44,14 @@
             <div class="row mb-3">
                 <label for="ic" class="col-md-4 col-form-label text-md-end fw-bold">{{ __('Gender') }} <label class="red-aestrist">*</label></label>
     
-                    <div class="col-md-6">
-                        <select id="user_gender" name="gender" class="form-select" aria-label="Gender">
-                            <option selected disabled>Select Gender</option>
-                            <option value="Men">Men</option>
-                            <option value="Women">Women</option>
-                        </select>
-                    </div>                        
-                </div>
+                <div class="col-md-6">
+                    <select id="user_gender" name="gender" class="form-select" aria-label="Gender">
+                        <option selected disabled>Select Gender</option>
+                        <option value="Men">Men</option>
+                        <option value="Women">Women</option>
+                    </select>
+                </div>                        
+            </div>
     
             <div class="row mb-3">
                 <label for="ic" class="col-md-4 col-form-label text-md-end fw-bold">{{ __('Date Of Birth') }} <label class="red-aestrist">*</label></label>

@@ -10,12 +10,20 @@ use Illuminate\Http\RedirectResponse;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Validator;
 use Illuminate\View\View;
+use Illuminate\Support\Str;
 
 class StudentsController extends Controller
 {
+
     public function viewAllStudent(): View {
+        $students = Student::paginate(10);
+
+        foreach ($students as $student) {
+            $student->name =  Str::title($student->name);
+        }
+
         return view('manageClassroom.manageStudents.all_student', [
-            'students' => Student::paginate(10)
+            'students' => $students
         ]);
     }
 
@@ -47,6 +55,8 @@ class StudentsController extends Controller
 
     public function viewStudentDetails($id): View {
         $std = Student::findOrFail($id);
+
+        $std->name = Str::title($std->name);
 
         $ageOnIc = (substr($std->ic, 0, 2));
         
