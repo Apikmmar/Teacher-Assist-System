@@ -67,7 +67,7 @@ class User extends Authenticatable
     }
 
     public function classroom(): HasOne {
-        return $this->hasOne(Classroom::class);
+        return $this->hasOne(Classroom::class, 'classteacher_id');
     }
 
     public function subjects(): BelongsToMany {

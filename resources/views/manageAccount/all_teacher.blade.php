@@ -50,12 +50,12 @@
             </thead>
             <tbody>
 
-            @foreach ($teachers as $teacher)
-            @php
-                $call = ($teacher->gender === 'Men') ? 'Mr. ' : (($teacher->gender === 'Women') ? 'Mrs. ' : '');
-            @endphp
+            @php $startNumber = ($teachers->currentPage() - 1) * $teachers->perPage() + 1; @endphp
+            @foreach ($teachers as $index => $teacher)
+            @php $call = ($teacher->gender === 'Men') ? 'Mr. ' : (($teacher->gender === 'Women') ? 'Mrs. ' : ''); @endphp
+
                 <tr class="align-middle teacher-list">
-                    <th scope="row">{{ $loop->iteration }}</th>
+                    <th scope="row">{{ $startNumber + $index }}</th>
                     <td>{{ $call . $teacher->name }}</td>
                     <td>{{ $teacher->ic }}</td>
                     <td>{!! optional($teacher)->teacher_id ?? '<i>N/A</i>' !!}</td>

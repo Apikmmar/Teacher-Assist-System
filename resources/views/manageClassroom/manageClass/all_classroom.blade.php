@@ -63,10 +63,12 @@
                 </tr>
             </thead>
             <tbody>
-                @foreach ($classrooms as $classroom)
-
+            @php
+                $startNumber = ($classrooms->currentPage() - 1) * $classrooms->perPage() + 1;
+            @endphp
+            @foreach ($classrooms as $index => $classroom)
                 <tr class="align-middle teacher-list">
-                    <th scope="row">{{ $loop->iteration }}</th>
+                    <th scope="row">{{ $startNumber + $index }}</th>
                     <td>{{ $classroom->name }}</td>
                     <td>{{ $classroom->form->name }}</td>
                     <td>{{ $classroom->num_student }} students</td>

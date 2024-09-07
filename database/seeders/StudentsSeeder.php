@@ -16,7 +16,7 @@ class StudentsSeeder extends Seeder
     {
         $now = now();
 
-        for ($i=0; $i < 50; $i++) { 
+        for ($i=0; $i < 250; $i++) { 
             $randomDOB = Carbon::create(rand(2007, 2011), rand(1, 12), rand(1, 28));
             $randomJSD = Carbon::create(rand(2019, 2024), 1, 1);
             
@@ -27,7 +27,7 @@ class StudentsSeeder extends Seeder
             $status = Arr::random(['Active', 'Inactive']);
 
             if ($status == 'Active') {
-                $class_id = rand(1,5);
+                $class_id = (rand(0, 1) === 0) ? NULL : rand(1, 5);
             } else {
                 $class_id = NULL;
             }

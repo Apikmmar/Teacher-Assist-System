@@ -13,9 +13,12 @@
             </tr>
         </thead>
         <tbody>
-            @foreach ($students as $student)
+        @php
+            $startNumber = ($students->currentPage() - 1) * $students->perPage() + 1;
+        @endphp
+        @foreach ($students as $index => $student)
             <tr class="align-middle teacher-list">
-                <th scope="row">{{ $loop->iteration }}</th>
+                <th scope="row">{{ $startNumber + $index }}</th>
                 <td>{{ $student->name }}</td>
                 <td>{{ $student->ic }}</td>
                 <td>{{ $student->student_id }}</td>

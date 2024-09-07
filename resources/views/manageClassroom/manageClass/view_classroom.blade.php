@@ -24,7 +24,7 @@
                 <label for="ic" class="col-md-4 col-form-label text-md-end fw-bold">{{ __('Age') }}</label>
                 
                 <div class="col-md-6">
-                    <input id="ic" type="text" class="form-control @error('ic') is-invalid @enderror" name="ic" value="{{ $teacherName }} years old" readonly autocomplete="ic" autofocus>
+                    <input id="ic" type="text" class="form-control @error('ic') is-invalid @enderror" name="ic" value="{{ $teacherName }}" readonly autocomplete="ic" autofocus>
                 </div>
             </div>
 
