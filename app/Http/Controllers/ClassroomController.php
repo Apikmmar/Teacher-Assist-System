@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers;
 
+use App\Http\Requests\RegisterClassroomRequest;
 use App\Models\Classroom;
 use App\Models\Form;
 use App\Models\Student;
@@ -73,10 +74,54 @@ class ClassroomController extends Controller
         ]);
     }
 
-    public function registerNewClassroom(Request $request) {
+    public function registerNewClassroom(RegisterClassroomRequest $request) {
+        $request->validate();
 
-        dd($request);
+        $students = $request->input('students');
 
-        // return redirect()->route('all_classroom')->with('blue-message', 'Classroom Successfully Registered');
+        $classroom = Classroom::create([
+            'form_id' => $request->form,
+            'name' => $request->name,
+            'classteacher_id' => $request->class_teacher,
+            'num_student' => count($students),
+        ]);
+
+        $classroom->save();
+
+
+        foreach ($students as $std) {
+            $student = Student::findOrFail($std->id);
+            $student->classroom_id = $classroom->id;
+            $student->save();
+        }
+
+        return redirect()->route('all_classroom')->with('blue-message', 'Classroom Successfully Registered');
     }
+
+    // public function registerNewClassroom(RegisterClassroomRequest $request) {
+    //     // Automatically validate the request and return the validated data
+    //     $validatedData = $request->validated();
+    
+    //     // Get the list of student IDs
+    //     $students = $validatedData['students'];
+    
+    //     // Create the new classroom and save it
+    //     $classroom = Classroom::create([
+    //         'form_id' => $validatedData['form'],            // Form ID is an integer
+    //         'name' => $validatedData['name'],               // Classroom name
+    //         'classteacher_id' => $validatedData['class_teacher'], // Class teacher ID
+    //         'num_student' => count($students),              // Number of students
+    //     ]);
+    
+    //     // Assign students to the newly created classroom
+    //     foreach ($students as $studentId) {
+    //         $student = Student::findOrFail($studentId);     // Find student by ID
+    //         $student->classroom_id = $classroom->id;        // Assign classroom ID
+    //         $student->save();                               // Save student record
+    //     }
+    
+    //     // Redirect with a success message
+    //     return redirect()->route('all_classroom')->with('blue-message', 'Classroom Successfully Registered');
+    // }
+    
 }

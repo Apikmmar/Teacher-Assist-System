@@ -36,7 +36,7 @@ Route::middleware('auth')->group(function () {
     Route::get('all_classroom', [ClassroomController::class, 'viewAllClassroom'])->name('all_classroom');
     Route::get('/view_classroom/{id}', [ClassroomController::class, 'viewClassroomDetails'])->name('view_classroom');
     Route::get('/add_classroom', [ClassroomController::class, 'viewAddClassroom'])->name('add_classroom');
-    Route::post('/add_classroom/register', [ClassroomController::class, 'registerNewClassroom'])->name('add_classroom.create');
+    Route::post('/add_classroom', [ClassroomController::class, 'registerNewClassroom'])->name('add_classroom.create');
 
 });
 

@@ -16,7 +16,7 @@ class Form extends Model
     ];
 
     public function classrooms(): HasMany {
-        return $this->hasMany(Classroom::class);
+        return $this->hasMany(Classroom::class, 'form_id');
     }
 
     public function subject(): HasMany {
