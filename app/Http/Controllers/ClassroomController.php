@@ -8,14 +8,21 @@ use App\Models\Form;
 use App\Models\Student;
 use App\Models\User;
 use Illuminate\Http\RedirectResponse;
+use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Validator;
 use Illuminate\View\View;
 use Illuminate\Support\Str;
 
 
 class ClassroomController extends Controller
 {
-    public function viewAllClassroom(): View {
-        $classrooms = Classroom::orderBy('name')->paginate(10);
+    public function viewAllClassroom(Request $request): View {
+
+        if($request->class_form != '') {
+            $classrooms = Classroom::where('form_id', $request->class_form)->orderBy('name')->paginate(10);
+        } else {
+            $classrooms = Classroom::orderBy('name')->paginate(10);
+        }
     
         foreach ($classrooms as $classroom) {
             $teacherName = Str::title($classroom->classteacher->name);
@@ -29,6 +36,7 @@ class ClassroomController extends Controller
     
         return view('manageClassroom.manageClass.all_classroom', [
             'classrooms' => $classrooms,
+            'forms' => Form::all(),
         ]);
     }
 
@@ -107,5 +115,41 @@ class ClassroomController extends Controller
         }
 
         return redirect()->route('all_classroom')->with('blue-message', 'Classroom Successfully Registered');
+    }
+
+    // if more than 10 name it display all at second paginate
+    public function searchClassroomName(Request $request): View|RedirectResponse {
+        $validator = Validator::make($request->all(), [
+            'search_classroom' => 'required|string|max:100',
+        ]);
+
+        if ($validator->fails()) {
+            return redirect()->back()->withErrors($validator)->withInput();
+        }
+
+        $searchTerm = $request->input('search_classroom');
+        $classrooms =Classroom::where('name', 'LIKE', '%' . $searchTerm . '%')->paginate(10);
+
+        if ($classrooms->isEmpty()) {
+            return redirect()->route('all_classroom')->with('red-message', 'Class Not Found.');
+        }
+        
+        return view('manageClassroom.manageClass.all_classroom', compact('classrooms'));
+    }
+
+
+    public function deleteClassroom($id) {
+        $class = Classroom::findOrFail($id);
+
+        $students = $class->students;
+
+        foreach ($students as $std) {
+            $std->classroom_id = NULL;
+            $std->save();
+        }
+
+        $class->delete();
+
+        return redirect()->route('all_classroom')->with('red-message', 'Classroom Successfully Registered');
     }
 }

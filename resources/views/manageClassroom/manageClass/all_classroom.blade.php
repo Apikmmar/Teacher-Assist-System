@@ -8,7 +8,7 @@
     @if ($classrooms->isNotEmpty())
     <div class="d-flex justify-content-end me-4">
         <div>
-            {{-- <form action="{{ route('search_classroom') }}" method="post"> --}}
+            <form action="{{ route('search_classroom') }}" method="post">
                 @csrf
     
                 <div class="row mb-3 align-items-center">
@@ -22,17 +22,15 @@
         </div>
         &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
         <div>
-            {{-- not done yet PS: CONSIDER FILTERING USE MODAL --}}
-            <form action="" method="post">
-                @csrf
-    
+            <form action="{{ route('all_classroom') }}" method="get" id="filterForm">
+
                 <div class="row mb-3 align-items-center">
                     <div class="col-md-12 d-flex align-items-center">
-            
-                        <select class="form-select" aria-label="Default select example">
-                            <option value="" selected disabled>Sort by:</option>
-                            <option value="name">Sort by: Name</option>
-                            <option value="id">Sort by: classroom ID</option>
+                        <select class="form-select" aria-label="Default select example" name="class_form" onchange="document.getElementById('filterForm').submit();">
+                            <option value="" {{ request('class_form') == '' ? 'selected' : '' }}>View by: Default</option>
+                            @foreach ($forms as $form)
+                                <option value="{{ $form->id }}" {{ request('class_form') == $form->id ? 'selected' : '' }}>View by: {{ $form->name }}</option>
+                            @endforeach
                         </select>
                     </div>
                 </div>
@@ -89,10 +87,10 @@
                                 <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
                             </div>
                             <div class="modal-body">
-                                <p>Are you sure you want to remove {{ $classroom->name }}?</p>
+                                <p>Are you sure you want to remove {{ $classroom->name }} from school database?</p>
                             </div>
                             <div class="modal-footer">
-                                <form action="" method="POST">
+                                <form action="{{ route('delete_classroom.delete', ['id' => $classroom->id]) }}" method="POST">
                                     @csrf
                                     @method('DELETE')
                                     <button type="submit" class="btn btn-secondary tr-button">Delete</button>

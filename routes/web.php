@@ -35,10 +35,12 @@ Route::middleware('auth')->group(function () {
     Route::delete('/delete_student/{id}', [StudentsController::class, 'deleteStudent'])->name('delete_student.delete');
     
     Route::get('all_classroom', [ClassroomController::class, 'viewAllClassroom'])->name('all_classroom');
+    Route::post('all_classroom', [ClassroomController::class, 'searchClassroomName'])->name('search_classroom');
     Route::get('/view_classroom/{id}', [ClassroomController::class, 'viewClassroomDetails'])->name('view_classroom');
     Route::get('/add_classroom', [ClassroomController::class, 'viewAddClassroom'])->name('add_classroom');
     Route::post('/add_classroom', [ClassroomController::class, 'registerNewClassroom'])->name('add_classroom.create');
     Route::get('/edit_classroom/{id}', [ClassroomController::class, 'viewEditClassroom'])->name('edit_classroom');
+    Route::delete('/delete_classrooom/{id}', [ClassroomController::class, 'deleteClassroom'])->name('delete_classroom.delete');
 
 });
 
