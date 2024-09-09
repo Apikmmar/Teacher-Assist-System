@@ -40,5 +40,8 @@
         <div class="">
             @include('manageClassroom.partials.student_list')
         </div>
+        <div class="d-flex justify-content-end mt-2">
+            <a href="{{ route('edit_classroom', ['id' => $classroom->id]) }}" class="btn text-white user-update-button">Update Class Info</a>
+        </div>
     </div>
 @endsection

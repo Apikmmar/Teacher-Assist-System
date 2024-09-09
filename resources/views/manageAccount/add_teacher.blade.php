@@ -110,13 +110,13 @@
             </div>
     
             <div class="row mb-3 ">
-                <label for="ic" class="col-md-4 col-form-label text-md-end fw-bold">{{ __('Role') }} <label class="red-aestrist">*</label></label>
+                <label for="ic" class="col-md-4 col-form-label text-md-end fw-bold">{{ __('Role') }}</label></label>
                 
                 <div class="col-md-6 mt-2">
                     @foreach ($roles as $role)
                         <div class="d-inline-block me-3">
                             <input class="form-check-input" type="checkbox" name="roles[]" value="{{ $role->name }}" id="role_{{ $role->id }}" 
-                            {{ in_array($role->name, $userRoles) ? 'checked' : '' }}>
+                            {{ isset($userRoles) && in_array($role->name, $userRoles) ? 'checked' : '' }}>
                             <label class="form-check-label" for="role_{{ $role->id }}">{{ $role->name }}</label>
                         </div>
                     @endforeach

@@ -31,9 +31,8 @@ class RegisterTeacherRequest extends FormRequest
             'contact' => ['required', 'string', 'max:15'],
             'email' => ['required', 'string', 'lowercase', 'email', 'max:255', 'unique:'.User::class],
             'password' => ['required', 'string', 'min:8'],
-            'roles' => ['required', 'array', 'min:1'],
+            'roles' => ['nullable', 'array', 'min:1'],
             'roles.*' => ['exists:roles,name'],
-
         ];
     }
 }

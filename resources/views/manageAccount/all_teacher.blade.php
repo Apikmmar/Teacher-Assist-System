@@ -77,7 +77,7 @@
                                 <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
                             </div>
                             <div class="modal-body">
-                                <p>Are you sure you want to remove {{ $call . $teacher->name }}?</p>
+                                <p>Are you sure you want to remove {{ $call . $teacher->name }} from school database?</p>
                             </div>
                             <div class="modal-footer">
                                 <form action="{{ route('delete.teacher', ['id' => $teacher->id]) }}" method="POST">

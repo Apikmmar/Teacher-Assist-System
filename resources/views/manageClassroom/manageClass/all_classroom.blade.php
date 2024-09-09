@@ -1,4 +1,4 @@
-@extends('layouts.app', ['title' => 'List Of classroom'])
+@extends('layouts.app', ['title' => 'List Of Classrooms'])
 
 @section('content')
 <div class="container mt-4 fade-in-text">

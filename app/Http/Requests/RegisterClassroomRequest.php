@@ -22,11 +22,11 @@ class RegisterClassroomRequest extends FormRequest
     public function rules(): array
     {
         return [
-            'form' => ['required', 'integer', 'exists:form,id'],
+            'form' => ['required', 'integer', 'exists:forms,id'],
             'name' => ['required', 'string', 'max:50'],
             'class_teacher' => ['required', 'integer', 'exists:users,id'],
             'students' => ['required', 'array', 'min:1'],
-            'students.*' => ['exists:stdSelected,id'],
+            'students.*' => ['exists:students,id'],
         ];
     }
 }

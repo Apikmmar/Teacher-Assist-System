@@ -41,11 +41,12 @@ class RegisteredUserController extends Controller
 
         $user->save();
 
-        $userRoles = $request->input('roles');
+        if ($request->roles != null) {    
+            $roleIds = Role::whereIn('name', $request->roles)->pluck('id');
+    
+            $user->roles()->sync($roleIds);
+        }
 
-        $roleIds = Role::whereIn('name', $userRoles)->pluck('id');
-
-        $user->roles()->sync($roleIds);
 
         return redirect()->route('all_teacher')->with('blue-message', 'Successfully Register New Teacher');
     }

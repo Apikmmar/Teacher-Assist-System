@@ -91,8 +91,8 @@
                                 <td>{{ $student->gender }}</td>
                                 <td>{{ $student->status }}</td>
                                 <td class="text-center">
-                                    <input class="form-check-input mt-0" type="checkbox" value="{{ $student->id }}" name="students[]">
-                                    {{ in_array($student->id, $stdSelected) ? 'checked' : '' }}
+                                    <input class="form-check-input mt-0" type="checkbox" value="{{ $student->id }}" name="students[]" 
+                                    {{ in_array($student->id, $stdSelected) ? 'checked' : '' }}>
                                 </td>
                             </tr>
                             @endforeach

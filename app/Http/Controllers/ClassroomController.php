@@ -7,7 +7,7 @@ use App\Models\Classroom;
 use App\Models\Form;
 use App\Models\Student;
 use App\Models\User;
-use Illuminate\Http\Request;
+use Illuminate\Http\RedirectResponse;
 use Illuminate\View\View;
 use Illuminate\Support\Str;
 
@@ -32,19 +32,6 @@ class ClassroomController extends Controller
         ]);
     }
 
-    public function viewClassroomDetails($id): View {
-        $classroom = Classroom::findOrFail($id);
-        $students = Student::where('classroom_id', $classroom->id)->paginate(10);
-
-        $teacherName = (strtolower($classroom->classteacher->gender) == 'men' ? 'Mr. ' : 'Mrs. ') . Str::title($classroom->classteacher->name);
-
-        return view('manageClassroom.manageClass.view_classroom', [
-            'classroom' => $classroom,
-            'students' =>  $students,
-            'teacherName' => $teacherName,
-        ]);
-    }
-    
     public function viewAddClassroom(): View {
         $stdSelected = [];
         $forms = Form::all();
@@ -74,8 +61,33 @@ class ClassroomController extends Controller
         ]);
     }
 
+    public function viewClassroomDetails($id): View {
+        $data = $this->getClassroomData($id);
+
+        return view('manageClassroom.manageClass.view_classroom', $data);
+    }
+
+    public function viewEditClassroom($id): View {
+        $data = $this->getClassroomData($id);
+
+        return view('manageClassroom.manageClass.edit_classroom', $data);
+    }
+
+    private function getClassroomData($id) {
+        $classroom = Classroom::findOrFail($id);
+        $students = Student::where('classroom_id', $classroom->id)->paginate(10);
+
+        $teacherName = (strtolower($classroom->classteacher->gender) == 'men' ? 'Mr. ' : 'Mrs. ') . Str::title($classroom->classteacher->name);
+
+        return [
+            'classroom' => $classroom,
+            'students' => $students,
+            'teacherName' => $teacherName,
+        ];
+    }
+
     public function registerNewClassroom(RegisterClassroomRequest $request) {
-        $request->validate();
+        $request->validated();
 
         $students = $request->input('students');
 
@@ -88,40 +100,12 @@ class ClassroomController extends Controller
 
         $classroom->save();
 
-
         foreach ($students as $std) {
-            $student = Student::findOrFail($std->id);
+            $student = Student::findOrFail($std);
             $student->classroom_id = $classroom->id;
             $student->save();
         }
 
         return redirect()->route('all_classroom')->with('blue-message', 'Classroom Successfully Registered');
     }
-
-    // public function registerNewClassroom(RegisterClassroomRequest $request) {
-    //     // Automatically validate the request and return the validated data
-    //     $validatedData = $request->validated();
-    
-    //     // Get the list of student IDs
-    //     $students = $validatedData['students'];
-    
-    //     // Create the new classroom and save it
-    //     $classroom = Classroom::create([
-    //         'form_id' => $validatedData['form'],            // Form ID is an integer
-    //         'name' => $validatedData['name'],               // Classroom name
-    //         'classteacher_id' => $validatedData['class_teacher'], // Class teacher ID
-    //         'num_student' => count($students),              // Number of students
-    //     ]);
-    
-    //     // Assign students to the newly created classroom
-    //     foreach ($students as $studentId) {
-    //         $student = Student::findOrFail($studentId);     // Find student by ID
-    //         $student->classroom_id = $classroom->id;        // Assign classroom ID
-    //         $student->save();                               // Save student record
-    //     }
-    
-    //     // Redirect with a success message
-    //     return redirect()->route('all_classroom')->with('blue-message', 'Classroom Successfully Registered');
-    // }
-    
 }

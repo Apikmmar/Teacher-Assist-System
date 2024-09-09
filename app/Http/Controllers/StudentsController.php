@@ -27,26 +27,6 @@ class StudentsController extends Controller
         ]);
     }
 
-    // if more than 10 name it display all at second paginate
-    public function searchStudentName(Request $request): View|RedirectResponse {
-        $validator = Validator::make($request->all(), [
-            'search_student' => 'required|string|max:100',
-        ]);
-
-        if ($validator->fails()) {
-            return redirect()->back()->withErrors($validator)->withInput();
-        }
-
-        $searchTerm = $request->input('search_student');
-        $students = Student::where('name', 'LIKE', '%' . $searchTerm . '%')->paginate(10);
-
-        if ($students->isEmpty()) {
-            return redirect()->route('all_student')->with('red-message', 'Student Not Found.');
-        }
-        
-        return view('manageClassroom.manageStudents.all_student', compact('students'));
-    }
-
     public function viewAddStudent() {
         return view('manageClassroom.manageStudents.add_student', [
             'classes' => Classroom::all()
@@ -74,8 +54,6 @@ class StudentsController extends Controller
     public function addNewStudent(AddStudentRequest $request): RedirectResponse {
         $request->validated();
 
-        // dd($request);
-
         $std = Student::create([
             'classroom_id' => $request->classroom,
             'ic' => $request->ic,
@@ -90,5 +68,32 @@ class StudentsController extends Controller
         $std->save();
 
         return redirect()->route('all_student')->with('blue-message', 'Student Successfully Registered');
+    }
+
+    // if more than 10 name it display all at second paginate
+    public function searchStudentName(Request $request): View|RedirectResponse {
+        $validator = Validator::make($request->all(), [
+            'search_student' => 'required|string|max:100',
+        ]);
+
+        if ($validator->fails()) {
+            return redirect()->back()->withErrors($validator)->withInput();
+        }
+
+        $searchTerm = $request->input('search_student');
+        $students = Student::where('name', 'LIKE', '%' . $searchTerm . '%')->paginate(10);
+
+        if ($students->isEmpty()) {
+            return redirect()->route('all_student')->with('red-message', 'Student Not Found.');
+        }
+        
+        return view('manageClassroom.manageStudents.all_student', compact('students'));
+    }
+
+    public function deleteStudent($id): RedirectResponse {
+        $std = Student::findOrFail($id);
+        $std->delete();
+
+        return redirect()->route('all_student')->with('red-message', 'Student Deleted');
     }
 }
