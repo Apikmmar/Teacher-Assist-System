@@ -14,7 +14,7 @@
         <a href="{{ route('all_student') }}" class="btn button-sidebar" type="button"><i class="bi bi-person-check me-2"></i>Manage Student</a>
         
     @can('coordinator')
-        <a href="" class="btn button-sidebar" type="button"><i class="bi bi-book-half me-2"></i>Manage Subject</a>
+        <a href="{{ route('all_subjects') }}" class="btn button-sidebar" type="button"><i class="bi bi-book-half me-2"></i>Manage Subject</a>
     @endcan
     
     @can('coordinator-or-management')

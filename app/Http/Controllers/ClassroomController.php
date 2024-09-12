@@ -9,6 +9,7 @@ use App\Models\Student;
 use App\Models\User;
 use Illuminate\Http\RedirectResponse;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Validator;
 use Illuminate\View\View;
 use Illuminate\Support\Str;
@@ -69,7 +70,16 @@ class ClassroomController extends Controller
         ]);
     }
 
-    public function viewClassroomDetails($id): View {
+    public function viewClassroomDetails($id): View {;
+        $data = $this->getClassroomData($id);
+
+        return view('manageClassroom.manageClass.view_classroom', $data);
+    }
+
+    public function viewClassTeacherClassroom(): View {
+        $user = Auth::user();
+        $id = $user->classroom->id;
+
         $data = $this->getClassroomData($id);
 
         return view('manageClassroom.manageClass.view_classroom', $data);
