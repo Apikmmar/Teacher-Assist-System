@@ -3,6 +3,9 @@
 @section('content')
 
     <div class="container fade-in-text">
+
+        @include('layouts.message')
+
         <div>
             <div class="row mb-3">
                 <label for="ic" class="col-md-4 col-form-label text-md-end fw-bold">{{ __('Form') }}</label>
@@ -77,10 +80,10 @@
                                     <p>Are you sure you want to remove {{ $student->name }} from {{ $classroom->name }}?</p>
                                 </div>
                                 <div class="modal-footer">
-                                    <form action="" method="POST">
+                                    <form action="{{ route('decrease_student.update', ['id' => $student->id]) }}" method="POST">
                                         @csrf
-                                        @method('DELETE')
-                                        <button type="submit" class="btn btn-secondary tr-button">Delete</button>
+                                        @method('PATCH')
+                                        <button type="submit" class="btn btn-secondary tr-button">Remove</button>
                                     </form>
                                     <button type="button" class="btn btn-danger tr-button" data-bs-dismiss="modal">Cancel</button>
                                 </div>

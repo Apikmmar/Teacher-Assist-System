@@ -5,6 +5,7 @@ use App\Http\Controllers\AccountController;
 use App\Http\Controllers\ClassroomController;
 use App\Http\Controllers\ProfileController;
 use App\Http\Controllers\StudentsController;
+use App\Models\Student;
 use Illuminate\Support\Facades\Route;
 
 Route::get('/', function () {
@@ -41,7 +42,7 @@ Route::middleware('auth')->group(function () {
     Route::post('/add_classroom', [ClassroomController::class, 'registerNewClassroom'])->name('add_classroom.create');
     Route::get('/edit_classroom/{id}', [ClassroomController::class, 'viewEditClassroom'])->name('edit_classroom');
     Route::delete('/delete_classrooom/{id}', [ClassroomController::class, 'deleteClassroom'])->name('delete_classroom.delete');
-
+    Route::patch('/edit_classroom/remove_student/{id}', [ClassroomController::class, 'removeStudentClass'])->name('decrease_student.update');
 });
 
 require __DIR__.'/auth.php';

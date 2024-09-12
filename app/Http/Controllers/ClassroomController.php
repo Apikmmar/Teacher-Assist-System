@@ -152,4 +152,24 @@ class ClassroomController extends Controller
 
         return redirect()->route('all_classroom')->with('red-message', 'Classroom Successfully Registered');
     }
+
+    
+    public function removeStudentClass($id): RedirectResponse {
+        $std = Student::findOrFail($id);
+
+        $class1 = $std->classroom_id;
+        $name = $std->name;
+
+        
+        $std->classroom_id = null;
+        $std->save();
+
+        if ($class1) {
+            $classroom = Classroom::findOrFail($class1);
+            $classroom->num_student = $classroom->students()->count();
+            $classroom->save();
+        }
+
+        return redirect()->route('edit_classroom', ['id' => $class1])->with('red-message', 'Student '. $name . ' Is Removed From Class ' . $classroom->name);
+    }
 }
