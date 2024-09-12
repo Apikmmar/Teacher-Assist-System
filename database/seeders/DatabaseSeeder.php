@@ -23,6 +23,7 @@ class DatabaseSeeder extends Seeder
             FormSeeder::class,
             ClassroomSeeder::class,
             StudentsSeeder::class,
+            SubjectSeeder::class,
         ]);
     }
 }
