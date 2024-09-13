@@ -11,7 +11,7 @@ class SubjectController extends Controller
     public function viewAllSubject(): View {
 
         return view('manageSubject.all_subjects', [
-            'subjects' => Subject::all(),
+            'subjects' => Subject::paginate(10),
         ]);
     }
 }
