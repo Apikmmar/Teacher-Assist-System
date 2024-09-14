@@ -21,7 +21,7 @@
             </div>
 
             <div class="row mb-3">
-                <label for="ic" class="col-md-4 col-form-label text-md-end fw-bold">{{ __('Age') }}</label>
+                <label for="ic" class="col-md-4 col-form-label text-md-end fw-bold">{{ __('Class Teacher') }}</label>
                 
                 <div class="col-md-6">
                     <input id="ic" type="text" class="form-control @error('ic') is-invalid @enderror" name="ic" value="{{ $teacherName }}" readonly autocomplete="ic" autofocus>

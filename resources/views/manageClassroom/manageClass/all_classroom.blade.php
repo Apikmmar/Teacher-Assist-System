@@ -39,19 +39,20 @@
     </div>
     @endif
 
-    @can('coordinator')
-        
-        <div class="d-flex justify-content-end me-4 mb-2">
-            <a href="{{ route('add_classroom') }}" class="btn text-white user-save-button">Register Classroom</a>
-        </div>
-        
-    @endcan
-
-    @can('classteacher')
-        <div class="d-flex justify-content-end me-4 mb-2">
-            <a href="{{ route('my_classroom') }}" class="btn text-white btn-success tr-button">My Class</a>
-        </div>
-    @endcan
+    <div class="d-flex justify-content-end me-4 mb-2">
+        @can('coordinator')
+            <div class="col-auto me-2">
+                <a href="{{ route('add_classroom') }}" class="btn text-white user-save-button">Register Classroom</a>
+            </div>
+        @endcan
+    
+        @can('classteacher')
+            <div class="col-auto">
+                <a href="{{ route('my_classroom') }}" class="btn text-white btn-success tr-button">My Class</a>
+            </div>
+        @endcan
+    </div>
+    
 
     @if ($classrooms->isNotEmpty())
         

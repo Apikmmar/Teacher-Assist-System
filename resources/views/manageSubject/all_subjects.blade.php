@@ -4,15 +4,28 @@
 <div class="container mt-4 fade-in-text">
     
     @include('layouts.message')
-
-    @can('coordinator')
         
-        <div class="d-flex justify-content-end me-4 mb-2">
-            {{-- <a href="{{ route('add_subject') }}" class="btn text-white user-save-button">Register subject</a> --}}
+    <div class="row d-flex justify-content-end mb-4">
+        <div class="col-auto">
+            <a href="" class="btn text-white user-save-button">Register Subject</a>
         </div>
-        
-    @endcan
+        <div class="col-auto">
+            <form action="{{ route('all_subjects') }}" method="get" id="filterForm">
 
+                <div class="row mb-3 align-items-center">
+                    <div class="col-md-12 d-flex align-items-center">
+                        <select class="form-select" aria-label="Default select example" name="subject_form" onchange="document.getElementById('filterForm').submit();">
+                            <option value="" {{ request('class_form') == '' ? 'selected' : '' }}>View by: Default</option>
+                            @foreach ($forms as $form)
+                                <option value="{{ $form->id }}" {{ request('class_form') == $form->id ? 'selected' : '' }}>View by: {{ $form->name }}</option>
+                            @endforeach
+                        </select>
+                    </div>
+                </div>
+            </form>
+        </div>
+    </div>    
+        
     @if ($subjects->isNotEmpty())
         
         <table class="table table-hover">

@@ -5,11 +5,13 @@ namespace App\Http\Controllers;
 use App\Http\Requests\RegisterClassroomRequest;
 use App\Models\Classroom;
 use App\Models\Form;
+use App\Models\Role_User;
 use App\Models\Student;
 use App\Models\User;
 use Illuminate\Http\RedirectResponse;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
+use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Validator;
 use Illuminate\View\View;
 use Illuminate\Support\Str;
@@ -118,6 +120,13 @@ class ClassroomController extends Controller
 
         $classroom->save();
 
+        DB::table('role__users')->insert([
+            'user_id' => $request->class_teacher,
+            'role_id' => 1,
+            'created_at' => now(),
+            'updated_at' => now(),
+        ]);
+
         foreach ($students as $std) {
             $student = Student::findOrFail($std);
             $student->classroom_id = $classroom->id;
@@ -139,12 +148,13 @@ class ClassroomController extends Controller
 
         $searchTerm = $request->input('search_classroom');
         $classrooms =Classroom::where('name', 'LIKE', '%' . $searchTerm . '%')->paginate(10);
+        $forms = Form::all();
 
         if ($classrooms->isEmpty()) {
             return redirect()->route('all_classroom')->with('red-message', 'Class Not Found.');
         }
         
-        return view('manageClassroom.manageClass.all_classroom', compact('classrooms'));
+        return view('manageClassroom.manageClass.all_classroom', compact('classrooms', 'forms'));
     }
 
 
@@ -152,15 +162,17 @@ class ClassroomController extends Controller
         $class = Classroom::findOrFail($id);
 
         $students = $class->students;
-
-        foreach ($students as $std) {
-            $std->classroom_id = NULL;
-            $std->save();
+        
+        $roleUser = Role_User::where('user_id', $class->classteacher_id)->where('role_id', 1)->first();
+        if ($roleUser) {
+            $roleUser->delete();
         }
+
+        Student::whereIn('id', $students->pluck('id'))->update(['classroom_id' => NULL]);
 
         $class->delete();
 
-        return redirect()->route('all_classroom')->with('red-message', 'Classroom Successfully Registered');
+        return redirect()->route('all_classroom')->with('red-message', 'Classroom Is Deleted');
     }
 
     
