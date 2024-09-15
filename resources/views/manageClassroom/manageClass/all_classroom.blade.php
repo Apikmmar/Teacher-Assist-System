@@ -113,7 +113,7 @@
                 <tfoot class="text-center">
                     <tr>
                         <td colspan="12" class="text-center">
-                            {{ $classrooms->onEachSide(5)->links() }}
+                            {{ $classrooms->onEachSide(5)->appends(['search_classroom' => request()->input('search_classroom')])->links() }}
                         </td>
                     </tr>
                 </tfoot>

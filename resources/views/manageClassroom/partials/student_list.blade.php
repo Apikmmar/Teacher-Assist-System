@@ -60,7 +60,7 @@
             <tfoot class="text-center">
                 <tr>
                     <td colspan="12" class="text-center">
-                        {{ $students->onEachSide(5)->links() }}
+                        {{ $students->onEachSide(5)->appends(['search_student' => request()->input('search_student')])->links() }}
                     </td>
                 </tr>
             </tfoot>

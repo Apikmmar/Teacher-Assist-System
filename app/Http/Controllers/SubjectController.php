@@ -11,7 +11,7 @@ class SubjectController extends Controller
 {
     public function viewAllSubject(Request $request): View {
         if($request->subject_form != '') {
-            $subjects = Subject::where('form_id', $request->class_form)->orderBy('name')->paginate(10);
+            $subjects = Subject::where('form_id', $request->subject_form)->orderBy('name')->paginate(10);
         } else {
             $subjects = Subject::orderBy('name')->paginate(10);
         }

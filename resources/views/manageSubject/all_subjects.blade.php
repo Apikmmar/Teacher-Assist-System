@@ -15,9 +15,9 @@
                 <div class="row mb-3 align-items-center">
                     <div class="col-md-12 d-flex align-items-center">
                         <select class="form-select" aria-label="Default select example" name="subject_form" onchange="document.getElementById('filterForm').submit();">
-                            <option value="" {{ request('class_form') == '' ? 'selected' : '' }}>View by: Default</option>
+                            <option value="" {{ request('subject_form') == '' ? 'selected' : '' }}>View by: Default</option>
                             @foreach ($forms as $form)
-                                <option value="{{ $form->id }}" {{ request('class_form') == $form->id ? 'selected' : '' }}>View by: {{ $form->name }}</option>
+                                <option value="{{ $form->id }}" {{ request('subject_form') == $form->id ? 'selected' : '' }}>View by: {{ $form->name }}</option>
                             @endforeach
                         </select>
                     </div>
@@ -80,21 +80,22 @@
             @endforeach
             
             @if ($subjects->total() > 10)
-                <tfoot class="text-center">
-                    <tr>
-                        <td colspan="12" class="text-center">
-                            {{ $subjects->onEachSide(5)->links() }}
-                        </td>
-                    </tr>
-                </tfoot>
-            @endif
+            <tfoot class="text-center">
+                <tr>
+                    <td colspan="12" class="text-center">
+                        {{ $subjects->onEachSide(5)->appends(['subject_form' => request()->input('subject_form')])->links() }}
+                    </td>
+                </tr>
+            </tfoot>
+        @endif
+
             
         </table>
             
     @else
     
         <div class="d-flex justify-content-center mt-2">
-            <h4 class="fw-bold">subjects Not Registered</h4>
+            <h4 class="fw-bold">ubjects Not Registered</h4>
         </div>
     @endif
     </div>
