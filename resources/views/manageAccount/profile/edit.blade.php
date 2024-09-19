@@ -7,6 +7,9 @@
         @include('manageAccount.profile.partials.update-profile-information-form')
         <hr>
         @include('manageAccount.profile.partials.update-password-form')
+        <hr>
+        @include('manageAccount.profile.partials.subject-teaches')
+        
     </div>
 </div>
     

@@ -71,7 +71,7 @@ class User extends Authenticatable
     }
 
     public function subjects(): BelongsToMany {
-        return $this->belongsToMany(Subject::class, 'subject_teacher', 'user_id', 'subject_id');
+        return $this->belongsToMany(Subject::class, 'subject__teachers', 'user_id', 'subject_id');
     }
 
     public function subjecttaken(): HasManyThrough {

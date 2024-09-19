@@ -17,8 +17,11 @@ class ProfileController extends Controller
      */
     public function edit(Request $request): View
     {
+        $user = $request->user()->load('subjects');
+
         return view('manageAccount.profile.edit', [
-            'user' => $request->user(),
+            'user' => $user,
+            'subjects' => $user->subjects,
         ]);
     }
 

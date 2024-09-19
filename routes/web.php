@@ -47,6 +47,9 @@ Route::middleware('auth')->group(function () {
     Route::patch('/edit_classroom/remove_student/{id}', [ClassroomController::class, 'removeStudentClass'])->name('decrease_student.update');
     
     Route::get('/all_subject', [SubjectController::class, 'viewAllSubject'])->name('all_subjects');
+    Route::get('/new_subject', [SubjectController::class, 'viewAddNewSubject'])->name('new_subject');
+    Route::post('/new_subject/create', [SubjectController::class, 'createNewSubject'])->name('new_subject.create');
+    Route::get('/edit_subject/{id}', [SubjectController::class, 'viewEditSubject'])->name('edit_subject');
 });
 
 require __DIR__.'/auth.php';

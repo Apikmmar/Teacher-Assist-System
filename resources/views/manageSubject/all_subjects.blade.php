@@ -7,7 +7,7 @@
         
     <div class="row d-flex justify-content-end mb-4">
         <div class="col-auto">
-            <a href="" class="btn text-white user-save-button">Register Subject</a>
+            <a href="{{ route('new_subject') }}" class="btn text-white user-save-button">Register Subject</a>
         </div>
         <div class="col-auto">
             <form action="{{ route('all_subjects') }}" method="get" id="filterForm">
