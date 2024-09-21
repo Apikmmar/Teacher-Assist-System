@@ -5,6 +5,7 @@ namespace App\Http\Controllers;
 use App\Http\Requests\AddSubjectRequest;
 use App\Models\Form;
 use App\Models\Subject;
+use App\Models\Subject_Teacher;
 use App\Models\User;
 use Illuminate\Database\Eloquent\Collection;
 use Illuminate\Http\RedirectResponse;
@@ -95,5 +96,25 @@ class SubjectController extends Controller
         }
 
         return redirect()->route('all_subjects')->with('blue-message', 'Successfully Register New Subject');
+    }
+
+    public function addSubjectTeacher(Request $request, $id): RedirectResponse {
+        $subjectTC = Subject_Teacher::create([
+            'user_id' => $request->teacher_id,
+            'subject_id' => $request->subject_id,
+            'created_at' => now(),
+            'updated_at' => now(),
+        ]);
+
+        $subjectTC->save();
+
+        return redirect()->route('edit_subject', ['id' => $id])->with('blue-message', 'Teacher Successfuly Added');
+    }
+
+    public function dropSubjectTeacher(Request $request, $id): RedirectResponse {
+        $subjectTC = Subject_Teacher::where('user_id', $request->teacher_id)->where('subject_id', $request->subject_id)->first();
+        $subjectTC->delete();
+
+        return redirect()->route('edit_subject', ['id' => $id])->with('red-message', 'Teacher Has Been Removed');
     }
 }

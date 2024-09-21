@@ -50,6 +50,8 @@ Route::middleware('auth')->group(function () {
     Route::get('/new_subject', [SubjectController::class, 'viewAddNewSubject'])->name('new_subject');
     Route::post('/new_subject/create', [SubjectController::class, 'createNewSubject'])->name('new_subject.create');
     Route::get('/edit_subject/{id}', [SubjectController::class, 'viewEditSubject'])->name('edit_subject');
+    Route::post('/edit_subject/{id}/add_teacher', [SubjectController::class, 'addSubjectTeacher'])->name('edit_subject.add_teacher');
+    Route::delete('/edit_subject/{id}/drop_teacher', [SubjectController::class, 'dropSubjectTeacher'])->name('edit_subject.drop_teacher');
 });
 
 require __DIR__.'/auth.php';

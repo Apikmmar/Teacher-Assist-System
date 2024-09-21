@@ -3,6 +3,7 @@
 @section('content')
 
     <div class="container fade-in-text">
+        @include('layouts.message')
         <header>
             <h4 class="text-lg font-medium text-gray-900 dark:text-gray-100">
                 {{ __('Subject Information') }}
@@ -90,7 +91,14 @@
                                     <td>{{ $teacher->ic }}</td>
                                     <td>{{ $teacher->name }}</td>
                                     <td class="text-center">
-                                        <button class="btn btn-danger" style="border-radius: 15px">Drop</button>
+                                        <form action="{{ route('edit_subject.drop_teacher', ['id' => $subject->id]) }}" method="post">
+                                            @csrf
+                                            @method('DELETE')
+
+                                            <input type="hidden" name="subject_id" value="{{ $subject->id }}">
+                                            <input type="hidden" name="teacher_id" value="{{ $teacher->id }}">
+                                            <button class="btn btn-danger" style="border-radius: 15px">Drop</button>
+                                        </form>
                                     </td>
                                 </tr>
                             @endforeach
@@ -132,7 +140,12 @@
                                     <td>{{ $teacher->ic }}</td>
                                     <td>{{ $teacher->name }}</td>
                                     <td class="text-center">
-                                        <button class="btn btn-primary" style="border-radius: 15px">Add</button>
+                                        <form action="{{ route('edit_subject.add_teacher', ['id' => $subject->id]) }}" method="post">
+                                            @csrf
+                                            <input type="hidden" name="subject_id" value="{{ $subject->id }}">
+                                            <input type="hidden" name="teacher_id" value="{{ $teacher->id }}">
+                                            <button class="btn btn-primary" style="border-radius: 15px">Add</button>
+                                        </form>
                                     </td>
                                 </tr>
                             @endforeach

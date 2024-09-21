@@ -3,6 +3,7 @@
 @section('content')
     
     <div class="container fade-in-text">
+        @include('layouts.message')
         <header>
             <h4 class="text-lg font-medium text-gray-900 dark:text-gray-100">
                 {{ __('Subject Information') }}

@@ -49,7 +49,7 @@
                     <td>{{ $subject->form->name }}</td>
                     <td>{{ $subject->description }}</td>
                     <td class="text-center">
-                        {{-- <a href="{{ route('view_subject', ['id' => $subject->id ]) }}" class="btn btn-success tr-button">View</a> --}}
+                        <a href="{{ route('edit_subject', ['id' => $subject->id ]) }}" class="btn btn-success tr-button">View</a>
                     @can('coordinator')
                         <button data-bs-toggle="modal" data-bs-target="#confirmDelete{{ $subject->id }}" class="btn btn-danger tr-button">Delete</button>
                     @endcan
