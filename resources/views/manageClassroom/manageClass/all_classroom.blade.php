@@ -86,27 +86,13 @@
                     </td>
                 </tr>
             
-                <div class="modal fade" id="confirmDelete{{ $classroom->id }}" tabindex="-1" role="dialog" aria-labelledby="confirmationModalLabel{{ $classroom->id }}" aria-hidden="true">
-                    <div class="modal-dialog" role="document">
-                        <div class="modal-content">
-                            <div class="modal-header">
-                                <h5 class="modal-title" id="confirmationModalLabel{{ $classroom->id }}">Confirm Delete</h5>
-                                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
-                            </div>
-                            <div class="modal-body">
-                                <p>Are you sure you want to remove {{ $classroom->name }} from school database?</p>
-                            </div>
-                            <div class="modal-footer">
-                                <form action="{{ route('delete_classroom.delete', ['id' => $classroom->id]) }}" method="POST">
-                                    @csrf
-                                    @method('DELETE')
-                                    <button type="submit" class="btn btn-secondary tr-button">Delete</button>
-                                </form>
-                                <button type="button" class="btn btn-danger tr-button" data-bs-dismiss="modal">Cancel</button>
-                            </div>
-                        </div>
-                    </div>
-                </div>
+                @include('layouts.partials.modal', [
+                    'id' => $classroom->id, 
+                    'name' => "Are you sure you want to remove " . $classroom->name . " from the database?",
+                    'deleteRoute' => route('delete_classroom.delete', ['id' => $classroom->id]),
+                    'method' => 'DELETE'
+                ])
+                
             @endforeach
             
             @if ($classrooms->total() > 10)

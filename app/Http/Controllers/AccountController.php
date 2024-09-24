@@ -58,7 +58,9 @@ class AccountController extends Controller
 
         $age = $yearNow - ($century + $ageOnIc);
 
-        return view('manageAccount.teacher_details', compact('teacher', 'age'));
+        $subjects = $teacher->subjects;
+
+        return view('manageAccount.teacher_details', compact('teacher', 'age', 'subjects'));
     }
 
     public function destroyTeacher($id): RedirectResponse {        

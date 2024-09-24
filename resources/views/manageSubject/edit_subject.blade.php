@@ -91,15 +91,15 @@
                                     <td>{{ $teacher->ic }}</td>
                                     <td>{{ $teacher->name }}</td>
                                     <td class="text-center">
-                                        <form action="{{ route('edit_subject.drop_teacher', ['id' => $subject->id]) }}" method="post">
-                                            @csrf
-                                            @method('DELETE')
-
-                                            <input type="hidden" name="subject_id" value="{{ $subject->id }}">
-                                            <input type="hidden" name="teacher_id" value="{{ $teacher->id }}">
-                                            <button class="btn btn-danger" style="border-radius: 15px">Drop</button>
-                                        </form>
+                                        <button data-bs-toggle="modal" data-bs-target="#confirmDelete{{ $subject->id }}" class="btn btn-danger" style="border-radius: 15px">Drop</button>
                                     </td>
+
+                                    @include('layouts.partials.modal', [
+                                        'id' => $subject->id, 
+                                        'name' => "Are you sure you want to remove " . $teacher->name . " from teach ". $subject->name ." from the database?",
+                                        'deleteRoute' => route('edit_subject.drop_teacher', ['id' => $subject->id, 'teacher_id' => $teacher->id]),
+                                        'method' => 'DELETE'
+                                    ])
                                 </tr>
                             @endforeach
                         </tbody>

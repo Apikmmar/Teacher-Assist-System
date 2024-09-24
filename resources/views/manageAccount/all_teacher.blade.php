@@ -69,29 +69,13 @@
                     </td>
                 </tr>
 
-                <div class="modal fade" id="confirmDelete{{ $teacher->id }}" tabindex="-1" role="dialog" aria-labelledby="confirmationModalLabel{{ $teacher->id }}" aria-hidden="true">
-                    <div class="modal-dialog" role="document">
-                        <div class="modal-content">
-                            <div class="modal-header">
-                                <h5 class="modal-title" id="confirmationModalLabel{{ $teacher->id }}">Confirm Delete</h5>
-                                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
-                            </div>
-                            <div class="modal-body">
-                                <p>Are you sure you want to remove {{ $call . $teacher->name }} from school database?</p>
-                            </div>
-                            <div class="modal-footer">
-                                <form action="{{ route('delete.teacher', ['id' => $teacher->id]) }}" method="POST">
-                                    @csrf
-                                    @method('DELETE')
-        
-                                    <button type="submit" class="btn btn-secondary tr-button">Delete</button>
-                                </form>
-                                <button type="button" class="btn btn-danger tr-button" data-bs-dismiss="modal">Cancel</button>
-                            </div>
-                        </div>
-                    </div>
-                </div>
-
+                @include('layouts.partials.modal', [
+                    'id' => $teacher->id, 
+                    'name' => "Are you sure you want to remove subject " . $call . $teacher->name . " from from the database?",
+                    'deleteRoute' => route('delete.teacher', ['id' => $teacher->id]),
+                    'method' => 'DELETE'
+                ])
+                
             @endforeach
             </tbody>
         @if ($teachers->total() > 10)

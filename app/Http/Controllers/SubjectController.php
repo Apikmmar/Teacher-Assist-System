@@ -13,6 +13,7 @@ use Illuminate\Http\Request;
 use Illuminate\View\View as View;
 use Illuminate\Support\Str;
 use Illuminate\Support\Facades\DB;
+use Illuminate\Support\Facades\Redirect;
 
 class SubjectController extends Controller
 {
@@ -98,6 +99,20 @@ class SubjectController extends Controller
         return redirect()->route('all_subjects')->with('blue-message', 'Successfully Register New Subject');
     }
 
+    public function updateSubjectInfo(Request $request): RedirectResponse {
+        $request->validated();
+        
+        dd($request);
+    }
+
+    public function deleteSubject($id): RedirectResponse {
+        $subject = Subject::findOrFail($id);
+
+        $subject->delete();
+
+        return redirect()->route('all_subjects')->with('red-message', 'Successfully Delete Subject');
+    }
+
     public function addSubjectTeacher(Request $request, $id): RedirectResponse {
         $subjectTC = Subject_Teacher::create([
             'user_id' => $request->teacher_id,
@@ -111,8 +126,8 @@ class SubjectController extends Controller
         return redirect()->route('edit_subject', ['id' => $id])->with('blue-message', 'Teacher Successfuly Added');
     }
 
-    public function dropSubjectTeacher(Request $request, $id): RedirectResponse {
-        $subjectTC = Subject_Teacher::where('user_id', $request->teacher_id)->where('subject_id', $request->subject_id)->first();
+    public function dropSubjectTeacher($id, $teacher_id): RedirectResponse {
+        $subjectTC = Subject_Teacher::where('user_id', $teacher_id)->where('subject_id', $id)->first();
         $subjectTC->delete();
 
         return redirect()->route('edit_subject', ['id' => $id])->with('red-message', 'Teacher Has Been Removed');

@@ -56,27 +56,12 @@
                     </td>
                 </tr>
             
-                {{-- <div class="modal fade" id="confirmDelete{{ $subject->id }}" tabindex="-1" role="dialog" aria-labelledby="confirmationModalLabel{{ $subject->id }}" aria-hidden="true">
-                    <div class="modal-dialog" role="document">
-                        <div class="modal-content">
-                            <div class="modal-header">
-                                <h5 class="modal-title" id="confirmationModalLabel{{ $subject->id }}">Confirm Delete</h5>
-                                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
-                            </div>
-                            <div class="modal-body">
-                                <p>Are you sure you want to remove {{ $subject->name }} from school database?</p>
-                            </div>
-                            <div class="modal-footer">
-                                <form action="{{ route('delete_subject.delete', ['id' => $subject->id]) }}" method="POST">
-                                    @csrf
-                                    @method('DELETE')
-                                    <button type="submit" class="btn btn-secondary tr-button">Delete</button>
-                                </form>
-                                <button type="button" class="btn btn-danger tr-button" data-bs-dismiss="modal">Cancel</button>
-                            </div>
-                        </div>
-                    </div>
-                </div> --}}
+                @include('layouts.partials.modal', [
+                    'id' => $subject->id, 
+                    'name' => "Are you sure you want to remove subject " . $subject->name . " of ". $subject->form->name ." from the database?",
+                    'deleteRoute' => route('delete_subject.delete', ['id' => $subject->id]),
+                    'method' => 'DELETE'
+                ])
             @endforeach
             
             @if ($subjects->total() > 10)
