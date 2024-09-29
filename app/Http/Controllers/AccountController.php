@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers;
 
+use App\Models\Classroom;
 use App\Models\User;
 use Illuminate\Contracts\View\View;
 use Illuminate\Http\RedirectResponse;
@@ -65,6 +66,14 @@ class AccountController extends Controller
 
     public function destroyTeacher($id): RedirectResponse {        
         $user = User::findOrFail($id);
+
+        if($user->classroom) {
+            $classes = Classroom::where('classteacher_id', $id)->get();
+            
+            foreach ($classes as $class) {
+                $class->update(['classteacher_id' => NULL]);
+            }
+        }
 
         $user->delete();
 

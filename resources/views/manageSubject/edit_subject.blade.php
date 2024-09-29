@@ -1,4 +1,4 @@
-@extends('layouts.app', ['title' => 'Register New Subject'])
+@extends('layouts.app', ['title' => 'Subject Details'])
 
 @section('content')
 
@@ -10,7 +10,7 @@
             </h4>
         </header>
 
-        <form action="" method="post">
+        <form action="{{ route('update_subject.update', ['id' => $subject->id]) }}" method="post">
             @csrf
             @method('PATCH')
 
@@ -31,7 +31,7 @@
                                 {{ __('Form') }} <label class="red-aestrist">*</label>
                             </label>
                             <div class="col-md-8">
-                                <select id="form" name="form" class="form-select">
+                                <select id="form" name="form_id" class="form-select">
                                     <option disabled>Select Form</option>
                                     @foreach ($forms as $form)
                                         <option value="{{ $form->id }}" {{ $form->id == $subject->form_id ? 'selected' : '' }}>

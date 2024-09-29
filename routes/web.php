@@ -43,6 +43,7 @@ Route::middleware('auth')->group(function () {
     Route::get('/add_classroom', [ClassroomController::class, 'viewAddClassroom'])->name('add_classroom');
     Route::post('/add_classroom', [ClassroomController::class, 'registerNewClassroom'])->name('add_classroom.create');
     Route::get('/edit_classroom/{id}', [ClassroomController::class, 'viewEditClassroom'])->name('edit_classroom');
+    Route::patch('/update_info/{id}', [ClassroomController::class, 'updateClassroomInfo'])->name('update_classroom.update');
     Route::delete('/delete_classrooom/{id}', [ClassroomController::class, 'deleteClassroom'])->name('delete_classroom.delete');
     Route::patch('/edit_classroom/remove_student/{id}', [ClassroomController::class, 'removeStudentClass'])->name('decrease_student.update');
     
@@ -50,6 +51,7 @@ Route::middleware('auth')->group(function () {
     Route::get('/new_subject', [SubjectController::class, 'viewAddNewSubject'])->name('new_subject');
     Route::post('/new_subject/create', [SubjectController::class, 'createNewSubject'])->name('new_subject.create');
     Route::get('/edit_subject/{id}', [SubjectController::class, 'viewEditSubject'])->name('edit_subject');
+    Route::patch('/edit_subject/{id}/update_info', [SubjectController::class, 'updateSubjectInfo'])->name('update_subject.update');
     Route::delete('/delete_subject/{id}', [SubjectController::class, 'deleteSubject'])->name('delete_subject.delete');
     Route::post('/edit_subject/{id}/add_teacher', [SubjectController::class, 'addSubjectTeacher'])->name('edit_subject.add_teacher');
     Route::delete('/edit_subject/drop_teacher/{id}/{teacher_id}', [SubjectController::class, 'dropSubjectTeacher'])->name('edit_subject.drop_teacher');

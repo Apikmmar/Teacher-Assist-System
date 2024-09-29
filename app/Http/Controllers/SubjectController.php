@@ -3,6 +3,7 @@
 namespace App\Http\Controllers;
 
 use App\Http\Requests\AddSubjectRequest;
+use App\Http\Requests\UpdateSubjectInfoRequest;
 use App\Models\Form;
 use App\Models\Subject;
 use App\Models\Subject_Teacher;
@@ -99,10 +100,14 @@ class SubjectController extends Controller
         return redirect()->route('all_subjects')->with('blue-message', 'Successfully Register New Subject');
     }
 
-    public function updateSubjectInfo(Request $request): RedirectResponse {
-        $request->validated();
+    public function updateSubjectInfo(UpdateSubjectInfoRequest $request, $id): RedirectResponse {
+        $newInfo = $request->validated();
         
-        dd($request);
+        $sub = Subject::findOrFail($id);
+
+        $sub->update($newInfo);
+
+        return redirect()->route('edit_subject', ['id' => $id ])->with('blue-message', 'Successfully Update Subject Info');
     }
 
     public function deleteSubject($id): RedirectResponse {

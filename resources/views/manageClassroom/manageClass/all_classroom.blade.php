@@ -81,6 +81,7 @@
                     <td class="text-center">
                         <a href="{{ route('view_classroom', ['id' => $classroom->id ]) }}" class="btn btn-success tr-button">View</a>
                     @can('coordinator')
+                        <a href="{{ route('edit_classroom', ['id' => $classroom->id ]) }}" class="btn btn-warning text-white tr-button">Edit</a>
                         <button data-bs-toggle="modal" data-bs-target="#confirmDelete{{ $classroom->id }}" class="btn btn-danger tr-button">Delete</button>
                     @endcan
                     </td>

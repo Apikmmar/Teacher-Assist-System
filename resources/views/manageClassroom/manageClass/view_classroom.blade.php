@@ -3,6 +3,8 @@
 @section('content')
 
     <div class="container fade-in-text">
+        @include('layouts.message')
+        
         <div>
             <div class="row mb-3">
                 <label for="ic" class="col-md-4 col-form-label text-md-end fw-bold">{{ __('Form') }}</label>

@@ -5,7 +5,7 @@
     
     @include('layouts.message')
         
-    <div class="row d-flex justify-content-end mb-4">
+    <div class="row d-flex justify-content-end">
         <div class="col-auto">
             <a href="{{ route('new_subject') }}" class="btn text-white user-save-button">Register Subject</a>
         </div>
@@ -15,7 +15,7 @@
                 <div class="row mb-3 align-items-center">
                     <div class="col-md-12 d-flex align-items-center">
                         <select class="form-select" aria-label="Default select example" name="subject_form" onchange="document.getElementById('filterForm').submit();">
-                            <option value="" {{ request('subject_form') == '' ? 'selected' : '' }}>View by: Default</option>
+                            <option value="" {{ request('subject_form') == '' ? 'selected' : '' }}><b>View by:</b> Default</option>
                             @foreach ($forms as $form)
                                 <option value="{{ $form->id }}" {{ request('subject_form') == $form->id ? 'selected' : '' }}>View by: {{ $form->name }}</option>
                             @endforeach

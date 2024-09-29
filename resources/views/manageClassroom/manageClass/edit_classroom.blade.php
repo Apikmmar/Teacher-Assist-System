@@ -7,37 +7,58 @@
         @include('layouts.message')
 
         <div>
-            <div class="row mb-3">
-                <label for="ic" class="col-md-4 col-form-label text-md-end fw-bold">{{ __('Form') }}</label>
-                
-                <div class="col-md-6">
-                    <input id="ic" type="text" class="form-control @error('ic') is-invalid @enderror" name="ic" value="{{ $classroom->form->name }}" autocomplete="ic" autofocus>
+            <form action="{{ route('update_classroom.update', ['id' => $classroom->id]) }}" method="post" enctype="multipart/form-data">
+                @csrf
+                @method('PATCH')
+            
+                <div class="row mb-3">
+                    <label for="form" class="col-md-4 col-form-label text-md-end fw-bold">{{ __('Form') }}</label>
+                    <div class="col-md-6">
+                        <select id="form" class="form-control @error('form') is-invalid @enderror" name="form_id" autofocus style="border-radius: 15px">
+                            <option value="" disabled>Select Form</option>
+                            @foreach($forms as $form)
+                                <option value="{{ $form->id }}" {{ $classroom->form->id == $form->id ? 'selected' : '' }}>
+                                    {{ $form->name }}
+                                </option>
+                            @endforeach
+                        </select>
+                    </div>
                 </div>
-            </div>
-
-            <div class="row mb-3">
-                <label for="name" class="col-md-4 col-form-label text-md-end fw-bold">{{ __('Name') }}</label>
-                
-                <div class="col-md-6">
-                    <input id="name" type="text" class="form-control @error('name') is-invalid @enderror" name="name" value="{{ $classroom->name }}" autocomplete="name" autofocus>
+            
+                <div class="row mb-3">
+                    <label for="name" class="col-md-4 col-form-label text-md-end fw-bold">{{ __('Name') }}</label>
+                    <div class="col-md-6">
+                        <input id="name" type="text" class="form-control @error('name') is-invalid @enderror" name="name" value="{{ $classroom->name }}" autocomplete="name" autofocus>
+                    </div>
                 </div>
-            </div>
-
-            <div class="row mb-3">
-                <label for="ic" class="col-md-4 col-form-label text-md-end fw-bold">{{ __('Class Teacher') }}</label>
-                
-                <div class="col-md-6">
-                    <input id="ic" type="text" class="form-control @error('ic') is-invalid @enderror" name="ic" value="{{ $teacherName }}" autocomplete="ic" autofocus>
+            
+                <div class="row mb-3">
+                    <label for="classteacher" class="col-md-4 col-form-label text-md-end fw-bold">{{ __('Class Teacher') }}</label>
+                    <div class="col-md-6">
+                        <select id="classteacher" class="form-control @error('classteacher') is-invalid @enderror" name="classteacher_id" autofocus style="border-radius: 15px">
+                            <option value="" disabled {{ $classroom->classteacher_id == NULL ? 'selected' : '' }}>Select Class Teacher</option>
+                            @foreach($teachers as $teacher)
+                                <option value="{{ $teacher->id }}" {{ $classroom->classteacher_id == $teacher->id ? 'selected' : '' }}>
+                                    {{ strtolower($teacher->gender) == 'men' ? 'Mr. ' : 'Mrs. ' }} {{ Str::title($teacher->name) }}
+                                </option>
+                            @endforeach
+                        </select>
+                    </div>
                 </div>
-            </div>
-
-            <div class="row mb-3">
-                <label for="ic" class="col-md-4 col-form-label text-md-end fw-bold">{{ __('Number of Students') }}</label>
-                
-                <div class="col-md-6">
-                    <input id="ic" type="text" class="form-control @error('ic') is-invalid @enderror" name="ic" value="{{ $classroom->num_student }} students" readonly autocomplete="ic" autofocus>
+            
+                <div class="row mb-3">
+                    <label for="num_student" class="col-md-4 col-form-label text-md-end fw-bold">{{ __('Number of Students') }}</label>
+                    <div class="col-md-6">
+                        <input id="num_student" type="text" class="form-control" name="" value="{{ $classroom->num_student }} students" readonly>
+                    </div>
                 </div>
-            </div>
+            
+                <div class="d-flex justify-content-center">
+                    <button class="btn user-update-button text-white" type="submit">Update</button>
+                    &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+                    <button class="btn user-reset-button text-white" type="reset">Reset</button>
+                </div>
+            </form>
         </div>
         <hr>
         <div class="">

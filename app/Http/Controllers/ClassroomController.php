@@ -3,6 +3,7 @@
 namespace App\Http\Controllers;
 
 use App\Http\Requests\RegisterClassroomRequest;
+use App\Http\Requests\UpdateClassInfoRequest;
 use App\Models\Classroom;
 use App\Models\Form;
 use App\Models\Role_User;
@@ -28,12 +29,16 @@ class ClassroomController extends Controller
         }
     
         foreach ($classrooms as $classroom) {
-            $teacherName = Str::title($classroom->classteacher->name);
+            if ($classroom->classteacher != NULL) {
+                $teacherName = Str::title($classroom->classteacher->name);
 
-            if (strtolower($classroom->classteacher->gender) == 'men') {
-                $classroom->teacher_title = 'Mr. ' . $teacherName;
+                if (strtolower($classroom->classteacher->gender) == 'men') {
+                    $classroom->teacher_title = 'Mr. ' . $teacherName;
+                } else {
+                    $classroom->teacher_title = 'Mrs. ' . $teacherName;
+                }
             } else {
-                $classroom->teacher_title = 'Mrs. ' . $teacherName;
+                $classroom->teacher_title = "N/A";
             }
         }
     
@@ -90,14 +95,29 @@ class ClassroomController extends Controller
     public function viewEditClassroom($id): View {
         $data = $this->getClassroomData($id);
 
-        return view('manageClassroom.manageClass.edit_classroom', $data);
+        return view('manageClassroom.manageClass.edit_classroom', $data, [
+            'forms' => Form::all(),
+            'teachers' => User::whereDoesntHave('classroom', function($query) {
+                $query->whereNotNull('classteacher_id');
+            })->get(),
+        ]);
     }
 
     private function getClassroomData($id) {
         $classroom = Classroom::findOrFail($id);
         $students = Student::where('classroom_id', $classroom->id)->paginate(10);
 
-        $teacherName = (strtolower($classroom->classteacher->gender) == 'men' ? 'Mr. ' : 'Mrs. ') . Str::title($classroom->classteacher->name);
+        if ($classroom->classteacher != NULL) {
+            $teacherName = Str::title($classroom->classteacher->name);
+
+            if (strtolower($classroom->classteacher->gender) == 'men') {
+                $teacherName = 'Mr. ' . $teacherName;
+            } else {
+                $teacherName = 'Mrs. ' . $teacherName;
+            }
+        } else {
+            $teacherName = "N/A";
+        }
 
         return [
             'classroom' => $classroom,
@@ -156,6 +176,18 @@ class ClassroomController extends Controller
         
         return view('manageClassroom.manageClass.all_classroom', compact('classrooms', 'forms'));
     }
+
+    public function updateClassroomInfo(UpdateClassInfoRequest $request, $id): RedirectResponse | View {
+        
+        $newData = $request->validated();
+    
+        $classroom = Classroom::findOrFail($id);
+    
+        $classroom->update($newData);
+    
+        return redirect()->route('view_classroom', ['id' => $id ])->with('blue-message', 'Classroom Info Successfully Updated');
+    }
+    
 
 
     public function deleteClassroom($id) {
