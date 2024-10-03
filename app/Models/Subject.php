@@ -23,7 +23,7 @@ class Subject extends Model
     }
 
     public function classrooms(): BelongsToMany {
-        return $this->belongsToMany(Classroom::class, 'subject_taken', 'subject_id', 'classroom_id');
+        return $this->belongsToMany(Classroom::class, 'subject__takens', 'subject_id', 'classroom_id');
     }
 
     public function form(): BelongsTo {

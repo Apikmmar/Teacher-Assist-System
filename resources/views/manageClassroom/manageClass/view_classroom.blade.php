@@ -44,6 +44,8 @@
         </div>
         <div class="d-flex justify-content-end mt-2">
             <a href="{{ route('edit_classroom', ['id' => $classroom->id]) }}" class="btn text-white user-update-button">Update Class Info</a>
+            &nbsp;&nbsp;&nbsp;
+            <a href="{{ route('class_subject', ['id' => $classroom->id]) }}" class="btn btn-success tr-button">Registered Subject</a>
         </div>
     </div>
 @endsection

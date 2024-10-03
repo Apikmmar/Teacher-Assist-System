@@ -4,8 +4,10 @@ namespace App\Http\Controllers;
 
 use App\Http\Requests\AddSubjectRequest;
 use App\Http\Requests\UpdateSubjectInfoRequest;
+use App\Models\Classroom;
 use App\Models\Form;
 use App\Models\Subject;
+use App\Models\Subject_Taken;
 use App\Models\Subject_Teacher;
 use App\Models\User;
 use Illuminate\Database\Eloquent\Collection;
@@ -60,6 +62,54 @@ class SubjectController extends Controller
             'forms' => Form::all(),
             'teachers' => $teachers,
             'newTeachers' => $newTeachers,
+        ]);
+    }
+
+    public function viewclassroomsubject($id): View {
+
+        $teacherNames = [];
+        $registeredTeachers = [];
+        
+        $class = Classroom::findOrFail($id);
+        $subjects = Subject_Taken::where('classroom_id', $id)->get();
+
+        foreach ($subjects as $subject) {
+            if ($subject->subject != NULL) {
+                $subject->subject->name = Str::title($subject->subject->name);
+            } else {
+                $subject->subject->name = 'N/A';
+            }
+
+            if ($subject->subjectTeacher !== NULL) {
+                $teacher = $subject->subjectTeacher->teacher;
+
+                if (strtolower($teacher->gender) == 'Men') {
+                    $teacherNames[$subject->id] = 'Mr. ' . Str::title($teacher->name);
+                } else {
+                    $teacherNames[$subject->id] = 'Mrs. ' . Str::title($teacher->name);
+                }
+            } else {
+                $teacherNames[$subject->id] = 'Not Assigned Yet';
+            }
+
+            $registeredTeachers[$subject->id] = Subject_Teacher::where('subject_id', $subject->subject->id)->get();
+
+            foreach ($registeredTeachers[$subject->id] as $teacher) {
+                $teacher = $teacher->teacher;
+
+                if (strtolower($teacher->gender) == 'Men') {
+                    $teacher->name = 'Mr. ' . Str::title($teacher->name);
+                } else {
+                    $teacher->name = 'Mrs. ' . Str::title($teacher->name);
+                }
+            }
+        }
+        
+        return view('manageSubject.classroom_subject', [
+            'class' => $class,
+            'subjects' => $subjects,
+            'teacherNames' => $teacherNames,
+            'registeredTeachers' => $registeredTeachers,
         ]);
     }
 

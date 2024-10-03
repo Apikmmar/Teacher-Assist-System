@@ -26,8 +26,14 @@
                     <th scope="row">{{ $startNumber + $index }}</th>
                     <td>{{ $subject->name }}</td>
                     <td>{{ $subject->form->name }}</td>
-                    <td>{{ $subject->description }}</td>
+                    <td>
+                    @foreach ($classTeaches as $item)
+                        {{ $item->classroom_id }}
+                    @endforeach
+                    </td>
             @endforeach
+
+            
             
         </table>
     @else
