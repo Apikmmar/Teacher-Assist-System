@@ -213,4 +213,11 @@ class SubjectController extends Controller
 
         return redirect()->route('class_subject', ['id' => $request->class])->with('blue-message', 'Teacher Successfuly Change');
     }
+
+    public function dropClassroomSubject($id, $class_id): RedirectResponse {
+        $subClass = Subject_Taken::findOrFail($id);
+        $subClass->delete();
+
+        return redirect()->route('class_subject', ['id' => $class_id])->with('red-message', 'Subject Successfully Drop From Classroom');
+    }
 }

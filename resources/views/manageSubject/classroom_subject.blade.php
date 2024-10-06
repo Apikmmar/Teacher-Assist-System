@@ -46,15 +46,15 @@
                                     <td class="text-center">
                                         <button type="submit" class="btn btn-warning text-white tr-button">Update</button>
                                         </form>
-                                        {{-- <button data-bs-toggle="modal" data-bs-target="#confirmDelete{{ $subject->id }}" class="btn btn-danger" style="border-radius: 15px">Drop</button> --}}
+                                        <button data-bs-toggle="modal" data-bs-target="#confirmDelete{{ $subject->id }}" class="btn btn-danger" style="border-radius: 15px">Drop</button>
                                     </td>
 
-                                    {{-- @include('layouts.partials.modal', [
+                                    @include('layouts.partials.modal', [
                                         'id' => $subject->id, 
-                                        'name' => "Are you sure you want to remove " . $subject->name . " from teach ". $subject->name ." from the database?",
-                                        'deleteRoute' => route('edit_subject.drop_subject', ['id' => $subject->id, 'subject_id' => $subject->id]),
+                                        'name' => "Are you sure you want to remove " . $subject->subject->name . " from class ". $class->name,
+                                        'deleteRoute' => route('edit.dropclassroom_subject', ['id' => $subject->id, 'class_id' => $class->id]),
                                         'method' => 'DELETE'
-                                    ]) --}}
+                                    ])
                                 </tr>
                             @endforeach
                         </tbody>
