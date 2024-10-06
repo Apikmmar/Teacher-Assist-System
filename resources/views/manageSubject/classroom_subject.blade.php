@@ -1,4 +1,4 @@
-@extends('layouts.app', ['title' => 'Registered Subject of Classroom'. $class->name])
+@extends('layouts.app', ['title' => 'Registered Subject of Classroom '. $class->name])
 
 @section('content')
     <div class="container fade-in-text">
@@ -29,23 +29,24 @@
                                     <th scope="row">{{ $startNumber + $index }}</th>
                                     <td>{{ $subject->subject->name }}</td>
                                     <td>{{ $teacherNames[$subject->id] }}</td>
-                                    
-                                    <form action="" method="post">
-                                        @csrf
-                                        @method('PATCH')
-                                        <td>
-                                            <select id="form" name="form" class="form-select">
+                                    <td>
+                                        <form action="{{ route('edit.classsubject_teacher') }}" method="post">
+                                            @csrf
+                                            @method('PUT')
+
+                                            <input type="hidden" name="subject" value="{{ $subject->id }}">
+                                            <input type="hidden" name="class" value="{{ $class->id }}">
+                                            <select id="form" name="new_teacher" class="form-select">
                                                 <option selected disabled>Select Teacher</option>
                                             @foreach ($registeredTeachers[$subject->id] as $teacher)
                                                 <option value="{{ $teacher->teacher->id }}">{{ $teacher->teacher->name }}</option>
                                             @endforeach
-                                            </select>
-                                            
-                                        </td>
-                                        <td class="text-center">
-                                            <button type="submit" class="btn btn-warning text-white tr-button">Update</button>
-                                            <button data-bs-toggle="modal" data-bs-target="#confirmDelete{{ $subject->id }}" class="btn btn-danger" style="border-radius: 15px">Drop</button>
-                                    </form>
+                                            </select>        
+                                    </td>
+                                    <td class="text-center">
+                                        <button type="submit" class="btn btn-warning text-white tr-button">Update</button>
+                                        </form>
+                                        {{-- <button data-bs-toggle="modal" data-bs-target="#confirmDelete{{ $subject->id }}" class="btn btn-danger" style="border-radius: 15px">Drop</button> --}}
                                     </td>
 
                                     {{-- @include('layouts.partials.modal', [

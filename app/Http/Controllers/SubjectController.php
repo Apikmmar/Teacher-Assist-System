@@ -187,4 +187,30 @@ class SubjectController extends Controller
 
         return redirect()->route('edit_subject', ['id' => $id])->with('red-message', 'Teacher Has Been Removed');
     }
+
+    public function changeSubjectTeacher(Request $request): RedirectResponse {
+
+        $request->validate([
+            'subject' => 'required|exists:subjects,id',
+            'new_teacher' => 'required|exists:users,id',
+            'class' => 'required|exists:classrooms,id',
+        ]);
+
+        $subsClass = Subject_Taken::where('classroom_id', $request->class)->where('subject_id', $request->subject)->first();
+        // dd($subsClass);
+
+        if (!$subsClass) {
+            return redirect()->back()->withErrors(['message' => 'Subject not found for the selected class.']);
+        }
+
+        $subTeaches = Subject_Teacher::where('subject_id', $request->subject)->where('user_id', $request->new_teacher)->first();
+
+        if (!$subTeaches) {
+            return redirect()->back()->withErrors(['message' => 'Teacher not found for the selected subject.']);
+        }
+
+        $subsClass->update(['subject_teacher_id' => $subTeaches->id]);
+
+        return redirect()->route('class_subject', ['id' => $request->class])->with('blue-message', 'Teacher Successfuly Change');
+    }
 }

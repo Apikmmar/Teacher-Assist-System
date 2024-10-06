@@ -1,7 +1,7 @@
 <section>
     <header>
         <h3 class="text-lg font-medium text-gray-900 dark:text-gray-100">
-            {{ __('Teached Subject') }}
+            {{ __('Teaches Subject') }}
         </h3>
     </header>
 
@@ -27,9 +27,7 @@
                     <td>{{ $subject->name }}</td>
                     <td>{{ $subject->form->name }}</td>
                     <td>
-                    @foreach ($classTeaches as $item)
-                        {{ $item->classroom_id }}
-                    @endforeach
+                        ewfrgth
                     </td>
             @endforeach
 

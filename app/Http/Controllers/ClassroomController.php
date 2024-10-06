@@ -214,7 +214,6 @@ class ClassroomController extends Controller
         $class1 = $std->classroom_id;
         $name = $std->name;
 
-        
         $std->classroom_id = null;
         $std->save();
 
