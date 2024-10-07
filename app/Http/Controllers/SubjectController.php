@@ -10,7 +10,7 @@ use App\Models\Subject;
 use App\Models\Subject_Taken;
 use App\Models\Subject_Teacher;
 use App\Models\User;
-use Illuminate\Database\Eloquent\Collection;
+use \Illuminate\Support\Collection;
 use Illuminate\Http\RedirectResponse;
 use Illuminate\Http\Request;
 use Illuminate\View\View as View;
@@ -69,35 +69,50 @@ class SubjectController extends Controller
 
         $teacherNames = [];
         $registeredTeachers = [];
+        $notRegisteredTeachers = [];
         
         $class = Classroom::findOrFail($id);
-        $subjects = Subject_Taken::where('classroom_id', $id)->get();
-
-        foreach ($subjects as $subject) {
+        $subjectsTaken = Subject_Taken::where('classroom_id', $id)->get();
+        $allSubjects = Subject::all();
+    
+        $subjectsTakenIds = $subjectsTaken->pluck('subject_id')->toArray();
+        $subjectsNotTaken = $allSubjects->whereNotIn('id', $subjectsTakenIds)->where('form_id', $class->form_id);
+    
+        foreach ($subjectsTaken as $subject) {
             if ($subject->subject != NULL) {
                 $subject->subject->name = Str::title($subject->subject->name);
             } else {
                 $subject->subject->name = 'N/A';
             }
-
+    
             if ($subject->subjectTeacher !== NULL) {
                 $teacher = $subject->subjectTeacher->teacher;
+                $teacherNames[$subject->id] = $this->convertTeacherNameFormat($teacher);
 
-                if (strtolower($teacher->gender) == 'Men') {
-                    $teacherNames[$subject->id] = 'Mr. ' . Str::title($teacher->name);
-                } else {
-                    $teacherNames[$subject->id] = 'Mrs. ' . Str::title($teacher->name);
-                }
             } else {
                 $teacherNames[$subject->id] = 'Not Assigned Yet';
             }
-
+    
             $registeredTeachers[$subject->id] = Subject_Teacher::where('subject_id', $subject->subject->id)->get();
-
+    
             foreach ($registeredTeachers[$subject->id] as $teacher) {
                 $teacher = $teacher->teacher;
+    
+                if (strtolower($teacher->gender) == 'men') {
+                    $teacher->name = 'Mr. ' . Str::title($teacher->name);
+                } else {
+                    $teacher->name = 'Mrs. ' . Str::title($teacher->name);
+                }
+            }
+        }
 
-                if (strtolower($teacher->gender) == 'Men') {
+        foreach ($subjectsNotTaken as $subject) {
+            $notRegisteredTeachers[$subject->id] = Subject_Teacher::where('subject_id', $subject->id)->get();
+
+            foreach ($notRegisteredTeachers[$subject->id] as $teacher) {
+                $teacher = $teacher->teacher;
+    
+                if (strtolower($teacher->gender) == 'men') {
                     $teacher->name = 'Mr. ' . Str::title($teacher->name);
                 } else {
                     $teacher->name = 'Mrs. ' . Str::title($teacher->name);
@@ -107,18 +122,25 @@ class SubjectController extends Controller
         
         return view('manageSubject.classroom_subject', [
             'class' => $class,
-            'subjects' => $subjects,
+            'subjectsTaken' => $subjectsTaken,
             'teacherNames' => $teacherNames,
             'registeredTeachers' => $registeredTeachers,
+            'subjectsNotTaken' => $subjectsNotTaken,
+            'notRegisteredTeachers' => $notRegisteredTeachers,
         ]);
-    }
+    }    
 
-    private function convertTeacherNameFormat($teachers): Collection {
-        return $teachers->map(function ($teacher) {
-            $title = $teacher->gender === 'Men' ? 'Mr.' : 'Mrs.';
-            $teacher->name = $title . ' ' . Str::title($teacher->name);
-            return $teacher;
-        });
+    private function convertTeacherNameFormat($teachers) {
+        if ($teachers instanceof Collection) {
+            return $teachers->map(function ($teacher) {
+                $title = strtolower($teacher->gender) === 'men' ? 'Mr.' : 'Mrs.';
+                $teacher->name = $title . ' ' . Str::title($teacher->name);
+                return $teacher;
+            });
+        } else {
+            $title = strtolower($teachers->gender) === 'men' ? 'Mr.' : 'Mrs.';
+            return $title . ' ' . Str::title($teachers->name);
+        }
     }
 
     public function createNewSubject(AddSubjectRequest $request): RedirectResponse {
@@ -188,6 +210,30 @@ class SubjectController extends Controller
         return redirect()->route('edit_subject', ['id' => $id])->with('red-message', 'Teacher Has Been Removed');
     }
 
+    public function addSubjectClass(Request $request, $id): RedirectResponse {
+        $request->validate([
+            'subject' => 'required|exists:subjects,id',
+            'assigned_teacher' => 'required|exists:subject__teachers,id',
+        ]);
+
+        $class = Classroom::findOrFail($id);
+
+        if (!$class) {
+            return redirect()->back()->withErrors(['message' => 'Classroom Not Found.']);
+        }
+
+        $subjectClass = Subject_Taken::create([
+            'student_id' => NULL,
+            'classroom_id' => $class->id,
+            'subject_id' => $request->subject,
+            'subject_teacher_id' => $request->assigned_teacher,
+        ]);
+
+        $subjectClass->save();
+
+        return redirect()->route('class_subject', ['id' => $id])->with('blue-message', 'Subject Successfuly Add To Class');
+    }
+
     public function changeSubjectTeacher(Request $request): RedirectResponse {
 
         $request->validate([
@@ -197,7 +243,6 @@ class SubjectController extends Controller
         ]);
 
         $subsClass = Subject_Taken::where('classroom_id', $request->class)->where('subject_id', $request->subject)->first();
-        // dd($subsClass);
 
         if (!$subsClass) {
             return redirect()->back()->withErrors(['message' => 'Subject not found for the selected class.']);
