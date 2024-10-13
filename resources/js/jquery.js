@@ -61,4 +61,22 @@ $(document).ready(function() {
         $('#studentTableBody tr').show();
         renumberRows();
     });
+    
+    $('#dropStudent').hide();
+
+    $('#dropStudentSwitch').on('change', function() {
+        if (this.checked) {
+            $('#dropStudentSwitch').css({
+                backgroundColor: "red"
+            })
+            setTimeout(function() {        
+                $('#dropStudent').fadeIn();
+            }, 50);
+        } else {
+            $('#dropStudentSwitch').css({
+                backgroundColor: "white"
+            })
+            $('#dropStudent').hide();
+        }
+    })
 });

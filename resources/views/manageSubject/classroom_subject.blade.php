@@ -41,7 +41,7 @@
                                         @foreach ($registeredTeachers[$subject->id] as $teacher)
                                             <option value="{{ $teacher->teacher->id }}">{{ $teacher->teacher->name }}</option>
                                         @endforeach
-                                        </select>        
+                                        </select>
                                 </td>
                                 <td class="text-center">
                                     <button type="submit" class="btn btn-warning text-white tr-button">Update</button>

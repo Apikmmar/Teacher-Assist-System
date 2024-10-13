@@ -16,7 +16,6 @@ use Illuminate\Http\Request;
 use Illuminate\View\View as View;
 use Illuminate\Support\Str;
 use Illuminate\Support\Facades\DB;
-use Illuminate\Support\Facades\Redirect;
 
 class SubjectController extends Controller
 {
@@ -264,5 +263,9 @@ class SubjectController extends Controller
         $subClass->delete();
 
         return redirect()->route('class_subject', ['id' => $class_id])->with('red-message', 'Subject Successfully Drop From Classroom');
+    }
+
+    public function addStudentElectiveSubject() {
+        
     }
 }

@@ -35,6 +35,7 @@ class StudentsController extends Controller
 
     public function viewStudentDetails($id): View {
         $std = Student::findOrFail($id);
+        $classes = Classroom::all();
 
         $std->name = Str::title($std->name);
 
@@ -48,7 +49,7 @@ class StudentsController extends Controller
         $std->dob = Carbon::parse($std->dob)->format('j F Y');
         $std->join_school_date = Carbon::parse($std->join_school_date)->format('j F Y');
 
-        return view('manageClassroom.manageStudents.view_student', compact('std', 'age'));
+        return view('manageClassroom.manageStudents.view_student', compact('std', 'age', 'classes'));
     }
 
     public function addNewStudent(AddStudentRequest $request): RedirectResponse {
@@ -68,6 +69,19 @@ class StudentsController extends Controller
         $std->save();
 
         return redirect()->route('all_student')->with('blue-message', 'Student Successfully Registered');
+    }
+
+    public function registerStudentClass(Request $request, $id): RedirectResponse {
+        $request->validate([
+            'classroom_id' => ['required', 'exists:classrooms,id'],
+        ]);
+
+        $class = Classroom::findOrFail($request->classroom_id);
+        $std = Student::findOrFail($id);
+
+        $std->update(['classroom_id' => $class->id]);
+
+        return redirect()->route('view_student', ['id' => $id])->with('blue-message', 'Successfully Add Student to ' . $class->name . '.');
     }
 
     // if more than 10 name it display all at second paginate
