@@ -88,17 +88,16 @@
                         {{ __('Drop Student') }}
                     </h4>
                 </header>
-                <form action="" method="post" enctype="multipart/form-data">
+                <form action="{{ route('transition_student.create', ['id' => $std->id]) }}" method="post" enctype="multipart/form-data">
                     @csrf
-
                     <div>
                         <div class="row mb-3">
                             <label for="name" class="col-md-4 col-form-label text-md-end fw-bold">{{ __('Reason of Change School') }} </label>
                             
                             <div class="col-md-6">
-                                <input id="name" type="text" class="form-control @error('name') is-invalid @enderror" name="name" placeholder="Reason" required autocomplete="name" autofocus>
+                                <input id="name" type="text" class="form-control @error('name') is-invalid @enderror" name="change_reason" placeholder="Reason" required autocomplete="name" autofocus>
                                 
-                                @error('name')
+                                @error('change_reason')
                                 <span class="invalid-feedback" role="alert">
                                     <strong>{{ $message }}</strong>
                                 </span>
@@ -110,9 +109,9 @@
                             <label for="name" class="col-md-4 col-form-label text-md-end fw-bold">{{ __('New School Name') }} </label>
                             
                             <div class="col-md-6">
-                                <input id="name" type="text" class="form-control @error('name') is-invalid @enderror" name="name" placeholder="Name" required autocomplete="name" autofocus>
+                                <input id="name" type="text" class="form-control @error('name') is-invalid @enderror" name="new_school" placeholder="Name" required autocomplete="name" autofocus>
                                 
-                                @error('name')
+                                @error('new_school')
                                 <span class="invalid-feedback" role="alert">
                                     <strong>{{ $message }}</strong>
                                 </span>
@@ -124,9 +123,9 @@
                             <label for="name" class="col-md-4 col-form-label text-md-end fw-bold">{{ __('Reason of Drop School') }} </label>
                             
                             <div class="col-md-6">
-                                <input id="name" type="text" class="form-control @error('name') is-invalid @enderror" name="name" placeholder="Reason" required autocomplete="name" autofocus>
+                                <input id="name" type="text" class="form-control @error('name') is-invalid @enderror" name="drop_reason" placeholder="Reason" required autocomplete="name" autofocus>
                                 
-                                @error('name')
+                                @error('drop_reason')
                                 <span class="invalid-feedback" role="alert">
                                     <strong>{{ $message }}</strong>
                                 </span>
@@ -138,9 +137,9 @@
                             <label for="name" class="col-md-4 col-form-label text-md-end fw-bold">{{ __('Date of Change/Drop School') }} </label>
                             
                             <div class="col-md-6">
-                                <input id="name" type="date" class="form-control @error('name') is-invalid @enderror" name="name" placeholder="Reason" required autocomplete="name" autofocus>
+                                <input id="name" type="date" class="form-control @error('name') is-invalid @enderror" name="date_transition" placeholder="Reason" required autocomplete="name" autofocus>
                                 
-                                @error('name')
+                                @error('date_transition')
                                 <span class="invalid-feedback" role="alert">
                                     <strong>{{ $message }}</strong>
                                 </span>
@@ -149,7 +148,7 @@
                         </div>
                     </div>
                     <div class="d-flex justify-content-center pt-2">
-                        <button type="submit" class="btn text-white btn-danger tr-button">Drop</button>
+                    <button data-bs-toggle="modal" data-bs-target="#confirmDelete{{ $std->id }}" class="btn btn-danger tr-button">Drop Student</button>
                         &nbsp;&nbsp;&nbsp;
                         <button type="reset" class="btn text-white btn-secondary tr-button">Reset</button>
                     </div>

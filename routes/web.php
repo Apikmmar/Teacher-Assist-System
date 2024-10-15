@@ -36,6 +36,7 @@ Route::middleware('auth')->group(function () {
     Route::post('/new_student', [StudentsController::class, 'addNewStudent'])->name('add_student.create');
     Route::patch('/student_classroom/{id}', [StudentsController::class, 'registerStudentClass'])->name('edit_student.add_class');
     Route::delete('/delete_student/{id}', [StudentsController::class, 'deleteStudent'])->name('delete_student.delete');
+    Route::post('/view_student/{id}/transition', [StudentsController::class, 'addStudentTranstion'])->name('transition_student.create');
     
     Route::get('/all_classroom', [ClassroomController::class, 'viewAllClassroom'])->name('all_classroom');
     Route::post('/all_classroom', [ClassroomController::class, 'searchClassroomName'])->name('search_classroom');

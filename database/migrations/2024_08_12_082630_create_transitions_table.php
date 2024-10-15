@@ -14,6 +14,7 @@ return new class extends Migration
         Schema::create('transitions', function (Blueprint $table) {
             $table->id();
             $table->foreignId('student_id')->constrained()->onDelete('cascade');
+            $table->integer('lastclass_id')->nullable();
             $table->date('change_school_date')->nullable();
             $table->string('reason_change', 100)->nullable();
             $table->string('new_school_name', 100)->nullable();

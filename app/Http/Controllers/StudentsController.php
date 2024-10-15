@@ -3,8 +3,10 @@
 namespace App\Http\Controllers;
 
 use App\Http\Requests\AddStudentRequest;
+use App\Http\Requests\StudentTransitionRequest;
 use App\Models\Classroom;
 use App\Models\Student;
+use App\Models\Transition;
 use Carbon\Carbon;
 use Illuminate\Http\RedirectResponse;
 use Illuminate\Http\Request;
@@ -109,5 +111,26 @@ class StudentsController extends Controller
         $std->delete();
 
         return redirect()->route('all_student')->with('red-message', 'Student Deleted');
+    }
+
+    public function addStudentTranstion(StudentTransitionRequest $request, $id): RedirectResponse {
+        $request->validated();
+
+        $std = Student::findOrFail($id);
+        
+        $transition = Transition::create([
+            'change_reason' => $request->change_reason,
+            'student_id' => $std->id,
+            'lastclass_id' => $std->classroom_id,
+            'new_school' => $request->new_school,
+            'drop_reason' => $request->drop_reason,
+            'date_transition' => $request->date_transition,
+        ]);
+        
+        $transition->save();
+
+        $std->update(['classroom_id' => NULL, 'status' => 'Inactive']);
+
+        return redirect()->route('view_student', ['id' => $id])->with('red-message', 'Student Drop From School');
     }
 }
