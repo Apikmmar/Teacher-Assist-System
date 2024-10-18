@@ -95,9 +95,9 @@
                             <label for="name" class="col-md-4 col-form-label text-md-end fw-bold">{{ __('Reason of Change School') }} </label>
                             
                             <div class="col-md-6">
-                                <input id="name" type="text" class="form-control @error('name') is-invalid @enderror" name="change_reason" placeholder="Reason" required autocomplete="name" autofocus>
+                                <input id="name" type="text" class="form-control @error('name') is-invalid @enderror" name="change_school_reason" placeholder="Reason" required autocomplete="name" autofocus>
                                 
-                                @error('change_reason')
+                                @error('change_school_reason')
                                 <span class="invalid-feedback" role="alert">
                                     <strong>{{ $message }}</strong>
                                 </span>
@@ -109,9 +109,9 @@
                             <label for="name" class="col-md-4 col-form-label text-md-end fw-bold">{{ __('New School Name') }} </label>
                             
                             <div class="col-md-6">
-                                <input id="name" type="text" class="form-control @error('name') is-invalid @enderror" name="new_school" placeholder="Name" required autocomplete="name" autofocus>
+                                <input id="name" type="text" class="form-control @error('name') is-invalid @enderror" name="new_school_name" placeholder="Name" required autocomplete="name" autofocus>
                                 
-                                @error('new_school')
+                                @error('new_school_name')
                                 <span class="invalid-feedback" role="alert">
                                     <strong>{{ $message }}</strong>
                                 </span>
@@ -123,9 +123,9 @@
                             <label for="name" class="col-md-4 col-form-label text-md-end fw-bold">{{ __('Reason of Drop School') }} </label>
                             
                             <div class="col-md-6">
-                                <input id="name" type="text" class="form-control @error('name') is-invalid @enderror" name="drop_reason" placeholder="Reason" required autocomplete="name" autofocus>
+                                <input id="name" type="text" class="form-control @error('name') is-invalid @enderror" name="reason_drop" placeholder="Reason" required autocomplete="name" autofocus>
                                 
-                                @error('drop_reason')
+                                @error('reason_drop')
                                 <span class="invalid-feedback" role="alert">
                                     <strong>{{ $message }}</strong>
                                 </span>
@@ -137,9 +137,9 @@
                             <label for="name" class="col-md-4 col-form-label text-md-end fw-bold">{{ __('Date of Change/Drop School') }} </label>
                             
                             <div class="col-md-6">
-                                <input id="name" type="date" class="form-control @error('name') is-invalid @enderror" name="date_transition" placeholder="Reason" required autocomplete="name" autofocus>
+                                <input id="name" type="date" class="form-control @error('name') is-invalid @enderror" name="transition_date" placeholder="Reason" required autocomplete="name" autofocus>
                                 
-                                @error('date_transition')
+                                @error('transition_date')
                                 <span class="invalid-feedback" role="alert">
                                     <strong>{{ $message }}</strong>
                                 </span>
@@ -148,7 +148,7 @@
                         </div>
                     </div>
                     <div class="d-flex justify-content-center pt-2">
-                    <button data-bs-toggle="modal" data-bs-target="#confirmDelete{{ $std->id }}" class="btn btn-danger tr-button">Drop Student</button>
+                        <button type="submit" class="btn btn-danger tr-button">Drop Student</button>
                         &nbsp;&nbsp;&nbsp;
                         <button type="reset" class="btn text-white btn-secondary tr-button">Reset</button>
                     </div>

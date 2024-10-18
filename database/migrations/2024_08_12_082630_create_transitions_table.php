@@ -14,11 +14,10 @@ return new class extends Migration
         Schema::create('transitions', function (Blueprint $table) {
             $table->id();
             $table->foreignId('student_id')->constrained()->onDelete('cascade');
-            $table->integer('lastclass_id')->nullable();
-            $table->date('change_school_date')->nullable();
-            $table->string('reason_change', 100)->nullable();
+            $table->bigInteger('lastclass_id')->nullable();
+            $table->date('transition_date')->nullable();
+            $table->string('change_school_reason', 100)->nullable();
             $table->string('new_school_name', 100)->nullable();
-            $table->date('drop_school_date')->nullable();
             $table->string('reason_drop', 100)->nullable();
             $table->timestamps();
         });

@@ -22,10 +22,10 @@ class StudentTransitionRequest extends FormRequest
     public function rules(): array
     {
         return [
-            'change_reason' => ['required', 'string', 'max:100'],
-            'new_school' => ['required', 'string', 'max:100'],
-            'drop_reason' => ['required', 'string', 'max:100'],
-            'date_transition' => ['required', 'date'],
+            'change_school_reason' => ['nullable', 'string', 'max:100'],
+            'new_school_name' => ['nullable', 'string', 'max:100'],
+            'reason_drop' => ['nullable', 'string', 'max:100'],
+            'transition_date' => ['nullable', 'date'],
         ];
     }
 }

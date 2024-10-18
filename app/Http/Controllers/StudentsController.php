@@ -114,17 +114,23 @@ class StudentsController extends Controller
     }
 
     public function addStudentTranstion(StudentTransitionRequest $request, $id): RedirectResponse {
-        $request->validated();
+        $request->validate([
+            'change_school_reason' => ['required', 'string', 'max:100'],
+            'new_school_name' => ['required', 'string', 'max:100'],
+            'reason_drop' => ['required', 'string', 'max:100'],
+            'transition_date' => ['required', 'date'],
+        ]);
 
         $std = Student::findOrFail($id);
+        $class = Classroom::findOrFail($std->classroom_id);
         
         $transition = Transition::create([
-            'change_reason' => $request->change_reason,
+            'change_school_reason' => $request->change_school_reason,
             'student_id' => $std->id,
             'lastclass_id' => $std->classroom_id,
-            'new_school' => $request->new_school,
-            'drop_reason' => $request->drop_reason,
-            'date_transition' => $request->date_transition,
+            'new_school_name' => $request->new_school_name,
+            'reason_drop' => $request->reason_drop,
+            'transition_date' => $request->transition_date,
         ]);
         
         $transition->save();
