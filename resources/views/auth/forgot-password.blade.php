@@ -8,10 +8,7 @@
         <div class="mb-4 text-sm text-gray-600 dark:text-gray-400">
             {{ __('Oops! Forgot your password? Don’t worry—just enter your email address below, and we’ll send you a link to quickly reset it. You’ll be back to teaching in no time!') }}
         </div>
-    
-        <!-- Session Status -->
-        <x-auth-session-status class="mb-4" :status="session('status')" />
-    
+        
         <form method="POST" action="{{ route('password.email') }}">
             @csrf
     

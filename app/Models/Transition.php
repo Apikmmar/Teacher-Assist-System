@@ -12,10 +12,10 @@ class Transition extends Model
 
     protected $fillable = [
         'student_id',
-        'change_school_date',
-        'reason_change',
+        'lastclass_id',
+        'transition_date',
+        'change_school_reason',
         'new_school_name',
-        'drop_school_date',
         'reason_drop',
     ];
 

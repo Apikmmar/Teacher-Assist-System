@@ -7,7 +7,7 @@
 
             {{-- SMB Photo --}}
             <div class="row mb-4 justify-content-center">
-                <img src="https://upload.wikimedia.org/wikipedia/ms/6/67/UMP.png" style="max-width: 350px" class="img-fluid" alt="SMK Baling.png">
+                <img src="{{ asset('asset/default-image/smkb_logo.jpg') }}" style="max-width: 180px" class="img-fluid" alt="SMK Baling.png">
             </div>
             
             <!-- IC Number -->

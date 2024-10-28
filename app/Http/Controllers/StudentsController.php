@@ -124,16 +124,16 @@ class StudentsController extends Controller
         $std = Student::findOrFail($id);
         $class = Classroom::findOrFail($std->classroom_id);
         
-        $transition = Transition::create([
+        Transition::create([
             'change_school_reason' => $request->change_school_reason,
             'student_id' => $std->id,
-            'lastclass_id' => $std->classroom_id,
+            'lastclass_id' => $class->id,
             'new_school_name' => $request->new_school_name,
             'reason_drop' => $request->reason_drop,
             'transition_date' => $request->transition_date,
         ]);
         
-        $transition->save();
+        // $transition->save();
 
         $std->update(['classroom_id' => NULL, 'status' => 'Inactive']);
 

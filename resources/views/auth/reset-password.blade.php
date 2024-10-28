@@ -10,8 +10,8 @@
                 <img src="https://upload.wikimedia.org/wikipedia/ms/6/67/UMP.png" style="max-width: 350px" class="img-fluid" alt="SMK Baling.png">
             </div>
     
-            <div class="mb-4 text-sm text-gray-600 dark:text-gray-400">
-                {{ __('Enter your new password below') }}
+            <div class="mb-4 h5">
+                {{ __('Please Enter your new password below.') }}
             </div>
     
             <!-- Email Address -->
