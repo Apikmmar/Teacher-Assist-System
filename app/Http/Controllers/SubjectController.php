@@ -6,6 +6,7 @@ use App\Http\Requests\AddSubjectRequest;
 use App\Http\Requests\UpdateSubjectInfoRequest;
 use App\Models\Classroom;
 use App\Models\Form;
+use App\Models\Student;
 use App\Models\Subject;
 use App\Models\Subject_Taken;
 use App\Models\Subject_Teacher;
@@ -127,7 +128,18 @@ class SubjectController extends Controller
             'subjectsNotTaken' => $subjectsNotTaken,
             'notRegisteredTeachers' => $notRegisteredTeachers,
         ]);
-    }    
+    }
+
+    public function viewStudentSubject($id = 2): View {
+        $student = Student::findOrFail($id);
+
+        $class = Classroom::findOrFail($student->classroom_id);
+
+        return view('manageSubject.student_subject', [
+            'class' => $class,
+            'student' => $student,
+        ]);
+    }
 
     private function convertTeacherNameFormat($teachers) {
         if ($teachers instanceof Collection) {

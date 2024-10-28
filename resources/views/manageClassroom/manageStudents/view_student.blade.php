@@ -5,6 +5,18 @@
     <div class="container fade-in-text">
         @include('layouts.message')
 
+        <div class="d-flex justify-content-end">
+            <div class="btn-group mb-2">
+                <button type="button" class="btn btn-primary dropdown-toggle" data-bs-toggle="dropdown" aria-expanded="false">
+                  More On Student
+                </button>
+                <ul class="dropdown-menu dropdown-menu-end">
+                  <li><a class="dropdown-item" href="#"><i class="bi bi-pencil"></i>Edit Student Info</a></li>
+                  <li><a class="dropdown-item" href="{{ route('student_subject', ['id' => $std->id]) }}"><i class="bi bi-trash"></i> Registered Subject</a></li>
+                </ul>
+            </div>
+        </div>
+          
         <div>      
             <div class="row mb-3">
                 <label for="ic" class="col-md-4 col-form-label text-md-end fw-bold">{{ __('Identity Card Number') }}</label>
