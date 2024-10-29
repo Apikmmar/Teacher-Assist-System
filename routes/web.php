@@ -62,7 +62,7 @@ Route::middleware('auth')->group(function () {
     Route::post('/subject_registered/new_subject/{id}', [SubjectController::class, 'addSubjectClass'])->name('add.class_subject');
     Route::put('/subject_registered/new_teacher', [SubjectController::class, 'changeSubjectTeacher'])->name('edit.classsubject_teacher');
     Route::delete('/subject_registered/drop_subject/{id}/{class_id}', [SubjectController::class, 'dropClassroomSubject'])->name('edit.dropclassroom_subject');
-    Route::get('/view_student/{id}/subject_registered', [SubjectController::class, 'viewStudentSubject'])->name('student_subject');
+    Route::get('/view_student/{id}/subject_taken', [SubjectController::class, 'viewStudentSubject'])->name('student_subject');
 });
 
 require __DIR__.'/auth.php';

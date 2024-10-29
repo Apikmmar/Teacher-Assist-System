@@ -6,6 +6,7 @@ use App\Http\Requests\AddStudentRequest;
 use App\Http\Requests\StudentTransitionRequest;
 use App\Models\Classroom;
 use App\Models\Student;
+use App\Models\Subject_Taken;
 use App\Models\Transition;
 use Carbon\Carbon;
 use Illuminate\Http\RedirectResponse;
@@ -35,9 +36,35 @@ class StudentsController extends Controller
         ]);
     }
 
+    // public function viewStudentSubject($id): View {
+    //     $student = Student::findOrFail($id);
+        // $class = Classroom::findOrFail($student->classroom_id);
+
+        // $classSubjects = Subject_Taken::where('classroom_id', $class->id)->get();
+        // $electiveSubjects = Subject_Taken::where('student_id', $student->id)->get();
+
+        // $allSubjects = $classSubjects->merge($electiveSubjects);
+        // $subsTaken = [];
+
+        // foreach ($allSubjects as $subject) {
+        //     if ($subject->subject != NULL) {
+        //         $subsTaken[] = Str::title($subject->subject->name);
+        //     } else {
+        //         $subsTaken[] = 'N/A';
+        //     }
+        // }
+        // $subsTaken = collect($subsTaken);
+
+    //     return view('manageSubject.student_subject', [
+    //         'class' => $class,
+    //         'student' => $student,
+    //         'subsTaken' => $subsTaken,
+    //     ]);
+    // }
+
     public function viewStudentDetails($id): View {
         $std = Student::findOrFail($id);
-        $classes = Classroom::all();
+        $class = Classroom::findOrFail($std->classroom_id);
 
         $std->name = Str::title($std->name);
 
@@ -51,7 +78,29 @@ class StudentsController extends Controller
         $std->dob = Carbon::parse($std->dob)->format('j F Y');
         $std->join_school_date = Carbon::parse($std->join_school_date)->format('j F Y');
 
-        return view('manageClassroom.manageStudents.view_student', compact('std', 'age', 'classes'));
+        $subsTaken = $this->getStudentSubjects($class->id, $std->id);
+
+        return view('manageClassroom.manageStudents.view_student', [
+            'std' => $std,
+            'age' => $age,
+            'subsTaken' => $subsTaken,
+        ]);
+    }
+
+    private function getStudentSubjects($classid, $stdid) {
+        $allSubjects = Subject_Taken::where('classroom_id', $classid)->orWhere('student_id', $stdid)->get();
+
+        $subsTaken = [];
+
+        foreach ($allSubjects as $subject) {
+            if ($subject->subject != NULL) {
+                $subsTaken[] = Str::title($subject->subject->name);
+            } else {
+                $subsTaken[] = 'N/A';
+            }
+        }
+        $subsTaken = collect($subsTaken);
+        return $subsTaken;
     }
 
     public function addNewStudent(AddStudentRequest $request): RedirectResponse {

@@ -5,85 +5,51 @@
     <div class="container fade-in-text">
         @include('layouts.message')
 
-        <div class="d-flex justify-content-end">
+        <div class="d-flex justify-content-end mb-2">
             <div class="btn-group mb-2">
-                <button type="button" class="btn btn-primary dropdown-toggle" data-bs-toggle="dropdown" aria-expanded="false">
-                  More On Student
+                <button type="button" class="btn btn-info text-white dropdown-toggle" data-bs-toggle="dropdown" aria-expanded="false">
+                    Edit Student
                 </button>
                 <ul class="dropdown-menu dropdown-menu-end">
-                  <li><a class="dropdown-item" href="#"><i class="bi bi-pencil"></i>Edit Student Info</a></li>
-                  <li><a class="dropdown-item" href="{{ route('student_subject', ['id' => $std->id]) }}"><i class="bi bi-trash"></i> Registered Subject</a></li>
+                  <li><a class="dropdown-item" href="#"><i class="bi bi-pencil"></i> Edit Student Info</a></li>
+                @if ($std->classroom_id && $std->status == 'Active')
+                  <li><a class="dropdown-item" href="{{ route('student_subject', ['id' => $std->id]) }}"><i class="bi bi-book"></i> Registered Subject</a></li>
+                @endif
                 </ul>
             </div>
         </div>
-          
-        <div>      
-            <div class="row mb-3">
-                <label for="ic" class="col-md-4 col-form-label text-md-end fw-bold">{{ __('Identity Card Number') }}</label>
-                
-                <div class="col-md-6">
-                    <input id="ic" type="text" class="form-control @error('ic') is-invalid @enderror" name="ic" value="{{ $std->ic }}" readonly autocomplete="ic" autofocus>
-                </div>
-            </div>
 
-            <div class="row mb-3">
-                <label for="ic" class="col-md-4 col-form-label text-md-end fw-bold">{{ __('Student ID') }}</label>
-                
-                <div class="col-md-6">
-                    <input id="ic" type="text" class="form-control @error('ic') is-invalid @enderror" name="ic" value="{{ $std->student_id }}" readonly autocomplete="ic" autofocus>
-                </div>
-            </div>
+        @include('manageClassroom.partials.student_info') 
 
-        @if ($std->classroom_id)
-            <div class="row mb-3">
-                <label for="ic" class="col-md-4 col-form-label text-md-end fw-bold">{{ __('Classroom') }}</label>
-                
-                <div class="col-md-6">
-                    <input id="ic" type="text" class="form-control @error('ic') is-invalid @enderror" name="ic" value="{!! optional($std)->classroom->name ?? 'Not Applicable' !!}" readonly autocomplete="ic" autofocus>
-                </div>
+        @if ($std->classroom_id && $std->status == 'Active')
+        <hr>
+        <header>
+            <h4 class="text-lg font-medium text-gray-900 dark:text-gray-100">
+                {{ __('Subject Taken by The Student') }}
+            </h4>
+        </header>
+        @if ($subsTaken->isNotEmpty())
+        <div class="d-flex justify-content-start align-items-center">
+            <table class="table table-hover" style="max-width: 400px;">
+
+                <tbody id="teacherTableBody">
+                    @php $startNumber = 1; @endphp
+                    @foreach ($subsTaken as $index => $subs)
+                        <tr class="align-middle teacher-list">
+                            <th scope="row">{{ $startNumber + $index }}</th>
+                            <td>{{ $subs }}</td>
+                        </tr>
+                    @endforeach
+                </tbody>
+            </table>
+        </div>
+        
+        @else
+            <div class="d-flex justify-content-center mt-2">
+                <h4 class="fw-bold">No Teachers Assigned</h4>
             </div>
         @endif
-
-            <div class="row mb-3">
-                <label for="name" class="col-md-4 col-form-label text-md-end fw-bold">{{ __('Name') }}</label>
-                
-                <div class="col-md-6">
-                    <input id="name" type="text" class="form-control @error('name') is-invalid @enderror" name="name" value="{{ $std->name }}" readonly autocomplete="name" autofocus>
-                </div>
-            </div>
-
-            <div class="row mb-3">
-                <label for="ic" class="col-md-4 col-form-label text-md-end fw-bold">{{ __('Age') }}</label>
-                
-                <div class="col-md-6">
-                    <input id="ic" type="text" class="form-control @error('ic') is-invalid @enderror" name="ic" value="{{ $age }} years old" readonly autocomplete="ic" autofocus>
-                </div>
-            </div>
-
-            <div class="row mb-3">
-                <label for="ic" class="col-md-4 col-form-label text-md-end fw-bold">{{ __('Status') }}</label>
-                
-                <div class="col-md-6">
-                    <input id="ic" type="text" class="form-control @error('ic') is-invalid @enderror" name="ic" value="{{ $std->status }}" readonly autocomplete="ic" autofocus>
-                </div>
-            </div>
-
-            <div class="row mb-3">
-                <label for="ic" class="col-md-4 col-form-label text-md-end fw-bold">{{ __('Date of Birth') }}</label>
-                
-                <div class="col-md-6">
-                    <input id="ic" type="text" class="form-control @error('ic') is-invalid @enderror" name="ic" value="{{ $std->dob }}" readonly autocomplete="ic" autofocus>
-                </div>
-            </div>
-
-            <div class="row mb-3">
-                <label for="ic" class="col-md-4 col-form-label text-md-end fw-bold">{{ __('Date of Joining School') }}</label>
-                
-                <div class="col-md-6">
-                    <input id="ic" type="text" class="form-control @error('ic') is-invalid @enderror" name="ic" value="{{ $std->join_school_date }}" readonly autocomplete="ic" autofocus>
-                </div>
-            </div>
-        </div>
+        @endif
 
         @can('coordinator')
         @if ($std->status == 'Active')
