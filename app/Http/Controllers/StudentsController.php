@@ -36,52 +36,33 @@ class StudentsController extends Controller
         ]);
     }
 
-    // public function viewStudentSubject($id): View {
-    //     $student = Student::findOrFail($id);
-        // $class = Classroom::findOrFail($student->classroom_id);
-
-        // $classSubjects = Subject_Taken::where('classroom_id', $class->id)->get();
-        // $electiveSubjects = Subject_Taken::where('student_id', $student->id)->get();
-
-        // $allSubjects = $classSubjects->merge($electiveSubjects);
-        // $subsTaken = [];
-
-        // foreach ($allSubjects as $subject) {
-        //     if ($subject->subject != NULL) {
-        //         $subsTaken[] = Str::title($subject->subject->name);
-        //     } else {
-        //         $subsTaken[] = 'N/A';
-        //     }
-        // }
-        // $subsTaken = collect($subsTaken);
-
-    //     return view('manageSubject.student_subject', [
-    //         'class' => $class,
-    //         'student' => $student,
-    //         'subsTaken' => $subsTaken,
-    //     ]);
-    // }
-
     public function viewStudentDetails($id): View {
         $std = Student::findOrFail($id);
-        $class = Classroom::findOrFail($std->classroom_id);
-
-        $std->name = Str::title($std->name);
 
         $ageOnIc = (substr($std->ic, 0, 2));
-        
         $yearNow = date('Y');
         $century = ($ageOnIc > $yearNow - 2000) ? 1900 : 2000;
-
         $age = $yearNow - ($century + $ageOnIc);
 
-        $std->dob = Carbon::parse($std->dob)->format('j F Y');
-        $std->join_school_date = Carbon::parse($std->join_school_date)->format('j F Y');
-
-        $subsTaken = $this->getStudentSubjects($class->id, $std->id);
+        if($std->classroom_id) {
+            $class = Classroom::findOrFail($std->classroom_id);
+            $std->name = Str::title($std->name);
+    
+            $std->dob = Carbon::parse($std->dob)->format('j F Y');
+            $std->join_school_date = Carbon::parse($std->join_school_date)->format('j F Y');
+    
+            $subsTaken = $this->getStudentSubjects($class->id, $std->id);
+            $classes = null;
+        } else {
+            $class = null;
+            $subsTaken = null;
+            $classes = Classroom::all();
+        }
 
         return view('manageClassroom.manageStudents.view_student', [
             'std' => $std,
+            'class' => $class,
+            'classes' => $classes,
             'age' => $age,
             'subsTaken' => $subsTaken,
         ]);

@@ -50,7 +50,7 @@
             </h4>
         </header>
 
-        @if ($subsTaken->isNotEmpty())
+        @if (!empty($subsTaken))
                 <div class="d-flex justify-content-center">
                     <table class="table table-hover" style="max-width: 900px">
                         <thead>
@@ -60,11 +60,11 @@
                             </tr>
                         </thead>
                         <tbody id="teacherTableBody">
-                            @php $startNumber = 1; @endphp
-                            @foreach ($subsTaken as $index => $subs)
+                            @foreach ($subsTaken as $index => $subject)
                                 <tr class="align-middle teacher-list">
-                                    <th scope="row">{{ $startNumber + $index }}</th>
-                                    <td>{{ $subs }}</td>
+                                    <th scope="row">{{ 1 + $index  }}</th>
+                                    <td>{{ $subject }}</td>
+                                    <td>{{ $subsTeacher[$index] }}</td>
                                 </tr>
                             @endforeach
                         </tbody>
@@ -81,7 +81,7 @@
                 {{ __('Subject Available') }}
             </h4>
 
-            @if ($subsTaken->isNotEmpty())
+            @if (!empty($subsTaken))
                 <div class="d-flex justify-content-center">
                     <table class="table table-hover" style="max-width: 900px">
                         <thead>

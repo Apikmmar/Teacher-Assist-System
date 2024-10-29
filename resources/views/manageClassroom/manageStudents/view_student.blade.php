@@ -46,9 +46,37 @@
         
         @else
             <div class="d-flex justify-content-center mt-2">
-                <h4 class="fw-bold">No Teachers Assigned</h4>
+                <h4 class="fw-bold">No Subject Registered</h4>
             </div>
         @endif
+        @endif
+
+        @if (is_null($std->classroom_id) && ($std->status == 'Active'))
+        <div>
+            <hr>
+            <form action="{{ route('edit_student.add_class', ['id' => $std->id]) }}" method="post" enctype="multipart/form-data">
+                @csrf
+                @method('PATCH')
+
+                <div class="row mb-3 align-items-center">
+                    <label for="classroom" class="col-md-4 col-form-label text-md-end fw-bold">{{ __('Select Classroom') }}</label>
+                    
+                    <div class="col-md-4">
+                        <select id="classroom_id" name="classroom_id" class="form-select" aria-label="Classroom">
+                            <option selected value="">Select Classroom</option>
+                
+                            @foreach ($classes as $class)
+                                <option value="{{ $class->id }}">{{ $class->name }}</option>
+                            @endforeach
+                        </select>
+                    </div>
+                
+                    <div class="col-md-2">
+                        <button type="submit" class="btn btn-primary tr-button">Add Class</button>
+                    </div>
+                </div>
+            </form>
+        </div>
         @endif
 
         @can('coordinator')
@@ -134,33 +162,5 @@
             </div>
         @endif
         @endcan
-
-        @if (is_null($std->classroom_id) && ($std->status == 'Active'))
-        <div>
-            <hr>
-            <form action="{{ route('edit_student.add_class', ['id' => $std->id]) }}" method="post" enctype="multipart/form-data">
-                @csrf
-                @method('PATCH')
-
-                <div class="row mb-3 align-items-center">
-                    <label for="classroom" class="col-md-4 col-form-label text-md-end fw-bold">{{ __('Select Classroom') }}</label>
-                    
-                    <div class="col-md-4">
-                        <select id="classroom_id" name="classroom_id" class="form-select" aria-label="Classroom">
-                            <option selected value="">Select Classroom</option>
-                
-                            @foreach ($classes as $class)
-                                <option value="{{ $class->id }}">{{ $class->name }}</option>
-                            @endforeach
-                        </select>
-                    </div>
-                
-                    <div class="col-md-2">
-                        <button type="submit" class="btn btn-primary tr-button">Add Class</button>
-                    </div>
-                </div>
-            </form>
-        </div>
-        @endif
     </div>
 @endsection

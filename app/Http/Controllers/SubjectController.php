@@ -133,23 +133,27 @@ class SubjectController extends Controller
     public function viewStudentSubject($id): View {
         $student = Student::findOrFail($id);
         $class = Classroom::findOrFail($student->classroom_id);
+        
         $allSubjects = Subject_Taken::where('classroom_id', $class->id)->orWhere('student_id', $student->id)->get();
 
         $subsTaken = [];
+        $subsTeacher = [];
 
         foreach ($allSubjects as $subject) {
             if ($subject->subject != NULL) {
                 $subsTaken[] = Str::title($subject->subject->name);
+                $subsTeacher[$subject->id] = $subject->subjectTeacher->user_id;
             } else {
                 $subsTaken[] = 'N/A';
+                $subsTeacher[$subject->id] = 'N/A';
             }
         }
-        $subsTaken = collect($subsTaken);
 
         return view('manageSubject.student_subject', [
             'class' => $class,
             'student' => $student,
             'subsTaken' => $subsTaken,
+            'subsTeacher' => $subsTeacher,
         ]);
     }
 
