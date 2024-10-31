@@ -50,62 +50,83 @@
             </h4>
         </header>
 
-        @if (!empty($subsTaken))
-                <div class="d-flex justify-content-center">
-                    <table class="table table-hover" style="max-width: 900px">
-                        <thead>
-                            <tr>
-                                <th scope="col">No</th>
-                                <th scope="col">Subject Name</th>
+        {{-- @if (!empty($subsTaken))
+            <div class="d-flex justify-content-center">
+                <table class="table table-hover" style="max-width: 500px">
+                    <thead>
+                        <tr>
+                            <th scope="col">No</th>
+                            <th scope="col">Subject Name</th>
+                            <th scope="col">Subject's Teacher</th>
+                        </tr>
+                    </thead>
+                    <tbody id="teacherTableBody">
+                        @foreach ($subsTaken as $index => $subject)
+                            <tr class="align-middle teacher-list">
+                                <th scope="row">{{ 1 + $index  }}</th>
+                                <td>{{ $subject }}</td>
+                                <td>{{ $subsTeacher[$index] }}</td>
                             </tr>
-                        </thead>
-                        <tbody id="teacherTableBody">
-                            @foreach ($subsTaken as $index => $subject)
-                                <tr class="align-middle teacher-list">
-                                    <th scope="row">{{ 1 + $index  }}</th>
-                                    <td>{{ $subject }}</td>
-                                    <td>{{ $subsTeacher[$index] }}</td>
-                                </tr>
-                            @endforeach
-                        </tbody>
-                    </table>
-                </div>
-            @else
-                <div class="d-flex justify-content-center mt-2">
-                    <h4 class="fw-bold">No Teachers Assigned</h4>
-                </div>
-            @endif
+                        @endforeach
+                    </tbody>
+                </table>
+            </div>
+        @else
+            <div class="d-flex justify-content-center mt-2">
+                <h4 class="fw-bold">No Teachers Assigned</h4>
+            </div>
+        @endif --}}
+
         <hr>
         <header>
             <h4 class="text-lg font-medium text-gray-900 dark:text-gray-100">
                 {{ __('Subject Available') }}
             </h4>
 
-            @if (!empty($subsTaken))
-                <div class="d-flex justify-content-center">
-                    <table class="table table-hover" style="max-width: 900px">
-                        <thead>
-                            <tr>
-                                <th scope="col">No</th>
-                                <th scope="col">Subject Name</th>
+        @if ($subsNotRegistered->isNotEmpty())
+            <div class="d-flex justify-content-center">
+                <table class="table table-hover" style="max-width: 800px">
+                    <thead>
+                        <tr>
+                            <th scope="col">No</th>
+                            <th scope="col">Subject Name</th>
+                            <th scope="col">Available Teacher</th>
+                            <th scope="col">Add Elective Subject</th>
+                        </tr>
+                    </thead>
+                    <tbody id="teacherTableBody">
+                        @foreach ($subsNotRegistered as $index => $subs)
+                            <tr class="align-middle teacher-list">
+                                <th scope="row">{{ $index + 1 }}</th>
+                                <td>{{ $subs->name }}</td>
+                                <form action="" method="post">
+                                    <td>
+                                        <select id="form" name="assigned_teacher[{{ $subs->id }}]" class="form-select" style="max-width: 200px">
+                                            <option selected disabled>Select Teacher</option>
+                                            @if (isset($notRegisteredTeachers[$subs->id]))
+                                                @foreach ($notRegisteredTeachers[$subs->id] as $teacher)
+                                                    <option value="{{ $teacher->id }}">{{ $teacher->name }}</option>
+                                                @endforeach
+                                            @else
+                                                <option disabled>No available teachers</option>
+                                            @endif
+                                        </select> 
+                                    </td>
+                                    <td>
+                                        <button type="submit" class="btn btn-primary text-white tr-button">Add</button>
+                                    </td>
+                                </form>
                             </tr>
-                        </thead>
-                        <tbody id="teacherTableBody">
-                            @php $startNumber = 1; @endphp
-                            @foreach ($subsTaken as $index => $subs)
-                                <tr class="align-middle teacher-list">
-                                    <th scope="row">{{ $startNumber + $index }}</th>
-                                    <td>{{ $subs }}</td>
-                                </tr>
-                            @endforeach
-                        </tbody>
-                    </table>
-                </div>
-            @else
-                <div class="d-flex justify-content-center mt-2">
-                    <h4 class="fw-bold">No Teachers Assigned</h4>
-                </div>
-            @endif
+                        @endforeach
+                    </tbody>                        
+                </table>
+            </div>
+        @else
+            <div class="d-flex justify-content-center mt-2">
+                <h4 class="fw-bold">No Subjects Available</h4>
+            </div>
+        @endif
+
         </header>
     </div>
 

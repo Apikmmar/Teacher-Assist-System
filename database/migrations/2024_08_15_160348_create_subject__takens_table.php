@@ -17,6 +17,7 @@ return new class extends Migration
             $table->foreignId('classroom_id')->nullable()->constrained()->onDelete('cascade');
             $table->foreignId('subject_id')->constrained()->onDelete('cascade');
             $table->foreignId('subject_teacher_id')->nullable();
+            $table->string('remarks')->nullable();
             $table->timestamps();
         });
     }

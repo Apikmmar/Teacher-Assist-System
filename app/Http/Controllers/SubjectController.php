@@ -75,9 +75,6 @@ class SubjectController extends Controller
         $subjectsTaken = Subject_Taken::where('classroom_id', $id)->get();
         $allSubjects = Subject::all();
     
-        $subjectsTakenIds = $subjectsTaken->pluck('subject_id')->toArray();
-        $subjectsNotTaken = $allSubjects->whereNotIn('id', $subjectsTakenIds)->where('form_id', $class->form_id);
-    
         foreach ($subjectsTaken as $subject) {
             if ($subject->subject != NULL) {
                 $subject->subject->name = Str::title($subject->subject->name);
@@ -105,20 +102,12 @@ class SubjectController extends Controller
                 }
             }
         }
-
-        foreach ($subjectsNotTaken as $subject) {
-            $notRegisteredTeachers[$subject->id] = Subject_Teacher::where('subject_id', $subject->id)->get();
-
-            foreach ($notRegisteredTeachers[$subject->id] as $teacher) {
-                $teacher = $teacher->teacher;
     
-                if (strtolower($teacher->gender) == 'men') {
-                    $teacher->name = 'Mr. ' . Str::title($teacher->name);
-                } else {
-                    $teacher->name = 'Mrs. ' . Str::title($teacher->name);
-                }
-            }
-        }
+
+        $subjectsTakenIds = $subjectsTaken->pluck('subject_id')->toArray();
+        $subjectsNotTaken = $allSubjects->whereNotIn('id', $subjectsTakenIds)->where('form_id', $class->form_id);
+
+        $notRegisteredTeachers = $this->getSubjectNotRegisteredTeacher($subjectsNotTaken);
         
         return view('manageSubject.classroom_subject', [
             'class' => $class,
@@ -131,30 +120,59 @@ class SubjectController extends Controller
     }
 
     public function viewStudentSubject($id): View {
+        $subsTaken = [];
+        $subsTeacher = [];
+        $subsNotRegistered = [];
+        $notRegisteredTeachers = [];
+        
         $student = Student::findOrFail($id);
         $class = Classroom::findOrFail($student->classroom_id);
         
         $allSubjects = Subject_Taken::where('classroom_id', $class->id)->orWhere('student_id', $student->id)->get();
 
-        $subsTaken = [];
-        $subsTeacher = [];
-
         foreach ($allSubjects as $subject) {
             if ($subject->subject != NULL) {
                 $subsTaken[] = Str::title($subject->subject->name);
-                $subsTeacher[$subject->id] = $subject->subjectTeacher->user_id;
+                
+                if($subject->subjectTeacher && $subject->subjectTeacher->user_id != null) {
+                    $user = User::findOrFail($subject->subjectTeacher->user_id);
+                    $subsTeacher[] = $this->convertTeacherNameFormat($user);
+                } else {
+                    $subsTeacher[] = 'N/A';
+                }
+                
             } else {
                 $subsTaken[] = 'N/A';
-                $subsTeacher[$subject->id] = 'N/A';
+                $subsTeacher[] = 'N/A';
             }
         }
+
+        $subjectsTakenIds = $allSubjects->pluck('subject_id')->filter()->toArray();
+        $subsNotRegistered = Subject::whereNotIn('id', $subjectsTakenIds)->where('form_id', $class->form_id)->get();
+
+        $notRegisteredTeachers = $this->getSubjectNotRegisteredTeacher($subsNotRegistered);
 
         return view('manageSubject.student_subject', [
             'class' => $class,
             'student' => $student,
             'subsTaken' => $subsTaken,
             'subsTeacher' => $subsTeacher,
+            'subsNotRegistered' => $subsNotRegistered,
+            'notRegisteredTeachers' => $notRegisteredTeachers,
         ]);
+    }
+
+    private function getSubjectNotRegisteredTeacher($subjectsNotTaken) {
+        $notRegisteredTeachers = [];
+        
+        foreach ($subjectsNotTaken as $subject) {
+            $notRegisteredTeachers[$subject->id] = Subject_Teacher::where('subject_id', $subject->id)->with('teacher')->get();
+    
+            foreach ($notRegisteredTeachers[$subject->id] as $teacher) {
+                $teacher->name = $this->convertTeacherNameFormat($teacher->teacher);
+            }
+        }
+        return $notRegisteredTeachers;
     }
 
     private function convertTeacherNameFormat($teachers) {
