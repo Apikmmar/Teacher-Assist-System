@@ -50,7 +50,7 @@
             </h4>
         </header>
 
-        {{-- @if (!empty($subsTaken))
+        @if (!empty($subsTaken))
             <div class="d-flex justify-content-center">
                 <table class="table table-hover" style="max-width: 500px">
                     <thead>
@@ -75,7 +75,7 @@
             <div class="d-flex justify-content-center mt-2">
                 <h4 class="fw-bold">No Teachers Assigned</h4>
             </div>
-        @endif --}}
+        @endif
 
         <hr>
         <header>
@@ -99,9 +99,12 @@
                             <tr class="align-middle teacher-list">
                                 <th scope="row">{{ $index + 1 }}</th>
                                 <td>{{ $subs->name }}</td>
-                                <form action="" method="post">
+                                <form action="{{ route('add.studentelective_subject', ['id' => $student->id]) }}" method="get">
+                                    @csrf
+
                                     <td>
-                                        <select id="form" name="assigned_teacher[{{ $subs->id }}]" class="form-select" style="max-width: 200px">
+                                        <input type="hidden" name="subject_id" value="{{ $subs->id }}">
+                                        <select id="form" name="teacher_id" class="form-select" style="max-width: 200px">
                                             <option selected disabled>Select Teacher</option>
                                             @if (isset($notRegisteredTeachers[$subs->id]))
                                                 @foreach ($notRegisteredTeachers[$subs->id] as $teacher)

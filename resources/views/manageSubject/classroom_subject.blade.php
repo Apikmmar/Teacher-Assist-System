@@ -34,7 +34,7 @@
                                         @csrf
                                         @method('PUT')
 
-                                        <input type="hidden" name="subject" value="{{ $subject->id }}">
+                                        <input type="hidden" name="subject" value="{{ $subject->subject->id }}">
                                         <input type="hidden" name="class" value="{{ $class->id }}">
                                         <select id="form" name="new_teacher" class="form-select">
                                             <option selected disabled>Select Teacher</option>
@@ -101,7 +101,7 @@
                                 <select id="form" name="assigned_teacher" class="form-select" style="max-width: 200px">
                                     <option selected disabled>Select Teacher</option>
                                 @foreach ($notRegisteredTeachers[$subject->id] as $teacher)
-                                    <option value="{{ $teacher->id }}">{{ $teacher->teacher->name }}</option>
+                                    <option value="{{ $teacher->id }}">{{ $teacher->name }}</option>
                                 @endforeach
                                 </select>   
                             </td>

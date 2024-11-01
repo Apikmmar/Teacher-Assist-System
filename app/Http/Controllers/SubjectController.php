@@ -272,6 +272,9 @@ class SubjectController extends Controller
             'classroom_id' => $class->id,
             'subject_id' => $request->subject,
             'subject_teacher_id' => $request->assigned_teacher,
+            'remarks' => NULL,
+            'created_at' => now(),
+            'updated_at' => now(),
         ]);
 
         $subjectClass->save();
@@ -283,7 +286,7 @@ class SubjectController extends Controller
 
         $request->validate([
             'subject' => 'required|exists:subjects,id',
-            'new_teacher' => 'required|exists:users,id',
+            'new_teacher' => 'required|exists:subject__teachers,id',
             'class' => 'required|exists:classrooms,id',
         ]);
 
@@ -311,7 +314,26 @@ class SubjectController extends Controller
         return redirect()->route('class_subject', ['id' => $class_id])->with('red-message', 'Subject Successfully Drop From Classroom');
     }
 
-    public function addStudentElectiveSubject() {
-        
+    public function addStudentElectiveSubject(Request $request, $id) {
+        $request->validate([
+            'subject_id' => 'required|exists:subjects,id',
+            'teacher_id' => 'required|exists:subject__teachers,id',
+        ]);
+
+        $student = Student::findOrFail($id);
+
+        $subsTaken = Subject_Taken::create([
+            'student_id' => $student->id,
+            'classroom_id' => NULL,
+            'subject_id' => $request->subject_id,
+            'subject_teacher_id' => $request->teacher_id,
+            'remarks' => 'Elective Subject',
+            'created_at' => now(),
+            'updated_at' => now(),
+        ]);
+
+        $subsTaken->save();
+
+        return redirect()->route('student_subject', ['id' => $id])->with('blue-message', 'Elective Subject Is Registered to Student');
     }
 }

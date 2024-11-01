@@ -11,7 +11,7 @@
                     Edit Student
                 </button>
                 <ul class="dropdown-menu dropdown-menu-end">
-                  <li><a class="dropdown-item" href="#"><i class="bi bi-pencil"></i> Edit Student Info</a></li>
+                  <li><a class="dropdown-item" href="{{ route('student_subject', ['id' => $std->id]) }}"><i class="bi bi-pencil"></i> Edit Student Info</a></li>
                 @if ($std->classroom_id && $std->status == 'Active')
                   <li><a class="dropdown-item" href="{{ route('student_subject', ['id' => $std->id]) }}"><i class="bi bi-book"></i> Registered Subject</a></li>
                 @endif

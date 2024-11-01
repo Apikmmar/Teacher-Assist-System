@@ -34,6 +34,7 @@ Route::middleware('auth')->group(function () {
     Route::post('/all_student', [StudentsController::class, 'searchStudentName'])->name('search_student');
     Route::get('/add_student', [StudentsController::class, 'viewAddStudent'])->name('add_student');
     Route::get('/view_student/{id}', [StudentsController::class, 'viewStudentDetails'])->name('view_student');
+    Route::get('/edit_student/{id}', [StudentsController::class, 'viewSEditStudent'])->name('edit_student');
     Route::post('/new_student', [StudentsController::class, 'addNewStudent'])->name('add_student.create');
     Route::patch('/student_classroom/{id}', [StudentsController::class, 'registerStudentClass'])->name('edit_student.add_class');
     Route::delete('/delete_student/{id}', [StudentsController::class, 'deleteStudent'])->name('delete_student.delete');
@@ -63,6 +64,7 @@ Route::middleware('auth')->group(function () {
     Route::put('/subject_registered/new_teacher', [SubjectController::class, 'changeSubjectTeacher'])->name('edit.classsubject_teacher');
     Route::delete('/subject_registered/drop_subject/{id}/{class_id}', [SubjectController::class, 'dropClassroomSubject'])->name('edit.dropclassroom_subject');
     Route::get('/view_student/{id}/subject_taken', [SubjectController::class, 'viewStudentSubject'])->name('student_subject');
+    Route::get('/view_student/{id}/add_elective_subject', [SubjectController::class, 'addStudentElectiveSubject'])->name('add.studentelective_subject');
 });
 
 require __DIR__.'/auth.php';

@@ -15,6 +15,7 @@ class Subject_Taken extends Model
         'classroom_id',
         'subject_id',
         'subject_teacher_id',
+        'remarks'
     ];
 
     public function classroom(): BelongsTo {

@@ -39,10 +39,7 @@ class StudentsController extends Controller
     public function viewStudentDetails($id): View {
         $std = Student::findOrFail($id);
 
-        $ageOnIc = (substr($std->ic, 0, 2));
-        $yearNow = date('Y');
-        $century = ($ageOnIc > $yearNow - 2000) ? 1900 : 2000;
-        $age = $yearNow - ($century + $ageOnIc);
+        $age = $this->calculateAge($std->ic);
 
         if($std->classroom_id) {
             $class = Classroom::findOrFail($std->classroom_id);
@@ -66,6 +63,24 @@ class StudentsController extends Controller
             'age' => $age,
             'subsTaken' => $subsTaken,
         ]);
+    }
+
+    public function viewEditStudent($id) {
+        $std = Student::findOrFail($id);
+
+        return view('manageClassroom.manageStudents.edit_student', [
+            'std' => $std,
+            'age' => $this->calculateAge($std->ic),
+        ]);
+    }
+
+    private function calculateAge($ic) {
+        $ageOnIc = (substr($ic, 0, 2));
+        $yearNow = date('Y');
+        $century = ($ageOnIc > $yearNow - 2000) ? 1900 : 2000;
+        $age = $yearNow - ($century + $ageOnIc);
+
+        return $age;
     }
 
     private function getStudentSubjects($classid, $stdid) {
