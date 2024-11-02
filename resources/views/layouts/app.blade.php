@@ -13,7 +13,7 @@
 
     <title>{{ config('app.name', 'Laravel') }}</title>
 
-    @vite(['resources/css/app.css', 'resources/js/app.js', 'resources/js/jquery.js'])
+    @vite(['resources/css/app.css', 'resources/css/filter_modal.css', 'resources/js/app.js', 'resources/js/jquery.js'])
 </head>
 <body class="font-sans antialiased">
     <div class="min-h-screen bg-gray-100 dark:bg-gray-900">

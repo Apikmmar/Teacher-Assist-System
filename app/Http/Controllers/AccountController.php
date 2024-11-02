@@ -107,6 +107,10 @@ class AccountController extends Controller
             ];
         }
 
+        usort($subClassTeacher, function ($a, $b) {
+            return strcmp($a['subjectForm'], $b['subjectForm']);
+        });
+
         return $subClassTeacher;
     }
 }

@@ -45,7 +45,7 @@
             <tfoot class="text-center">
                 <tr>
                     <td colspan="12" class="text-center">
-                        {{ $students->onEachSide(5)->appends(['search_student' => request()->input('search_student')])->links() }}
+                        {{ $students->onEachSide(5)->appends(request()->query())->links() }}
                     </td>
                 </tr>
             </tfoot>

@@ -32,6 +32,7 @@ Route::middleware('auth')->group(function () {
 
     Route::get('/all_student', [StudentsController::class, 'viewAllStudent'])->name('all_student');
     Route::get('/all_student/search', [StudentsController::class, 'searchStudentName'])->name('search_student');
+    Route::get('/all_student/filter', [StudentsController::class, 'filterStudent'])->name('filter_student');
     Route::get('/add_student', [StudentsController::class, 'viewAddStudent'])->name('add_student');
     Route::get('/view_student/{id}', [StudentsController::class, 'viewStudentDetails'])->name('view_student');
     Route::get('/edit_student/{id}', [StudentsController::class, 'viewEditStudent'])->name('edit_student');

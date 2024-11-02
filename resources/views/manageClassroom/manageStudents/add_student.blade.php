@@ -5,14 +5,14 @@
 
     <form action="{{ route('add_student.create') }}" method="post" enctype="multipart/form-data">
         @csrf
-
-        <header>
-            <h4 class="text-lg font-medium text-gray-900 dark:text-gray-100">
-                {{ __('Student Profile') }}
-            </h4>
-        </header>
-    
+        
         <div class="container fade-in-text">
+            <header>
+                <h4 class="text-lg font-medium text-gray-900 dark:text-gray-100">
+                    {{ __('Student Profile') }}
+                </h4>
+            </header>
+            
             <div class="row mb-3">
                 <label for="ic" class="col-md-4 col-form-label text-md-end fw-bold">{{ __('Identity Card Number') }} <label class="red-aestrist">*</label></label>
                 

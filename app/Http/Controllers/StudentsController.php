@@ -157,6 +157,50 @@ class StudentsController extends Controller
         return view('manageClassroom.manageStudents.all_student', compact('students'));
     }
 
+    public function filterStudent(Request $request) {
+        $query = Student::query();
+    
+        // Apply sorting if provided
+        if ($request->filled('sort_name')) {
+            $order = $request->sort_name === 'ASC' ? 'asc' : 'desc';
+            $query->orderBy('name', $order);
+        }
+    
+        if ($request->filled('sort_ic')) {
+            $order = $request->sort_ic === 'ASC' ? 'asc' : 'desc';
+            $query->orderBy('ic', $order);
+        }
+    
+        // Apply status filtering
+        if ($request->filled('status_active')) {
+            $query->where('status', 'active');
+        }
+        
+        if ($request->filled('status_inactive')) {
+            $query->where('status', 'inactive');
+        }
+    
+        // Apply gender filtering
+        if ($request->filled('gender_men')) {
+            $query->where('gender', 'Men');
+        }
+    
+        if ($request->filled('gender_women')) {
+            $query->where('gender', 'Women');
+        }
+    
+        // Determine the pagination limit
+        $paginationLimit = $request->hasAny(['sort_name', 'sort_ic', 'status_active', 'status_inactive', 'gender_men', 'gender_women']) ? 10 : 100;
+    
+        // Retrieve paginated students
+        $students = $query->paginate($paginationLimit);
+    
+        return view('manageClassroom.manageStudents.all_student', [
+            'students' => $students
+        ]);
+    }
+    
+
     public function updateStudentInfo(UpdateStudentRequest $request,$id): RedirectResponse {
         $data = $request->validated();
 

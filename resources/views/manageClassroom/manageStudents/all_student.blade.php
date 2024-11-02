@@ -21,21 +21,11 @@
         </div>
         &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
         <div>
-            {{-- not done yet PS: CONSIDER FILTERING USE MODAL --}}
-            <form action="" method="post">
-                @csrf
-    
-                <div class="row mb-3 align-items-center">
-                    <div class="col-md-12 d-flex align-items-center">
-            
-                        <select class="form-select" aria-label="Default select example">
-                            <option value="" selected disabled>Sort by:</option>
-                            <option value="name">Sort by: Name</option>
-                            <option value="id">Sort by: Student ID</option>
-                        </select>
-                    </div>
-                </div>
-            </form>
+            <button type="button" class="btn tr-button btn-primary" data-bs-toggle="modal" data-bs-target="#filterModal">
+                Filter Students
+            </button>
+
+            @include('manageClassroom.partials.filter')
         </div>
     </div>
     @endif
