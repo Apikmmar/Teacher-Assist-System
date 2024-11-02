@@ -4,6 +4,7 @@ namespace App\Http\Controllers;
 
 use App\Http\Requests\AddStudentRequest;
 use App\Http\Requests\StudentTransitionRequest;
+use App\Http\Requests\UpdateStudentRequest;
 use App\Models\Classroom;
 use App\Models\Student;
 use App\Models\Subject_Taken;
@@ -49,17 +50,14 @@ class StudentsController extends Controller
             $std->join_school_date = Carbon::parse($std->join_school_date)->format('j F Y');
     
             $subsTaken = $this->getStudentSubjects($class->id, $std->id);
-            $classes = null;
         } else {
             $class = null;
             $subsTaken = null;
-            $classes = Classroom::all();
         }
 
         return view('manageClassroom.manageStudents.view_student', [
             'std' => $std,
             'class' => $class,
-            'classes' => $classes,
             'age' => $age,
             'subsTaken' => $subsTaken,
         ]);
@@ -67,9 +65,18 @@ class StudentsController extends Controller
 
     public function viewEditStudent($id) {
         $std = Student::findOrFail($id);
+        $classes = Classroom::all();
+        
+        if ($std->classroom_id) {
+            $std_class = Classroom::findOrFail($std->classroom_id);
+        } else {
+            $std_class = NULL;
+        }
 
         return view('manageClassroom.manageStudents.edit_student', [
             'std' => $std,
+            'std_class' => $std_class,
+            'classes' => $classes,
             'age' => $this->calculateAge($std->ic),
         ]);
     }
@@ -149,6 +156,20 @@ class StudentsController extends Controller
         }
         
         return view('manageClassroom.manageStudents.all_student', compact('students'));
+    }
+
+    public function updateStudentInfo(UpdateStudentRequest $request,$id): RedirectResponse {
+        $data = $request->validated();
+
+        $std = Student::findOrFail($id);
+
+        $std->update($data);
+        
+        if ($data['status'] === 'Inactive') {
+            $std->update(['classroom_id' => NULL]);
+        }
+
+        return redirect()->route('edit_student', ['id' => $id])->with('blue-message', 'Successfully Update Student Data');
     }
 
     public function deleteStudent($id): RedirectResponse {

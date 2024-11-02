@@ -34,11 +34,12 @@ Route::middleware('auth')->group(function () {
     Route::post('/all_student', [StudentsController::class, 'searchStudentName'])->name('search_student');
     Route::get('/add_student', [StudentsController::class, 'viewAddStudent'])->name('add_student');
     Route::get('/view_student/{id}', [StudentsController::class, 'viewStudentDetails'])->name('view_student');
-    Route::get('/edit_student/{id}', [StudentsController::class, 'viewSEditStudent'])->name('edit_student');
+    Route::get('/edit_student/{id}', [StudentsController::class, 'viewEditStudent'])->name('edit_student');
     Route::post('/new_student', [StudentsController::class, 'addNewStudent'])->name('add_student.create');
     Route::patch('/student_classroom/{id}', [StudentsController::class, 'registerStudentClass'])->name('edit_student.add_class');
     Route::delete('/delete_student/{id}', [StudentsController::class, 'deleteStudent'])->name('delete_student.delete');
     Route::post('/view_student/{id}/transition', [StudentsController::class, 'addStudentTranstion'])->name('transition_student.create');
+    Route::put('/edit_student/{id}/update', [StudentsController::class, 'updateStudentInfo'])->name('edit_student.update');
     
     Route::get('/all_classroom', [ClassroomController::class, 'viewAllClassroom'])->name('all_classroom');
     Route::post('/all_classroom', [ClassroomController::class, 'searchClassroomName'])->name('search_classroom');

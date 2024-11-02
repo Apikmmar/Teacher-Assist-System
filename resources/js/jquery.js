@@ -76,7 +76,9 @@ $(document).ready(function() {
             $('#dropStudentSwitch').css({
                 backgroundColor: "white"
             })
-            $('#dropStudent').hide();
+            setTimeout(function() {        
+                $('#dropStudent').fadeOut();
+            }, 50);
         }
     })
 });
