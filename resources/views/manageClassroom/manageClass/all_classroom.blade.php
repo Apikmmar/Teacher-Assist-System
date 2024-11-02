@@ -8,9 +8,7 @@
     @if ($classrooms->isNotEmpty())
     <div class="d-flex justify-content-end me-4">
         <div>
-            <form action="{{ route('search_classroom') }}" method="post">
-                @csrf
-    
+            <form action="{{ route('search_classroom') }}" method="get">
                 <div class="row mb-3 align-items-center">
                     <div class="col-md-12 d-flex align-items-center">
             
@@ -56,21 +54,19 @@
 
     @if ($classrooms->isNotEmpty())
         
-        <table class="table table-hover">
-            <thead>
-                <tr>
-                    <th scope="col">No</th>
-                    <th scope="col">Class Name</th>
-                    <th scope="col">Form</th>
-                    <th scope="col">Number Of Student</th>
-                    <th scope="col">Class Teacher</th>
-                    <th scope="col" class="text-center">Operation</th>
-                </tr>
-            </thead>
-            <tbody>
-            @php
-                $startNumber = ($classrooms->currentPage() - 1) * $classrooms->perPage() + 1;
-            @endphp
+    <table class="table table-hover">
+        <thead>
+            <tr>
+                <th scope="col">No</th>
+                <th scope="col">Class Name</th>
+                <th scope="col">Form</th>
+                <th scope="col">Number Of Student</th>
+                <th scope="col">Class Teacher</th>
+                <th scope="col" class="text-center">Operation</th>
+            </tr>
+        </thead>
+        <tbody>
+            @php $startNumber = ($classrooms->currentPage() - 1) * $classrooms->perPage() + 1; @endphp
             @foreach ($classrooms as $index => $classroom)
                 <tr class="align-middle teacher-list">
                     <th scope="row">{{ $startNumber + $index }}</th>
@@ -80,10 +76,10 @@
                     <td>{{ $classroom->teacher_title }}</td>
                     <td class="text-center">
                         <a href="{{ route('view_classroom', ['id' => $classroom->id ]) }}" class="btn btn-success tr-button">View</a>
-                    @can('coordinator')
-                        <a href="{{ route('edit_classroom', ['id' => $classroom->id ]) }}" class="btn btn-warning text-white tr-button">Edit</a>
-                        <button data-bs-toggle="modal" data-bs-target="#confirmDelete{{ $classroom->id }}" class="btn btn-danger tr-button">Delete</button>
-                    @endcan
+                        @can('coordinator')
+                            <a href="{{ route('edit_classroom', ['id' => $classroom->id ]) }}" class="btn btn-warning text-white tr-button">Edit</a>
+                            <button data-bs-toggle="modal" data-bs-target="#confirmDelete{{ $classroom->id }}" class="btn btn-danger tr-button">Delete</button>
+                        @endcan
                     </td>
                 </tr>
             
@@ -93,21 +89,18 @@
                     'deleteRoute' => route('delete_classroom.delete', ['id' => $classroom->id]),
                     'method' => 'DELETE'
                 ])
-                
             @endforeach
-            
-            @if ($classrooms->total() > 10)
-                <tfoot class="text-center">
-                    <tr>
-                        <td colspan="12" class="text-center">
-                            {{ $classrooms->onEachSide(5)->appends(['search_classroom' => request()->input('search_classroom')])->links() }}
-                        </td>
-                    </tr>
-                </tfoot>
-            @endif
-            
-        </table>
-            
+        </tbody>
+    
+        <tfoot class="text-center">
+            <tr>
+                <td colspan="12" class="text-center">
+                    {{ $classrooms->appends(request()->query())->links() }}
+                </td>
+            </tr>
+        </tfoot>
+    </table>
+     
     @else
     
         <div class="d-flex justify-content-center mt-2">

@@ -24,14 +24,14 @@ Route::middleware('auth')->group(function () {
     Route::delete('/profile', [ProfileController::class, 'destroy'])->name('profile.destroy');
 
     Route::get('/all_teacher', [AccountController::class, 'viewAllTeacher'])->name('all_teacher');
-    Route::post('/all_teacher', [AccountController::class, 'searchTeacherName'])->name('search_teacher');
+    Route::get('/all_teacher/search', [AccountController::class, 'searchTeacherName'])->name('search_teacher');
     Route::get('/add_teacher', [RegisteredUserController::class, 'viewAddTeacher'])->name('add_teacher');
     Route::get('/teacher_details/{id}', [AccountController::class, 'viewTeacherDetails'])->name('view_teacher');
     Route::post('/register', [RegisteredUserController::class, 'store'])->name('register.create');
     Route::delete('/delete_teacher/{id}', [AccountController::class, 'destroyTeacher'])->name('delete.teacher');
 
     Route::get('/all_student', [StudentsController::class, 'viewAllStudent'])->name('all_student');
-    Route::post('/all_student', [StudentsController::class, 'searchStudentName'])->name('search_student');
+    Route::get('/all_student/search', [StudentsController::class, 'searchStudentName'])->name('search_student');
     Route::get('/add_student', [StudentsController::class, 'viewAddStudent'])->name('add_student');
     Route::get('/view_student/{id}', [StudentsController::class, 'viewStudentDetails'])->name('view_student');
     Route::get('/edit_student/{id}', [StudentsController::class, 'viewEditStudent'])->name('edit_student');
@@ -42,7 +42,7 @@ Route::middleware('auth')->group(function () {
     Route::put('/edit_student/{id}/update', [StudentsController::class, 'updateStudentInfo'])->name('edit_student.update');
     
     Route::get('/all_classroom', [ClassroomController::class, 'viewAllClassroom'])->name('all_classroom');
-    Route::post('/all_classroom', [ClassroomController::class, 'searchClassroomName'])->name('search_classroom');
+    Route::get('/all_classroom/search', [ClassroomController::class, 'searchClassroomName'])->name('search_classroom');
     Route::get('/view_classroom/{id}', [ClassroomController::class, 'viewClassroomDetails'])->name('view_classroom');
     Route::get('/my_classroom', [ClassroomController::class, 'viewClassTeacherClassroom'])->name('my_classroom');
     Route::get('/add_classroom', [ClassroomController::class, 'viewAddClassroom'])->name('add_classroom');

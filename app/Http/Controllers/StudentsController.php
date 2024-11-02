@@ -138,7 +138,6 @@ class StudentsController extends Controller
         return redirect()->route('view_student', ['id' => $id])->with('blue-message', 'Successfully Add Student to ' . $class->name . '.');
     }
 
-    // if more than 10 name it display all at second paginate
     public function searchStudentName(Request $request): View|RedirectResponse {
         $validator = Validator::make($request->all(), [
             'search_student' => 'required|string|max:100',

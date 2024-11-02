@@ -9,8 +9,7 @@
     @include('layouts.message')
 
     @if ($teachers->isNotEmpty())
-        <form action="{{ route('search_teacher') }}" method="post">
-            @csrf
+        <form action="{{ route('search_teacher') }}" method="get">
             
             <div class="d-flex justify-content-center mt-2">
                 <div class="row mb-3 align-items-center">

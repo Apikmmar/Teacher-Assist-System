@@ -8,8 +8,7 @@
     @if ($students->isNotEmpty())
     <div class="d-flex justify-content-end me-4">
         <div>
-            <form action="{{ route('search_student') }}" method="post">
-                @csrf
+            <form action="{{ route('search_student') }}" method="get">
     
                 <div class="row mb-3 align-items-center">
                     <div class="col-md-12 d-flex align-items-center">

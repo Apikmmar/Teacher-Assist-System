@@ -27,20 +27,8 @@ class ClassroomController extends Controller
         } else {
             $classrooms = Classroom::orderBy('name')->paginate(10);
         }
-    
-        foreach ($classrooms as $classroom) {
-            if ($classroom->classteacher != NULL) {
-                $teacherName = Str::title($classroom->classteacher->name);
 
-                if (strtolower($classroom->classteacher->gender) == 'men') {
-                    $classroom->teacher_title = 'Mr. ' . $teacherName;
-                } else {
-                    $classroom->teacher_title = 'Mrs. ' . $teacherName;
-                }
-            } else {
-                $classroom->teacher_title = "N/A";
-            }
-        }
+        $classrooms = $this->setTeacherName($classrooms);
     
         return view('manageClassroom.manageClass.all_classroom', [
             'classrooms' => $classrooms,
@@ -156,7 +144,6 @@ class ClassroomController extends Controller
         return redirect()->route('all_classroom')->with('blue-message', 'Classroom Successfully Registered');
     }
 
-    // if more than 10 name it display all at second paginate
     public function searchClassroomName(Request $request): View|RedirectResponse {
         $validator = Validator::make($request->all(), [
             'search_classroom' => 'required|string|max:100',
@@ -174,7 +161,28 @@ class ClassroomController extends Controller
             return redirect()->route('all_classroom')->with('red-message', 'Class Not Found.');
         }
         
+        $classrooms = $this->setTeacherName($classrooms);
+
         return view('manageClassroom.manageClass.all_classroom', compact('classrooms', 'forms'));
+    }
+
+    private function setTeacherName($classrooms) {
+
+        foreach ($classrooms as $classroom) {
+            if ($classroom->classteacher != NULL) {
+                $teacherName = Str::title($classroom->classteacher->name);
+
+                if (strtolower($classroom->classteacher->gender) == 'men') {
+                    $classroom->teacher_title = 'Mr. ' . $teacherName;
+                } else {
+                    $classroom->teacher_title = 'Mrs. ' . $teacherName;
+                }
+            } else {
+                $classroom->teacher_title = "N/A";
+            }
+        }
+
+        return $classrooms;
     }
 
     public function updateClassroomInfo(UpdateClassInfoRequest $request, $id): RedirectResponse | View {
@@ -188,8 +196,6 @@ class ClassroomController extends Controller
         return redirect()->route('view_classroom', ['id' => $id ])->with('blue-message', 'Classroom Info Successfully Updated');
     }
     
-
-
     public function deleteClassroom($id) {
         $class = Classroom::findOrFail($id);
 
