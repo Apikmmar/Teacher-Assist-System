@@ -59,9 +59,9 @@ class AccountController extends Controller
 
         $age = $yearNow - ($century + $ageOnIc);
 
-        $subjects = $teacher->subjects;
+        $subClassTeacher = $this->getTeachesSubjectClass($teacher);
 
-        return view('manageAccount.teacher_details', compact('teacher', 'age', 'subjects'));
+        return view('manageAccount.teacher_details', compact('teacher', 'age', 'subClassTeacher'));
     }
 
     public function destroyTeacher($id): RedirectResponse {        
@@ -78,5 +78,35 @@ class AccountController extends Controller
         $user->delete();
 
         return redirect()->route('all_teacher')->with('red-message', 'Successfully Delete Teacher');
+    }
+
+    private function getTeachesSubjectClass($user) {
+        $subClassTeacher = [];
+
+        foreach ($user->subjects as $subs) {
+            $subjectTeach = $subs->name;
+            $subjectForm = $subs->form->name;
+
+            $takenSubjects = $user->subjecttaken->where('subject_id', $subs->id);
+
+            $classNames = [];
+
+            foreach ($takenSubjects as $takenSubject) {
+                $class = Classroom::find($takenSubject->classroom_id);
+                $classNames[] = $class ? $class->name : 'No Class Teaches';
+            }
+
+            if (empty($classNames)) {
+                $classNames[] = 'No Class Teaches';
+            }
+
+            $subClassTeacher[] = [
+                'subjectTeach' => $subjectTeach,
+                'subjectForm' => $subjectForm,
+                'classNames' => $classNames,
+            ];
+        }
+
+        return $subClassTeacher;
     }
 }

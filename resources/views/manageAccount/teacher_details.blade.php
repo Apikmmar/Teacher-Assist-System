@@ -76,8 +76,7 @@
             </header>
         
             <div>
-                @if ($subjects->isNotEmpty())
-                
+                @if ($subClassTeacher)
                 <table class="table table-hover">
                     <thead>
                         <tr>
@@ -88,17 +87,20 @@
                         </tr>
                     </thead>
                     <tbody>
-                    @php
-                        $startNumber = 1;
-                    @endphp
-                    @foreach ($subjects as $index => $subject)
+                        @foreach ($subClassTeacher as $index => $subject)
                         <tr class="align-middle teacher-list">
-                            <th scope="row">{{ $startNumber + $index }}</th>
-                            <td>{{ $subject->name }}</td>
-                            <td>{{ $subject->form->name }}</td>
-                            <td>{{ $subject->description }}</td>
+                            <th scope="row">{{ 1 + $index }}</th>
+                            <td>{{ $subject['subjectTeach'] }}</td>
+                            <td>{{ $subject['subjectForm'] }}</td>
+                            <td>
+                                <ul class="mt-2">
+                                    @foreach ($subject['classNames'] as $className)
+                                        <li>{{ $className }}</li>
+                                    @endforeach
+                                </ul>
+                            </td>
+                        </tr>
                     @endforeach
-                    
                 </table>
             @else
             

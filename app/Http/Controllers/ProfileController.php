@@ -3,6 +3,9 @@
 namespace App\Http\Controllers;
 
 use App\Http\Requests\ProfileUpdateRequest;
+use App\Models\Classroom;
+use App\Models\Subject_Taken;
+use App\Models\Subject_Teacher;
 use Illuminate\Http\RedirectResponse;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Redirect;
@@ -15,13 +18,46 @@ class ProfileController extends Controller
      */
     public function edit(Request $request): View
     {
-        $user = $request->user()->load('subjects');
+        $user = $request->user()->load('subjecttaken', 'subjects');
+
+        $subClassTeacher = $this->getTeachesSubjectClass($user);
 
         return view('manageAccount.profile.edit', [
             'user' => $user,
-            'subjects' => $user->subjects,
+            'subClassTeacher' => $subClassTeacher,
         ]);
     }
+
+    private function getTeachesSubjectClass($user) {
+        $subClassTeacher = [];
+
+        foreach ($user->subjects as $subs) {
+            $subjectTeach = $subs->name;
+            $subjectForm = $subs->form->name;
+
+            $takenSubjects = $user->subjecttaken->where('subject_id', $subs->id);
+
+            $classNames = [];
+
+            foreach ($takenSubjects as $takenSubject) {
+                $class = Classroom::find($takenSubject->classroom_id);
+                $classNames[] = $class ? $class->name : 'No Class Teaches';
+            }
+
+            if (empty($classNames)) {
+                $classNames[] = 'No Class Teaches';
+            }
+
+            $subClassTeacher[] = [
+                'subjectTeach' => $subjectTeach,
+                'subjectForm' => $subjectForm,
+                'classNames' => $classNames,
+            ];
+        }
+
+        return $subClassTeacher;
+    }
+
 
     /**
      * Update the user's profile information.
