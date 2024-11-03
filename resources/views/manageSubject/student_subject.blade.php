@@ -52,21 +52,36 @@
 
     @if (!empty($subsTaken))
         <div class="d-flex justify-content-center">
-            <table class="table table-hover" style="max-width: 500px">
+            <table class="table table-hover" style="max-width: 600px">
                 <thead>
                     <tr>
                         <th scope="col">No</th>
                         <th scope="col">Subject Name</th>
                         <th scope="col">Subject's Teacher</th>
+                        <th scope="col" style="min-width: 100px">Remarks</th>
                     </tr>
                 </thead>
                 <tbody id="teacherTableBody">
 
-                @foreach ($subsTaken as $index => $subject)
+                @foreach ($allSubjects as $index => $subject)
                     <tr class="align-middle teacher-list">
                         <th scope="row">{{ 1 + $index  }}</th>
-                        <td>{{ $subject }}</td>
+                        <td>{{ $subsTaken[$index] }}</td>
                         <td>{{ $subsTeacher[$index] }}</td>
+                        <td>
+                        @if ($subject->remarks == 'Elective Subject')
+                            <button data-bs-toggle="modal" data-bs-target="#confirmDelete{{ $subject->id }}" class="btn btn-danger" style="border-radius: 15px">Drop Elective</button>
+
+                            @include('layouts.partials.modal', [
+                                    'id' => $subject->id, 
+                                    'name' => "Are you sure you want to remove elective subject for ". $student->name ."?",
+                                    'deleteRoute' => route('drop.studentelective_subject', ['id' => $student->id, 'subs_id' => $subject->id]),
+                                    'method' => 'DELETE'
+                                ])
+                        @elseif($subject->remarks == null)
+                            <i>Core Subject</i>
+                        @endif
+                        </td>
                     </tr>
                 @endforeach
 

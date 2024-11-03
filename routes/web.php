@@ -67,6 +67,7 @@ Route::middleware('auth')->group(function () {
     Route::delete('/subject_registered/drop_subject/{id}/{class_id}', [SubjectController::class, 'dropClassroomSubject'])->name('edit.dropclassroom_subject');
     Route::get('/view_student/{id}/subject_taken', [SubjectController::class, 'viewStudentSubject'])->name('student_subject');
     Route::get('/view_student/{id}/add_elective_subject', [SubjectController::class, 'addStudentElectiveSubject'])->name('add.studentelective_subject');
+    Route::delete('/view_student/{id}/drop_elective_subject/{subs_id}', [SubjectController::class, 'dropStudentElectiveSubject'])->name('drop.studentelective_subject');
 });
 
 require __DIR__.'/auth.php';

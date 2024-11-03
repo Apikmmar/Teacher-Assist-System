@@ -155,6 +155,7 @@ class SubjectController extends Controller
         return view('manageSubject.student_subject', [
             'class' => $class,
             'student' => $student,
+            'allSubjects' => $allSubjects,
             'subsTaken' => $subsTaken,
             'subsTeacher' => $subsTeacher,
             'subsNotRegistered' => $subsNotRegistered,
@@ -309,6 +310,13 @@ class SubjectController extends Controller
         $subsTaken->save();
 
         return redirect()->route('student_subject', ['id' => $id])->with('blue-message', 'Elective Subject Is Registered to Student');
+    }
+
+    public function dropStudentElectiveSubject($id, $subs_id) {
+        $stdSub = Subject_Taken::findOrFail($subs_id);
+        $stdSub->delete();
+
+        return redirect()->route('student_subject', ['id' => $id])->with('red-message', 'Elective Subject Is Drop from Student');
     }
 
     private function getSubjectNotRegisteredTeacher($subjectsNotTaken) {

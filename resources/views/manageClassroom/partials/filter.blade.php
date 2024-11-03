@@ -34,7 +34,7 @@
             
                     <!-- Status -->
                     <div class="mb-3">
-                        <label class="form-label">Status</label>
+                        <label class="form-label">Filter by Status</label>
                         <div class="form-check mb-2">
                             <input class="form-check-input" type="checkbox" name="status_active" value="active" id="activeStatus">
                             <label class="form-check-label" for="activeStatus">Active</label>
@@ -49,7 +49,7 @@
             
                     <!-- Gender -->
                     <div class="mb-3">
-                        <label class="form-label">Gender</label>
+                        <label class="form-label">Filter by Gender</label>
                         <div class="form-check mb-2">
                             <input class="form-check-input" type="checkbox" name="gender_men" value="Men" id="maleGender">
                             <label class="form-check-label" for="maleGender">Men</label>
