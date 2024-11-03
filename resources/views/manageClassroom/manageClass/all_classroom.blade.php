@@ -5,7 +5,7 @@
     
     @include('layouts.message')
 
-    @if ($classrooms->isNotEmpty())
+@if ($classrooms->isNotEmpty())
     <div class="d-flex justify-content-end me-4">
         <div>
             <form action="{{ route('search_classroom') }}" method="get">
@@ -35,25 +35,24 @@
             </form>
         </div>
     </div>
-    @endif
+@endif
 
     <div class="d-flex justify-content-end me-4 mb-2">
-        @can('coordinator')
-            <div class="col-auto me-2">
-                <a href="{{ route('add_classroom') }}" class="btn text-white user-save-button">Register Classroom</a>
-            </div>
-        @endcan
-    
-        @can('classteacher')
-            <div class="col-auto">
-                <a href="{{ route('my_classroom') }}" class="btn text-white btn-success tr-button">My Class</a>
-            </div>
-        @endcan
+    @can('coordinator')
+        <div class="col-auto me-2">
+            <a href="{{ route('add_classroom') }}" class="btn text-white user-save-button">Register Classroom</a>
+        </div>
+    @endcan
+
+    @can('classteacher')
+        <div class="col-auto">
+            <a href="{{ route('my_classroom') }}" class="btn text-white btn-success tr-button">My Class</a>
+        </div>
+    @endcan
     </div>
     
 
-    @if ($classrooms->isNotEmpty())
-        
+@if ($classrooms->isNotEmpty())
     <table class="table table-hover">
         <thead>
             <tr>
@@ -66,6 +65,7 @@
             </tr>
         </thead>
         <tbody>
+
             @php $startNumber = ($classrooms->currentPage() - 1) * $classrooms->perPage() + 1; @endphp
             @foreach ($classrooms as $index => $classroom)
                 <tr class="align-middle teacher-list">
@@ -76,10 +76,12 @@
                     <td>{{ $classroom->teacher_title }}</td>
                     <td class="text-center">
                         <a href="{{ route('view_classroom', ['id' => $classroom->id ]) }}" class="btn btn-success tr-button">View</a>
+
                         @can('coordinator')
                             <a href="{{ route('edit_classroom', ['id' => $classroom->id ]) }}" class="btn btn-warning text-white tr-button">Edit</a>
                             <button data-bs-toggle="modal" data-bs-target="#confirmDelete{{ $classroom->id }}" class="btn btn-danger tr-button">Delete</button>
                         @endcan
+
                     </td>
                 </tr>
             
@@ -90,6 +92,7 @@
                     'method' => 'DELETE'
                 ])
             @endforeach
+
         </tbody>
     
         <tfoot class="text-center">
@@ -100,12 +103,11 @@
             </tr>
         </tfoot>
     </table>
-     
     @else
-    
         <div class="d-flex justify-content-center mt-2">
             <h4 class="fw-bold">classrooms Not Registered</h4>
         </div>
     @endif
+    
     </div>
 @endsection

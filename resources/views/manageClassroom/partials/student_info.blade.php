@@ -52,14 +52,15 @@
                 </div>
             </div>
             
-            @if ($class)
-                <div class="row mb-3">
-                    <label for="classroom" class="col-md-4 col-form-label text-md-end fw-bold">{{ __('Classroom') }}</label>
-                    <div class="col-md-8">
-                        <input id="classroom" type="text" class="form-control @error('classroom') is-invalid @enderror" name="classroom" value="{{ $class->name ?? 'Not Applicable' }}" readonly autocomplete="classroom">
-                    </div>
+        @if ($class)
+            <div class="row mb-3">
+                <label for="classroom" class="col-md-4 col-form-label text-md-end fw-bold">{{ __('Classroom') }}</label>
+                <div class="col-md-8">
+                    <input id="classroom" type="text" class="form-control @error('classroom') is-invalid @enderror" name="classroom" value="{{ $class->name ?? 'Not Applicable' }}" readonly autocomplete="classroom">
                 </div>
-            @endif
+            </div>
+        @endif
+        
         </div>
     </div>
 </div>  

@@ -16,9 +16,11 @@
                     <div class="col-md-12 d-flex align-items-center">
                         <select class="form-select" aria-label="Default select example" name="subject_form" onchange="document.getElementById('filterForm').submit();">
                             <option value="" {{ request('subject_form') == '' ? 'selected' : '' }}><b>View by:</b> Default</option>
-                            @foreach ($forms as $form)
-                                <option value="{{ $form->id }}" {{ request('subject_form') == $form->id ? 'selected' : '' }}>View by: {{ $form->name }}</option>
-                            @endforeach
+                        
+                        @foreach ($forms as $form)
+                            <option value="{{ $form->id }}" {{ request('subject_form') == $form->id ? 'selected' : '' }}>View by: {{ $form->name }}</option>
+                        @endforeach
+                        
                         </select>
                     </div>
                 </div>
@@ -27,7 +29,6 @@
     </div>    
         
     @if ($subjects->isNotEmpty())
-        
         <table class="table table-hover">
             <thead>
                 <tr>
@@ -39,9 +40,8 @@
                 </tr>
             </thead>
             <tbody>
-            @php
-                $startNumber = ($subjects->currentPage() - 1) * $subjects->perPage() + 1;
-            @endphp
+
+            @php $startNumber = ($subjects->currentPage() - 1) * $subjects->perPage() + 1; @endphp
             @foreach ($subjects as $index => $subject)
                 <tr class="align-middle teacher-list">
                     <th scope="row">{{ $startNumber + $index }}</th>
@@ -64,7 +64,7 @@
                 ])
             @endforeach
             
-            @if ($subjects->total() > 10)
+        @if ($subjects->total() > 10)
             <tfoot class="text-center">
                 <tr>
                     <td colspan="12" class="text-center">
@@ -73,15 +73,13 @@
                 </tr>
             </tfoot>
         @endif
-
-            
+        
         </table>
-            
     @else
-    
         <div class="d-flex justify-content-center mt-2">
             <h4 class="fw-bold">ubjects Not Registered</h4>
         </div>
     @endif
+
     </div>
 @endsection

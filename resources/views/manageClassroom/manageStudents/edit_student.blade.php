@@ -76,6 +76,7 @@
                                         {{ $class->name }}
                                     </option>
                                 @endforeach
+
                             </select>
                         </div>
                     </div>
@@ -90,7 +91,7 @@
             </form>
         </div>
         
-        @if (is_null($std->classroom_id) && ($std->status == 'Active'))
+    @if (is_null($std->classroom_id) && ($std->status == 'Active'))
         <div>
             <hr>
             <form action="{{ route('edit_student.add_class', ['id' => $std->id]) }}" method="post" enctype="multipart/form-data">
@@ -107,6 +108,7 @@
                             @foreach ($classes as $class)
                                 <option value="{{ $class->id }}">{{ $class->name }}</option>
                             @endforeach
+
                         </select>
                     </div>
                 
@@ -116,90 +118,91 @@
                 </div>
             </form>
         </div>
-        @endif
+    @endif
 
-        @can('coordinator')
-        @if ($std->status == 'Active')
+    @can('coordinator')
+    @if ($std->status == 'Active')
         <div class="form-check form-switch d-flex justify-content-end">
             <input class="form-check-input" type="checkbox" role="switch" id="dropStudentSwitch">
             &nbsp;
             <label class="form-check-label fw-bold" for="flexSwitchCheckDefault">Drop This Student</label>
         </div>
 
-            <div id="dropStudent">
-                <hr>
-                <header>
-                    <h4 class="text-lg font-medium text-gray-900 dark:text-gray-100">
-                        {{ __('Drop Student') }}
-                    </h4>
-                </header>
-                <form action="{{ route('transition_student.create', ['id' => $std->id]) }}" method="post" enctype="multipart/form-data">
-                    @csrf
-                    <div>
-                        <div class="row mb-3">
-                            <label for="name" class="col-md-4 col-form-label text-md-end fw-bold">{{ __('Reason of Change School') }} </label>
+        <div id="dropStudent">
+            <hr>
+            <header>
+                <h4 class="text-lg font-medium text-gray-900 dark:text-gray-100">
+                    {{ __('Drop Student') }}
+                </h4>
+            </header>
+            <form action="{{ route('transition_student.create', ['id' => $std->id]) }}" method="post" enctype="multipart/form-data">
+                @csrf
+                <div>
+                    <div class="row mb-3">
+                        <label for="name" class="col-md-4 col-form-label text-md-end fw-bold">{{ __('Reason of Change School') }} </label>
+                        
+                        <div class="col-md-6">
+                            <input id="name" type="text" class="form-control @error('name') is-invalid @enderror" name="change_school_reason" placeholder="Reason" required autocomplete="name" autofocus>
                             
-                            <div class="col-md-6">
-                                <input id="name" type="text" class="form-control @error('name') is-invalid @enderror" name="change_school_reason" placeholder="Reason" required autocomplete="name" autofocus>
-                                
-                                @error('change_school_reason')
-                                <span class="invalid-feedback" role="alert">
-                                    <strong>{{ $message }}</strong>
-                                </span>
-                                @enderror
-                            </div>
-                        </div>
-    
-                        <div class="row mb-3">
-                            <label for="name" class="col-md-4 col-form-label text-md-end fw-bold">{{ __('New School Name') }} </label>
-                            
-                            <div class="col-md-6">
-                                <input id="name" type="text" class="form-control @error('name') is-invalid @enderror" name="new_school_name" placeholder="Name" required autocomplete="name" autofocus>
-                                
-                                @error('new_school_name')
-                                <span class="invalid-feedback" role="alert">
-                                    <strong>{{ $message }}</strong>
-                                </span>
-                                @enderror
-                            </div>
-                        </div>
-    
-                        <div class="row mb-3">
-                            <label for="name" class="col-md-4 col-form-label text-md-end fw-bold">{{ __('Reason of Drop School') }} </label>
-                            
-                            <div class="col-md-6">
-                                <input id="name" type="text" class="form-control @error('name') is-invalid @enderror" name="reason_drop" placeholder="Reason" required autocomplete="name" autofocus>
-                                
-                                @error('reason_drop')
-                                <span class="invalid-feedback" role="alert">
-                                    <strong>{{ $message }}</strong>
-                                </span>
-                                @enderror
-                            </div>
-                        </div>
-    
-                        <div class="row mb-3">
-                            <label for="name" class="col-md-4 col-form-label text-md-end fw-bold">{{ __('Date of Change/Drop School') }} </label>
-                            
-                            <div class="col-md-6">
-                                <input id="name" type="date" class="form-control @error('name') is-invalid @enderror" name="transition_date" placeholder="Reason" required autocomplete="name" autofocus>
-                                
-                                @error('transition_date')
-                                <span class="invalid-feedback" role="alert">
-                                    <strong>{{ $message }}</strong>
-                                </span>
-                                @enderror
-                            </div>
+                            @error('change_school_reason')
+                            <span class="invalid-feedback" role="alert">
+                                <strong>{{ $message }}</strong>
+                            </span>
+                            @enderror
                         </div>
                     </div>
-                    <div class="d-flex justify-content-center pt-2">
-                        <button type="submit" class="btn btn-danger tr-button">Drop Student</button>
-                        &nbsp;&nbsp;&nbsp;
-                        <button type="reset" class="btn text-white btn-secondary tr-button">Reset</button>
+
+                    <div class="row mb-3">
+                        <label for="name" class="col-md-4 col-form-label text-md-end fw-bold">{{ __('New School Name') }} </label>
+                        
+                        <div class="col-md-6">
+                            <input id="name" type="text" class="form-control @error('name') is-invalid @enderror" name="new_school_name" placeholder="Name" required autocomplete="name" autofocus>
+                            
+                            @error('new_school_name')
+                            <span class="invalid-feedback" role="alert">
+                                <strong>{{ $message }}</strong>
+                            </span>
+                            @enderror
+                        </div>
                     </div>
-                </form>
-            </div>
-        @endif
-        @endcan
+
+                    <div class="row mb-3">
+                        <label for="name" class="col-md-4 col-form-label text-md-end fw-bold">{{ __('Reason of Drop School') }} </label>
+                        
+                        <div class="col-md-6">
+                            <input id="name" type="text" class="form-control @error('name') is-invalid @enderror" name="reason_drop" placeholder="Reason" required autocomplete="name" autofocus>
+                            
+                            @error('reason_drop')
+                            <span class="invalid-feedback" role="alert">
+                                <strong>{{ $message }}</strong>
+                            </span>
+                            @enderror
+                        </div>
+                    </div>
+
+                    <div class="row mb-3">
+                        <label for="name" class="col-md-4 col-form-label text-md-end fw-bold">{{ __('Date of Change/Drop School') }} </label>
+                        
+                        <div class="col-md-6">
+                            <input id="name" type="date" class="form-control @error('name') is-invalid @enderror" name="transition_date" placeholder="Reason" required autocomplete="name" autofocus>
+                            
+                            @error('transition_date')
+                            <span class="invalid-feedback" role="alert">
+                                <strong>{{ $message }}</strong>
+                            </span>
+                            @enderror
+                        </div>
+                    </div>
+                </div>
+                <div class="d-flex justify-content-center pt-2">
+                    <button type="submit" class="btn btn-danger tr-button">Drop Student</button>
+                    &nbsp;&nbsp;&nbsp;
+                    <button type="reset" class="btn text-white btn-secondary tr-button">Reset</button>
+                </div>
+            </form>
+        </div>
+    @endif
+    @endcan
+    
     </div>
 @endsection

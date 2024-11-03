@@ -91,29 +91,6 @@ class ClassroomController extends Controller
         ]);
     }
 
-    private function getClassroomData($id) {
-        $classroom = Classroom::findOrFail($id);
-        $students = Student::where('classroom_id', $classroom->id)->paginate(10);
-
-        if ($classroom->classteacher != NULL) {
-            $teacherName = Str::title($classroom->classteacher->name);
-
-            if (strtolower($classroom->classteacher->gender) == 'men') {
-                $teacherName = 'Mr. ' . $teacherName;
-            } else {
-                $teacherName = 'Mrs. ' . $teacherName;
-            }
-        } else {
-            $teacherName = "N/A";
-        }
-
-        return [
-            'classroom' => $classroom,
-            'students' => $students,
-            'teacherName' => $teacherName,
-        ];
-    }
-
     public function registerNewClassroom(RegisterClassroomRequest $request) {
         $request->validated();
 
@@ -166,25 +143,6 @@ class ClassroomController extends Controller
         return view('manageClassroom.manageClass.all_classroom', compact('classrooms', 'forms'));
     }
 
-    private function setTeacherName($classrooms) {
-
-        foreach ($classrooms as $classroom) {
-            if ($classroom->classteacher != NULL) {
-                $teacherName = Str::title($classroom->classteacher->name);
-
-                if (strtolower($classroom->classteacher->gender) == 'men') {
-                    $classroom->teacher_title = 'Mr. ' . $teacherName;
-                } else {
-                    $classroom->teacher_title = 'Mrs. ' . $teacherName;
-                }
-            } else {
-                $classroom->teacher_title = "N/A";
-            }
-        }
-
-        return $classrooms;
-    }
-
     public function updateClassroomInfo(UpdateClassInfoRequest $request, $id): RedirectResponse | View {
         
         $newData = $request->validated();
@@ -230,5 +188,47 @@ class ClassroomController extends Controller
         }
 
         return redirect()->route('edit_classroom', ['id' => $class1])->with('red-message', 'Student '. $name . ' Is Removed From Class ' . $classroom->name);
+    }
+
+    private function getClassroomData($id) {
+        $classroom = Classroom::findOrFail($id);
+        $students = Student::where('classroom_id', $classroom->id)->paginate(10);
+
+        if ($classroom->classteacher != NULL) {
+            $teacherName = Str::title($classroom->classteacher->name);
+
+            if (strtolower($classroom->classteacher->gender) == 'men') {
+                $teacherName = 'Mr. ' . $teacherName;
+            } else {
+                $teacherName = 'Mrs. ' . $teacherName;
+            }
+        } else {
+            $teacherName = "N/A";
+        }
+
+        return [
+            'classroom' => $classroom,
+            'students' => $students,
+            'teacherName' => $teacherName,
+        ];
+    }
+
+    private function setTeacherName($classrooms) {
+
+        foreach ($classrooms as $classroom) {
+            if ($classroom->classteacher != NULL) {
+                $teacherName = Str::title($classroom->classteacher->name);
+
+                if (strtolower($classroom->classteacher->gender) == 'men') {
+                    $classroom->teacher_title = 'Mr. ' . $teacherName;
+                } else {
+                    $classroom->teacher_title = 'Mrs. ' . $teacherName;
+                }
+            } else {
+                $classroom->teacher_title = "N/A";
+            }
+        }
+
+        return $classrooms;
     }
 }

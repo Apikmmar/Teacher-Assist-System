@@ -13,9 +13,8 @@
             </tr>
         </thead>
         <tbody>
-        @php
-            $startNumber = ($students->currentPage() - 1) * $students->perPage() + 1;
-        @endphp
+
+        @php $startNumber = ($students->currentPage() - 1) * $students->perPage() + 1; @endphp
         @foreach ($students as $index => $student)
             <tr class="align-middle teacher-list">
                 <th scope="row">{{ $startNumber + $index }}</th>
@@ -27,9 +26,11 @@
                 <td>{{ $student->status }}</td>
                 <td class="text-center">
                     <a href="{{ route('view_student', ['id' => $student->id ]) }}" class="btn btn-success tr-button">View</a>
+
                 @can('coordinator')
                     <button data-bs-toggle="modal" data-bs-target="#confirmDelete{{ $student->id }}" class="btn btn-danger tr-button">Delete</button>
                 @endcan
+
                 </td>
             </tr>
         
@@ -41,15 +42,16 @@
             ])
         @endforeach
         
-        @if ($students->total() > 10)
-            <tfoot class="text-center">
-                <tr>
-                    <td colspan="12" class="text-center">
-                        {{ $students->onEachSide(5)->appends(request()->query())->links() }}
-                    </td>
-                </tr>
-            </tfoot>
-        @endif
+    @if ($students->total() > 10)
+        <tfoot class="text-center">
+            <tr>
+                <td colspan="12" class="text-center">
+                    {{ $students->onEachSide(5)->appends(request()->query())->links() }}
+                </td>
+            </tr>
+        </tfoot>
+    @endif
+    
     </table> 
 @else
     <div class="d-flex justify-content-center mt-2">

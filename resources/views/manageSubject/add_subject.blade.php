@@ -32,9 +32,11 @@
                             <div class="col-md-8">
                                 <select id="form" name="form" class="form-select">
                                     <option selected disabled>Select Form</option>
-                                    @foreach ($forms as $form)
-                                        <option value="{{ $form->id }}">{{ $form->name }}</option>
-                                    @endforeach
+
+                                @foreach ($forms as $form)
+                                    <option value="{{ $form->id }}">{{ $form->name }}</option>
+                                @endforeach
+
                                 </select>
                             </div>
                         </div>
@@ -59,7 +61,8 @@
                 </h4>
             </header>
             <div class="pt-3">
-                @if ($teachers->isNotEmpty())
+            
+            @if ($teachers->isNotEmpty())
                 <div class="d-flex justify-content-center">
                     <table class="table table-hover" style="max-width: 900px">
                         <thead>
@@ -71,6 +74,7 @@
                             </tr>
                         </thead>
                         <tbody id="teacherTableBody">
+
                             @php $startNumber = 1; @endphp
                             @foreach ($teachers as $index => $teacher)
                             <tr class="align-middle teacher-list" data-age="{{ $teacher->age ?? 0 }}">
@@ -83,6 +87,7 @@
                                 </td>
                             </tr>
                             @endforeach
+
                         </tbody>
                     </table>
                 </div>
@@ -91,6 +96,7 @@
                     <h4 class="fw-bold">teachers Not Registered</h4>
                 </div>
             @endif
+            
             </div>
 
             <div class="d-flex justify-content-center pt-2">

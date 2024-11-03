@@ -162,32 +162,6 @@ class SubjectController extends Controller
         ]);
     }
 
-    private function getSubjectNotRegisteredTeacher($subjectsNotTaken) {
-        $notRegisteredTeachers = [];
-        
-        foreach ($subjectsNotTaken as $subject) {
-            $notRegisteredTeachers[$subject->id] = Subject_Teacher::where('subject_id', $subject->id)->with('teacher')->get();
-    
-            foreach ($notRegisteredTeachers[$subject->id] as $teacher) {
-                $teacher->name = $this->convertTeacherNameFormat($teacher->teacher);
-            }
-        }
-        return $notRegisteredTeachers;
-    }
-
-    private function convertTeacherNameFormat($teachers) {
-        if ($teachers instanceof Collection) {
-            return $teachers->map(function ($teacher) {
-                $title = strtolower($teacher->gender) === 'men' ? 'Mr.' : 'Mrs.';
-                $teacher->name = $title . ' ' . Str::title($teacher->name);
-                return $teacher;
-            });
-        } else {
-            $title = strtolower($teachers->gender) === 'men' ? 'Mr.' : 'Mrs.';
-            return $title . ' ' . Str::title($teachers->name);
-        }
-    }
-
     public function createNewSubject(AddSubjectRequest $request): RedirectResponse {
         $request->validated();
 
@@ -335,5 +309,31 @@ class SubjectController extends Controller
         $subsTaken->save();
 
         return redirect()->route('student_subject', ['id' => $id])->with('blue-message', 'Elective Subject Is Registered to Student');
+    }
+
+    private function getSubjectNotRegisteredTeacher($subjectsNotTaken) {
+        $notRegisteredTeachers = [];
+        
+        foreach ($subjectsNotTaken as $subject) {
+            $notRegisteredTeachers[$subject->id] = Subject_Teacher::where('subject_id', $subject->id)->with('teacher')->get();
+    
+            foreach ($notRegisteredTeachers[$subject->id] as $teacher) {
+                $teacher->name = $this->convertTeacherNameFormat($teacher->teacher);
+            }
+        }
+        return $notRegisteredTeachers;
+    }
+
+    private function convertTeacherNameFormat($teachers) {
+        if ($teachers instanceof Collection) {
+            return $teachers->map(function ($teacher) {
+                $title = strtolower($teacher->gender) === 'men' ? 'Mr.' : 'Mrs.';
+                $teacher->name = $title . ' ' . Str::title($teacher->name);
+                return $teacher;
+            });
+        } else {
+            $title = strtolower($teachers->gender) === 'men' ? 'Mr.' : 'Mrs.';
+            return $title . ' ' . Str::title($teachers->name);
+        }
     }
 }

@@ -55,11 +55,18 @@ class StudentsController extends Controller
             $subsTaken = null;
         }
 
+        if ($std->status == 'Inactive') {
+            $transition =  $std->transition;
+        } else {
+            $transition = NULL;
+        }
+
         return view('manageClassroom.manageStudents.view_student', [
             'std' => $std,
             'class' => $class,
             'age' => $age,
             'subsTaken' => $subsTaken,
+            'transition' => $transition,
         ]);
     }
 
@@ -79,31 +86,6 @@ class StudentsController extends Controller
             'classes' => $classes,
             'age' => $this->calculateAge($std->ic),
         ]);
-    }
-
-    private function calculateAge($ic) {
-        $ageOnIc = (substr($ic, 0, 2));
-        $yearNow = date('Y');
-        $century = ($ageOnIc > $yearNow - 2000) ? 1900 : 2000;
-        $age = $yearNow - ($century + $ageOnIc);
-
-        return $age;
-    }
-
-    private function getStudentSubjects($classid, $stdid) {
-        $allSubjects = Subject_Taken::where('classroom_id', $classid)->orWhere('student_id', $stdid)->get();
-
-        $subsTaken = [];
-
-        foreach ($allSubjects as $subject) {
-            if ($subject->subject != NULL) {
-                $subsTaken[] = Str::title($subject->subject->name);
-            } else {
-                $subsTaken[] = 'N/A';
-            }
-        }
-        $subsTaken = collect($subsTaken);
-        return $subsTaken;
     }
 
     public function addNewStudent(AddStudentRequest $request): RedirectResponse {
@@ -135,6 +117,8 @@ class StudentsController extends Controller
 
         $std->update(['classroom_id' => $class->id]);
 
+        $this->updateTotalClassStudent($class);
+
         return redirect()->route('view_student', ['id' => $id])->with('blue-message', 'Successfully Add Student to ' . $class->name . '.');
     }
 
@@ -160,7 +144,6 @@ class StudentsController extends Controller
     public function filterStudent(Request $request) {
         $query = Student::query();
     
-        // Apply sorting if provided
         if ($request->filled('sort_name')) {
             $order = $request->sort_name === 'ASC' ? 'asc' : 'desc';
             $query->orderBy('name', $order);
@@ -171,7 +154,6 @@ class StudentsController extends Controller
             $query->orderBy('ic', $order);
         }
     
-        // Apply status filtering
         if ($request->filled('status_active')) {
             $query->where('status', 'active');
         }
@@ -180,7 +162,6 @@ class StudentsController extends Controller
             $query->where('status', 'inactive');
         }
     
-        // Apply gender filtering
         if ($request->filled('gender_men')) {
             $query->where('gender', 'Men');
         }
@@ -189,10 +170,8 @@ class StudentsController extends Controller
             $query->where('gender', 'Women');
         }
     
-        // Determine the pagination limit
         $paginationLimit = $request->hasAny(['sort_name', 'sort_ic', 'status_active', 'status_inactive', 'gender_men', 'gender_women']) ? 10 : 100;
     
-        // Retrieve paginated students
         $students = $query->paginate($paginationLimit);
     
         return view('manageClassroom.manageStudents.all_student', [
@@ -206,10 +185,33 @@ class StudentsController extends Controller
 
         $std = Student::findOrFail($id);
 
+        $classOld = $std->classroom_id ? Classroom::findOrFail($std->classroom_id) : null;
+
         $std->update($data);
         
         if ($data['status'] === 'Inactive') {
             $std->update(['classroom_id' => NULL]);
+
+            if($classOld) {
+                $this->updateTotalClassStudent($classOld);
+            }
+        }
+
+        if (isset($data['classroom_id']) && $data['classroom_id'] != ($classOld->id ?? null)) {
+            $classNew = Classroom::findOrFail($std->classroom_id);
+            $this->updateTotalClassStudent($classNew);
+            
+            if ($classOld) {
+                $this->updateTotalClassStudent($classOld);
+            }
+        }
+
+        if ($data['status'] === 'Active') {
+            $transition = $std->transition;
+
+            if ($transition) {
+                $transition->delete();
+            }
         }
 
         return redirect()->route('edit_student', ['id' => $id])->with('blue-message', 'Successfully Update Student Data');
@@ -217,35 +219,70 @@ class StudentsController extends Controller
 
     public function deleteStudent($id): RedirectResponse {
         $std = Student::findOrFail($id);
+        $transition = $std->transition;
+
+        $transition->delete();
         $std->delete();
 
         return redirect()->route('all_student')->with('red-message', 'Student Deleted');
     }
 
     public function addStudentTranstion(StudentTransitionRequest $request, $id): RedirectResponse {
-        $request->validate([
-            'change_school_reason' => ['required', 'string', 'max:100'],
-            'new_school_name' => ['required', 'string', 'max:100'],
-            'reason_drop' => ['required', 'string', 'max:100'],
-            'transition_date' => ['required', 'date'],
-        ]);
+        $request->validated();
 
         $std = Student::findOrFail($id);
-        $class = Classroom::findOrFail($std->classroom_id);
+
+        if($std->classroom_id) {
+            $class = Classroom::findOrFail($std->classroom_id);
+        } else {
+            $class = NULL;
+        }
         
         Transition::create([
             'change_school_reason' => $request->change_school_reason,
             'student_id' => $std->id,
-            'lastclass_id' => $class->id,
+            'lastclass_id' => $class ? $class->id : NULL,
             'new_school_name' => $request->new_school_name,
             'reason_drop' => $request->reason_drop,
             'transition_date' => $request->transition_date,
         ]);
         
-        // $transition->save();
-
         $std->update(['classroom_id' => NULL, 'status' => 'Inactive']);
 
+        if($class) {
+            $this->updateTotalClassStudent($class);
+        }
+
         return redirect()->route('view_student', ['id' => $id])->with('red-message', 'Student Drop From School');
+    }
+
+    private function calculateAge($ic) {
+        $ageOnIc = (substr($ic, 0, 2));
+        $yearNow = date('Y');
+        $century = ($ageOnIc > $yearNow - 2000) ? 1900 : 2000;
+        $age = $yearNow - ($century + $ageOnIc);
+
+        return $age;
+    }
+
+    private function getStudentSubjects($classid, $stdid) {
+        $allSubjects = Subject_Taken::where('classroom_id', $classid)->orWhere('student_id', $stdid)->get();
+
+        $subsTaken = [];
+
+        foreach ($allSubjects as $subject) {
+            if ($subject->subject != NULL) {
+                $subsTaken[] = Str::title($subject->subject->name);
+            } else {
+                $subsTaken[] = 'N/A';
+            }
+        }
+        $subsTaken = collect($subsTaken);
+        return $subsTaken;
+    }
+
+    private function updateTotalClassStudent(Classroom $class) {
+        $class->num_student = $class->students()->count();
+        $class->save();
     }
 }

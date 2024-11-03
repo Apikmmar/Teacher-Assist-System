@@ -22,4 +22,8 @@ class Transition extends Model
     public function student(): BelongsTo {
         return $this->belongsTo(Student::class);
     }
+
+    public function classID(): BelongsTo {
+        return $this->belongsTo(Classroom::class, 'lastclass_id');
+    }
 }

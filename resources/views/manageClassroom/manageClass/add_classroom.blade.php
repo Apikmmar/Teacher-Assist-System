@@ -54,7 +54,8 @@
                 </h4>
             </header>
             <div class="pt-2">
-                @if ($students->isNotEmpty())
+
+            @if ($students->isNotEmpty())
                 <div class="row align-items-center mb-2">
                     <div class="col-md-6">
                         <label for="ageRange" class="form-label">Filter by Student Age:</label>
@@ -81,10 +82,10 @@
                             </tr>
                         </thead>
                         <tbody id="studentTableBody">
-                            @php $startNumber = 1; @endphp
-                            @foreach ($students as $index => $student)
+
+                        @foreach ($students as $index => $student)
                             <tr class="align-middle teacher-list" data-age="{{ $student->age ?? 0 }}">
-                                <th scope="row">{{ $startNumber + $index }}</th>
+                                <th scope="row">{{ 1 + $index }}</th>
                                 <td>{{ $student->name }}</td>
                                 <td>{{ $student->ic }}</td>
                                 <td>{{ $student->student_id }}</td>
@@ -95,7 +96,8 @@
                                     {{ in_array($student->id, $stdSelected) ? 'checked' : '' }}>
                                 </td>
                             </tr>
-                            @endforeach
+                        @endforeach
+
                         </tbody>
                     </table>
                 </div>
@@ -104,8 +106,8 @@
                     <h4 class="fw-bold">Students Not Registered</h4>
                 </div>
             @endif
-            </div>
 
+            </div>
             <div class="d-flex justify-content-center pt-2">
                 <button type="submit" class="btn text-white user-save-button">Add Class</button>
                 &nbsp;&nbsp;&nbsp;

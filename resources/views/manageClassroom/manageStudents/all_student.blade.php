@@ -5,7 +5,7 @@
     
     @include('layouts.message')
 
-    @if ($students->isNotEmpty())
+@if ($students->isNotEmpty())
     <div class="d-flex justify-content-end me-4">
         <div>
             <form action="{{ route('search_student') }}" method="get">
@@ -28,14 +28,12 @@
             @include('manageClassroom.partials.filter')
         </div>
     </div>
-    @endif
+@endif
 
     @can('coordinator')
-        
         <div class="d-flex justify-content-end me-4 mb-2">
             <a href="{{ route('add_student') }}" class="btn text-white user-save-button">Register Student</a>
         </div>
-        
     @endcan
 
     @include('manageClassroom.partials.student_list')

@@ -50,32 +50,34 @@
             </h4>
         </header>
 
-        @if (!empty($subsTaken))
-            <div class="d-flex justify-content-center">
-                <table class="table table-hover" style="max-width: 500px">
-                    <thead>
-                        <tr>
-                            <th scope="col">No</th>
-                            <th scope="col">Subject Name</th>
-                            <th scope="col">Subject's Teacher</th>
-                        </tr>
-                    </thead>
-                    <tbody id="teacherTableBody">
-                        @foreach ($subsTaken as $index => $subject)
-                            <tr class="align-middle teacher-list">
-                                <th scope="row">{{ 1 + $index  }}</th>
-                                <td>{{ $subject }}</td>
-                                <td>{{ $subsTeacher[$index] }}</td>
-                            </tr>
-                        @endforeach
-                    </tbody>
-                </table>
-            </div>
-        @else
-            <div class="d-flex justify-content-center mt-2">
-                <h4 class="fw-bold">No Teachers Assigned</h4>
-            </div>
-        @endif
+    @if (!empty($subsTaken))
+        <div class="d-flex justify-content-center">
+            <table class="table table-hover" style="max-width: 500px">
+                <thead>
+                    <tr>
+                        <th scope="col">No</th>
+                        <th scope="col">Subject Name</th>
+                        <th scope="col">Subject's Teacher</th>
+                    </tr>
+                </thead>
+                <tbody id="teacherTableBody">
+
+                @foreach ($subsTaken as $index => $subject)
+                    <tr class="align-middle teacher-list">
+                        <th scope="row">{{ 1 + $index  }}</th>
+                        <td>{{ $subject }}</td>
+                        <td>{{ $subsTeacher[$index] }}</td>
+                    </tr>
+                @endforeach
+
+                </tbody>
+            </table>
+        </div>
+    @else
+        <div class="d-flex justify-content-center mt-2">
+            <h4 class="fw-bold">No Teachers Assigned</h4>
+        </div>
+    @endif
 
         <hr>
         <header>
@@ -106,14 +108,16 @@
                                         <input type="hidden" name="subject_id" value="{{ $subs->id }}">
                                         <select id="form" name="teacher_id" class="form-select" style="max-width: 200px">
                                             <option selected disabled>Select Teacher</option>
-                                            @if (isset($notRegisteredTeachers[$subs->id]))
-                                                @foreach ($notRegisteredTeachers[$subs->id] as $teacher)
-                                                    <option value="{{ $teacher->id }}">{{ $teacher->name }}</option>
-                                                @endforeach
-                                            @else
-                                                <option disabled>No available teachers</option>
-                                            @endif
-                                        </select> 
+
+                                        @if (isset($notRegisteredTeachers[$subs->id]))
+                                        @foreach ($notRegisteredTeachers[$subs->id] as $teacher)
+                                            <option value="{{ $teacher->id }}">{{ $teacher->name }}</option>
+                                        @endforeach
+                                        @else
+                                            <option disabled>No available teachers</option>
+                                        @endif
+                                        
+                                    </select> 
                                     </td>
                                     <td>
                                         <button type="submit" class="btn btn-primary text-white tr-button">Add</button>

@@ -16,11 +16,13 @@
                     <div class="col-md-6">
                         <select id="form" class="form-control @error('form') is-invalid @enderror" name="form_id" autofocus style="border-radius: 15px">
                             <option value="" disabled>Select Form</option>
+
                             @foreach($forms as $form)
                                 <option value="{{ $form->id }}" {{ $classroom->form->id == $form->id ? 'selected' : '' }}>
                                     {{ $form->name }}
                                 </option>
                             @endforeach
+
                         </select>
                     </div>
                 </div>
@@ -37,11 +39,13 @@
                     <div class="col-md-6">
                         <select id="classteacher" class="form-control @error('classteacher') is-invalid @enderror" name="classteacher_id" autofocus style="border-radius: 15px">
                             <option value="" disabled {{ $classroom->classteacher_id == NULL ? 'selected' : '' }}>Select Class Teacher</option>
-                            @foreach($teachers as $teacher)
-                                <option value="{{ $teacher->id }}" {{ $classroom->classteacher_id == $teacher->id ? 'selected' : '' }}>
-                                    {{ strtolower($teacher->gender) == 'men' ? 'Mr. ' : 'Mrs. ' }} {{ Str::title($teacher->name) }}
-                                </option>
-                            @endforeach
+
+                        @foreach($teachers as $teacher)
+                            <option value="{{ $teacher->id }}" {{ $classroom->classteacher_id == $teacher->id ? 'selected' : '' }}>
+                                {{ strtolower($teacher->gender) == 'men' ? 'Mr. ' : 'Mrs. ' }} {{ Str::title($teacher->name) }}
+                            </option>
+                        @endforeach
+
                         </select>
                     </div>
                 </div>
@@ -62,7 +66,8 @@
         </div>
         <hr>
         <div class="">
-            @if ($students->isNotEmpty())
+
+        @if ($students->isNotEmpty())
             <table class="table table-hover">
                 <thead>
                     <tr>
@@ -75,9 +80,8 @@
                     </tr>
                 </thead>
                 <tbody>
-                @php
-                    $startNumber = ($students->currentPage() - 1) * $students->perPage() + 1;
-                @endphp
+
+                @php $startNumber = ($students->currentPage() - 1) * $students->perPage() + 1; @endphp
                 @foreach ($students as $index => $student)
                     <tr class="align-middle teacher-list">
                         <th scope="row">{{ $startNumber + $index }}</th>
@@ -107,8 +111,10 @@
                         </tr>
                     </tfoot>
                 @endif
+
             </table> 
             @endif
+            
         </div>
     </div>
 @endsection

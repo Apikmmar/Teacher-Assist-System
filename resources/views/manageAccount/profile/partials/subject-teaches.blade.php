@@ -6,7 +6,7 @@
     </header>
 
     <div>
-        @if ($subClassTeacher)
+    @if ($subClassTeacher)
         <table class="table table-hover">
             <thead>
                 <tr>
@@ -17,23 +17,25 @@
                 </tr>
             </thead>
             <tbody>
-                @foreach ($subClassTeacher as $index => $subject)
+
+            @foreach ($subClassTeacher as $index => $subject)
                 <tr class="align-middle teacher-list">
                     <th scope="row">{{ 1 + $index }}</th>
                     <td>{{ $subject['subjectTeach'] }}</td>
                     <td>{{ $subject['subjectForm'] }}</td>
                     <td>
                         <ul class="mt-2">
-                            @foreach ($subject['classNames'] as $className)
-                                <li>{{ $className }}</li>
-                            @endforeach
+                        @foreach ($subject['classNames'] as $className)
+                            <li>{{ $className }}</li>
+                        @endforeach
                         </ul>
                     </td>
                 </tr>
             @endforeach
+
+            </tbody>
         </table>
     @else
-    
         <div class="d-flex justify-content-center mt-2">
             <h4 class="fw-bold">No Subject Assiged</h4>
         </div>

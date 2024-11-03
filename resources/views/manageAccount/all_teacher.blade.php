@@ -25,16 +25,13 @@
         </form>
     @endif
 
-    @can('coordinator')
-        
+    @can('coordinator')    
         <div class="d-flex justify-content-end me-4 mb-2">
             <a href="{{ route('add_teacher') }}" class="btn text-white user-save-button">Add Teacher</a>
-        </div>
-        
+        </div>    
     @endcan
 
     @if ($teachers->isNotEmpty())
-        
         <table class="table table-hover">
             <thead>
                 <tr>
@@ -52,7 +49,6 @@
             @php $startNumber = ($teachers->currentPage() - 1) * $teachers->perPage() + 1; @endphp
             @foreach ($teachers as $index => $teacher)
             @php $call = ($teacher->gender === 'Men') ? 'Mr. ' : (($teacher->gender === 'Women') ? 'Mrs. ' : ''); @endphp
-
                 <tr class="align-middle teacher-list">
                     <th scope="row">{{ $startNumber + $index }}</th>
                     <td>{{ $call . $teacher->name }}</td>
@@ -74,9 +70,10 @@
                     'deleteRoute' => route('delete.teacher', ['id' => $teacher->id]),
                     'method' => 'DELETE'
                 ])
-                
             @endforeach
+
             </tbody>
+
         @if ($teachers->total() > 10)
             <tfoot class="text-center">
                 <tr>
@@ -90,11 +87,11 @@
         </table>
             
     @else
-    
         <div class="d-flex justify-content-center mt-2">
             <h4 class="fw-bold">No teacher found</h4>
         </div>
     @endif
+    
     </div>
 
 @endsection
