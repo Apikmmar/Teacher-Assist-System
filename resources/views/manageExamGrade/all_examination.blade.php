@@ -57,9 +57,16 @@
                             <td>{{ $examination->status }}</td>
                             <td>{{ $examination->type }}</td>
                             <td>
+                                <a href="{{ route('view_examination', ['id' => $examination->id ]) }}" class="btn text-white btn-warning tr-button">Edit</a>
                             @can('coordinator')
-                                <a href="" class="btn text-white btn-warning tr-button">Edit</a>
-                                <button class="btn btn-danger tr-button">Delete</button>
+                                <button data-bs-toggle="modal" data-bs-target="#confirmDelete{{ $examination->id }}" class="btn btn-danger tr-button">Delete</button>
+
+                                @include('layouts.partials.modal', [
+                                                'id' => $examination->id, 
+                                                'name' => "Are you sure you want to remove " . $examination->name . " from from the database?",
+                                                'deleteRoute' => route('delete.view_examination', ['id' => $examination->id]),
+                                                'method' => 'DELETE'
+                                            ])
                             @endcan
                             @if ($examination->status == 'Release')
                                 <a href="" class="btn btn-success tr-button">Report</a>

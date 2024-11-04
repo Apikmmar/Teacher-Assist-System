@@ -5,7 +5,7 @@
                 <h5 class="modal-title" id="confirmationModalLabel{{ $id }}">Confirm Delete</h5>
                 <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
             </div>
-            <div class="modal-body">
+            <div class="modal-body fw-normal">
                 <p>{{ $name }}</p>
             </div>
             <div class="modal-footer">
