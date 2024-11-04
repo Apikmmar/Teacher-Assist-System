@@ -21,7 +21,7 @@
         <a href="" class="btn button-sidebar" type="button"><i class="bi bi-person-lines-fill"></i>Student Examination</a>
     @endcan
 
-        <a href="" class="btn button-sidebar" type="button"><i class="bi bi-pen-fill me-2"></i>Manage Examination</a>
+        <a href="{{ route('all_examination') }}" class="btn button-sidebar" type="button"><i class="bi bi-pen-fill me-2"></i>Manage Examination</a>
 
         <form action="{{ route('logout') }}" method="post">
             @csrf

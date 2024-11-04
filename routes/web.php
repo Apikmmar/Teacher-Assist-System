@@ -3,6 +3,7 @@
 use App\Http\Controllers\Auth\RegisteredUserController;
 use App\Http\Controllers\AccountController;
 use App\Http\Controllers\ClassroomController;
+use App\Http\Controllers\ExaminationController;
 use App\Http\Controllers\ProfileController;
 use App\Http\Controllers\StudentsController;
 use App\Http\Controllers\SubjectController;
@@ -68,6 +69,9 @@ Route::middleware('auth')->group(function () {
     Route::get('/view_student/{id}/subject_taken', [SubjectController::class, 'viewStudentSubject'])->name('student_subject');
     Route::get('/view_student/{id}/add_elective_subject', [SubjectController::class, 'addStudentElectiveSubject'])->name('add.studentelective_subject');
     Route::delete('/view_student/{id}/drop_elective_subject/{subs_id}', [SubjectController::class, 'dropStudentElectiveSubject'])->name('drop.studentelective_subject');
+
+    Route::get('/all_examination', [ExaminationController::class, 'viewAllExamination'])->name('all_examination');
+    Route::get('/add_examination', [ExaminationController::class, 'viewAddExamination'])->name('add_examination');
 });
 
 require __DIR__.'/auth.php';
