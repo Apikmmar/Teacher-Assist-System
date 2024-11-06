@@ -42,6 +42,7 @@
                         <th scope="col">Name</th>
                         <th scope="col">Duration of Examination</th>
                         <th scope="col">Status</th>
+                        <th scope="col">Release Date</th>
                         <th scope="col">Type</th>
                         <th scope="col">Action</th>
                     </tr>
@@ -55,6 +56,7 @@
                             <td>{{ $examination->name }}</td>
                             <td>{{ $examination->start_date }} - {{ $examination->end_date }} ({{ $duration[$index] }} days)</td>
                             <td>{{ $examination->status }}</td>
+                            <td>{{ $examination->release_date }}</td>
                             <td>{{ $examination->type }}</td>
                             <td>
                                 <a href="{{ route('view_examination', ['id' => $examination->id ]) }}" class="btn text-white btn-warning tr-button">Edit</a>

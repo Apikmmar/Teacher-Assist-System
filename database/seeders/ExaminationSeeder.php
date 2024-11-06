@@ -21,10 +21,11 @@ class ExaminationSeeder extends Seeder
         for ($i=1; $i <20 ; $i++) {
             $strtDate = Carbon::today()->subDays(rand(0, 365));
             $endDate = $strtDate->copy()->addDays(rand(10, 31));
+            $releaseDate = $endDate->copy()->addDays(30);
             $status = ['Pending', 'Release'][rand(0, 1)];
 
             DB::table('examinations')->insert([
-                'name' => 'Exam Dummy', 'start_date' => $strtDate, 'end_date' => $endDate, 'status' => $status, 'type' => 'Type Dummy', 'created_at' => $now, 'updated_at' => $now,
+                'name' => 'Exam Dummy', 'start_date' => $strtDate, 'end_date' => $endDate, 'status' => $status, 'release_date' => $releaseDate ,'type' => 'Type Dummy', 'created_at' => $now, 'updated_at' => $now,
             ]);
         }
     }

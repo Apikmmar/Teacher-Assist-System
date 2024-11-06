@@ -16,6 +16,7 @@ class Examination extends Model
         'end_date',
         'status',
         'type',
+        'release_date'
     ];
 
     public function studentgrades():HasMany {

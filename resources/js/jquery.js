@@ -81,4 +81,12 @@ $(document).ready(function() {
             }, 50);
         }
     })
+
+    $('#exam_type').on('change', function() {
+        if ($(this).val() === 'Other') {
+            $('#otherExam').show();
+        } else {
+            $('#otherExam').hide();
+        }
+    });
 });

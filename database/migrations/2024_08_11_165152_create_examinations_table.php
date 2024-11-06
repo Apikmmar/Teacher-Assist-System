@@ -17,6 +17,7 @@ return new class extends Migration
             $table->date('start_date');
             $table->date('end_date');
             $table->enum('status', ['Release', 'Pending']);
+            $table->date('release_date')->nullable();
             $table->string('type', 100);
             $table->timestamps();
         });

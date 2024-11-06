@@ -53,19 +53,46 @@
                             <strong>{{ $message }}</strong>
                         </span>
                         @enderror
+                    </div>
+                </div>
+
+                <div class="row mb-3">
+                    <label for="release_date" class="col-md-4 col-form-label text-md-end fw-bold">{{ __('Mark Release Date') }} <label class="red-aestrist">*</label></label>
+                    
+                    <div class="col-md-6">
+                        <input id="release_date" type="date" class="form-control @error('release_date') is-invalid @enderror" name="release_date" placeholder="Release Date" required autocomplete="release_date" autofocus>
+                        
+                        @error('release_date')
+                        <span class="invalid-feedback" role="alert">
+                            <strong>{{ $message }}</strong>
+                        </span>
+                        @enderror
                     </div>                   
                 </div>
         
                 <div class="row mb-3">
-                    <label for="type" class="col-md-4 col-form-label text-md-end fw-bold">{{ __('Examination Type') }} <label class="red-aestrist">*</label></label>
+                    <label for="type" class="col-md-4 col-form-label text-md-end fw-bold">
+                        {{ __('Examination Type') }} <label class="red-aestrist">*</label>
+                    </label>
                     
                     <div class="col-md-6">
-                        <select id="type" name="type" class="form-select" aria-label="Gender">
+                        <select id="exam_type" name="type" class="form-select" aria-label="Examination Type">
                             <option selected disabled value="NULL">Select Examination</option>
                             <option value="Early Term Examination">Early Term Examination</option>
                             <option value="Mid Term Examination">Mid Term Examination</option>
                             <option value="Final Term Examination">Final Term Examination</option>
+                            <option value="Other">Other</option>
                         </select>
+                    </div>
+                </div>
+                
+                <div class="row mb-3" id="otherExam" style="display: none;">
+                    <label for="otherExaminationType" class="col-md-4 col-form-label text-md-end fw-bold">
+                        {{ __('Specify Examination Type') }}
+                    </label>
+                    
+                    <div class="col-md-6">
+                        <input type="text" id="otherExam" name="otherExam" class="form-control" placeholder="Please specify">
                     </div>
                 </div>
 

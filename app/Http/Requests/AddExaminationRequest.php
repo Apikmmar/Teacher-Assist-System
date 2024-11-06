@@ -2,6 +2,7 @@
 
 namespace App\Http\Requests;
 
+use Carbon\Carbon;
 use Illuminate\Foundation\Http\FormRequest;
 
 class AddExaminationRequest extends FormRequest
@@ -27,6 +28,8 @@ class AddExaminationRequest extends FormRequest
             'start_date' => ['required', 'date'],
             'end_date' => ['required', 'date', 'after:start_date'],
             'type' => ['required', 'string', 'max:200'],
+            'release_date' => ['required', 'date', 'after:end_date'],
+            'otherExam' => ['nullable', 'string'],
         ];
     }
 }

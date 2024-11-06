@@ -20,11 +20,13 @@ class ExaminationController extends Controller
         foreach ($examinations as $exam) {
             $startDate = Carbon::parse($exam->start_date);
             $endDate = Carbon::parse($exam->end_date);
+            $releaseDate = Carbon::parse($exam->release_date);
             
             $duration[] = $startDate->diffInDays($endDate) + 1;
             
             $exam->start_date = $startDate->format('j F Y');
             $exam->end_date = $endDate->format('j F Y');
+            $exam->release_date = $releaseDate->format('j F Y');
         }
 
         return view('manageExamGrade.all_examination', [
@@ -47,12 +49,15 @@ class ExaminationController extends Controller
     public function addNewExamination(AddExaminationRequest $request): RedirectResponse {
         $request->validated();
 
+        $examinationType = $request->type === 'Other' ? $request->otherExam : $request->type;
+
         $exam = Examination::create([
             'name' => $request->name,
             'start_date' => $request->start_date,
             'end_date' => $request->end_date,
             'status' => 'Pending',
-            'type' => $request->type,
+            'type' => $examinationType,
+            'release_date' => $request->release_date,
         ]);
 
         return redirect()->route('view_examination', ['id' => $exam->id])->with('blue-message', 'Successfully Registered New Examination');
