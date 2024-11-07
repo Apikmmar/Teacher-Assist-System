@@ -70,10 +70,10 @@ input.form-control {
     color: #FF0000;
 }
 
-.teacher-list:hover {
+/* .teacher-list:hover {
     font-weight: 600;
     height: 40px;
-}
+} */
 
 @media (max-width: 990px) {
     .navbar {

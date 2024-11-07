@@ -82,19 +82,24 @@
                     @cannot('coordinator')
                         <input type="text" class="form-control" value="{{ old('type', $exam->type) }}" readonly>
                     @else
-                        <select id="type" name="type" class="form-select">
-                            <option disabled {{ old('type') ? '' : 'selected' }} value="">Select Examination</option>
-                            <option value="Early Term Examination" @selected(old('type', $exam->type) == 'Early Term Examination')>Early Term Examination</option>
-                            <option value="Mid Term Examination" @selected(old('type', $exam->type) == 'Mid Term Examination')>Mid Term Examination</option>
-                            <option value="Final Term Examination" @selected(old('type', $exam->type) == 'Final Term Examination')>Final Term Examination</option>
-                        </select>
+                        @if (($exam->type == 'Early Term Examination') || ($exam->type == 'Mid Term Examination') || ($exam->type == 'Final Term Examination'))
+                            <select id="type" name="type" class="form-select">
+                                <option disabled {{ old('type') ? '' : 'selected' }} value="">Select Examination</option>
+                                <option value="Early Term Examination" @selected(old('type', $exam->type) == 'Early Term Examination')>Early Term Examination</option>
+                                <option value="Mid Term Examination" @selected(old('type', $exam->type) == 'Mid Term Examination')>Mid Term Examination</option>
+                                <option value="Final Term Examination" @selected(old('type', $exam->type) == 'Final Term Examination')>Final Term Examination</option>
+                            </select>
+                        @else
+                            <input type="text" class="form-control" name="type" value="{{ old('type', $exam->type) }}">
+                        @endif
                     @endcannot
-                
-                        @error('type')
-                            <span class="text-danger">{{ $message }}</span>
-                        @enderror
+            
+                    @error('type')
+                        <span class="text-danger">{{ $message }}</span>
+                    @enderror
                     </div>
                 </div>
+                
 
         @can('coordinator')
                 <div class="d-flex justify-content-center pt-2">
@@ -124,8 +129,9 @@
                         <button data-bs-toggle="modal" data-bs-target="#confirmDelete{{ $exam->id }}" class="btn btn-danger tr-button">Release</button>
 
                             @include('layouts.partials.modal', [
+                                'text' => 'Release Examination',
                                 'id' => $exam->id, 
-                                'name' => "Are you sure you want to release " . $exam->name . "?",
+                                'name' => "Are you sure you want to release " . $exam->name . " marks?",
                                 'deleteRoute' => route('update_release.view_examination', ['id' => $exam->id]),
                                 'method' => 'PUT'
                             ])

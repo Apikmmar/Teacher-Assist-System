@@ -15,12 +15,12 @@
 
     @if ($examinations->isNotEmpty())
             <div>
-                <form action="" method="get">
+                <form action="{{ route('search_examination') }}" method="get">
         
                     <div class="row mb-3 align-items-center">
                         <div class="col-md-12 d-flex align-items-center">
                 
-                            <input id="ic" type="text" style="width: 200px" class="form-control me-2 @error('ic') is-invalid @enderror" name="search_student" placeholder="Search Examination Name" required autocomplete="ic" autofocus>
+                            <input id="search_examination" type="text" style="width: 200px" class="form-control me-2 @error('search_examination') is-invalid @enderror" name="search_examination" placeholder="Search Examination Name" required autocomplete="search_examination" autofocus>
                             <button type="submit" class="btn btn-light" style="min-width: 50px; border-radius: 30%"><i class="bi bi-search" style="font-size: 1.2rem;"></i></button>
                         </div>
                     </div>
@@ -64,11 +64,11 @@
                                 <button data-bs-toggle="modal" data-bs-target="#confirmDelete{{ $examination->id }}" class="btn btn-danger tr-button">Delete</button>
 
                                 @include('layouts.partials.modal', [
-                                                'id' => $examination->id, 
-                                                'name' => "Are you sure you want to remove " . $examination->name . " from from the database?",
-                                                'deleteRoute' => route('delete.view_examination', ['id' => $examination->id]),
-                                                'method' => 'DELETE'
-                                            ])
+                                            'id' => $examination->id, 
+                                            'name' => "Are you sure you want to remove " . $examination->name . " from from the database?",
+                                            'deleteRoute' => route('delete.view_examination', ['id' => $examination->id]),
+                                            'method' => 'DELETE'
+                                        ])
                             @endcan
                             @if ($examination->status == 'Release')
                                 <a href="" class="btn btn-success tr-button">Report</a>

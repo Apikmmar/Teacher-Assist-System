@@ -72,6 +72,7 @@ Route::middleware('auth')->group(function () {
 
     Route::get('/all_examination', [ExaminationController::class, 'viewAllExamination'])->name('all_examination');
     Route::get('/add_examination', [ExaminationController::class, 'viewAddExamination'])->name('add_examination');
+    Route::get('/all_examination/search', [ExaminationController::class, 'searchExamination'])->name('search_examination');
     Route::get('/examination_details/{id}', [ExaminationController::class, 'viewExaminationDetails'])->name('view_examination');
     Route::post('/add_examination/create', [ExaminationController::class, 'addNewExamination'])->name('create.add_examination');
     Route::patch('/examination_details/update/{id}', [ExaminationController::class, 'updateExaminationDetails'])->name('update.view_examination');

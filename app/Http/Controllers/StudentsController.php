@@ -219,10 +219,18 @@ class StudentsController extends Controller
 
     public function deleteStudent($id): RedirectResponse {
         $std = Student::findOrFail($id);
-        $transition = $std->transition;
 
-        $transition->delete();
+        if($std->transition) {
+            $std->transition->delete();
+        }
+        
+        $classid = $std->classroom_id;
         $std->delete();
+
+        if($classid) {
+            $class = Classroom::findOrFail($classid);
+            $this->updateTotalClassStudent($class);
+        }
 
         return redirect()->route('all_student')->with('red-message', 'Student Deleted');
     }

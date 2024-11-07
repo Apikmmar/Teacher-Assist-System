@@ -8,26 +8,15 @@ use Carbon\Carbon;
 use Illuminate\Http\Request;
 use Illuminate\Contracts\View\View;
 use Illuminate\Http\RedirectResponse;
-use Illuminate\Support\Facades\Redirect;
+use Illuminate\Support\Facades\Validator;
 
 class ExaminationController extends Controller
 {
     //
     public function viewAllExamination(): View {
         $examinations = Examination::orderBy('start_date', 'desc')->orderBy('status')->paginate(10);
-        $duration = [];
+        $duration = $this->convertExamDate($examinations);
 
-        foreach ($examinations as $exam) {
-            $startDate = Carbon::parse($exam->start_date);
-            $endDate = Carbon::parse($exam->end_date);
-            $releaseDate = Carbon::parse($exam->release_date);
-            
-            $duration[] = $startDate->diffInDays($endDate) + 1;
-            
-            $exam->start_date = $startDate->format('j F Y');
-            $exam->end_date = $endDate->format('j F Y');
-            $exam->release_date = $releaseDate->format('j F Y');
-        }
 
         return view('manageExamGrade.all_examination', [
             'examinations' => $examinations,
@@ -92,5 +81,43 @@ class ExaminationController extends Controller
         $exam->update(['status' => 'Release']);
 
         return redirect()->route('view_examination', ['id' => $id])->with('blue-message', 'Examination Data Is Released');
+    }
+    
+    public function searchExamination(Request $request): View {
+        $validator = Validator::make($request->all(), [
+            'search_examination' => 'required | string | max:100',
+        ]);
+
+        if ($validator->fails()) {
+            return redirect()->back()->withErrors($validator)->withInput();
+        }
+        
+        $searchTerm = $request->input('search_examination');
+
+        $examinations = Examination::where('name', 'LIKE', '%' . $searchTerm . '%')->orderBy('start_date', 'desc')->orderBy('status')->paginate(10);
+        $duration = $this->convertExamDate($examinations);
+
+        return view('manageExamGrade.all_examination', [
+            'examinations' => $examinations,
+            'duration' => $duration,
+        ]);
+    }
+
+    private function convertExamDate($examinations) {
+        $duration = [];
+
+        foreach ($examinations as $exam) {
+            $startDate = Carbon::parse($exam->start_date);
+            $endDate = Carbon::parse($exam->end_date);
+            $releaseDate = Carbon::parse($exam->release_date);
+            
+            $duration[] = $startDate->diffInDays($endDate) + 1;
+            
+            $exam->start_date = $startDate->format('j F Y');
+            $exam->end_date = $endDate->format('j F Y');
+            $exam->release_date = $releaseDate->format('j F Y');
+        }
+
+        return $duration;
     }
 }
