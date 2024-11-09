@@ -9,7 +9,7 @@
 
         @if ($examinations->isNotEmpty())
             <div>
-                <form action="{{ route('search_examination') }}" method="get">
+                <form action="{{ route('search_studentexam') }}" method="get">
                     <div class="row mb-3 align-items-center">
                         <div class="col-md-12 d-flex align-items-center">
                             <input id="search_examination"  type="text"  style="width: 200px"  class="form-control me-2 @error('search_examination') is-invalid @enderror"  name="search_examination"  placeholder="Search Examination Name"  required  autocomplete="search_examination"  autofocus>
@@ -22,7 +22,18 @@
             </div>
             &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
             <div>
-                {{-- sorting status --}}
+                <form action="{{ route('student_examination') }}" method="get" id="filterForm">
+
+                    <div class="row mb-3 align-items-center">
+                        <div class="col-md-12 d-flex align-items-center">
+                            <select class="form-select" aria-label="Default select example" name="exam_status" onchange="document.getElementById('filterForm').submit();">
+                                <option value="" {{ request('exam_status') == '' ? 'selected' : '' }}> Filter by: Default</option>
+                                <option value="Release" {{ request('exam_status') == 'Release' ? 'selected' : '' }}>Filter by: Release</option>
+                                <option value="Pending" {{ request('exam_status') == 'Pending' ? 'selected' : '' }}>Filter by: Pending</option>
+                            </select>
+                        </div>
+                    </div>
+                </form>
             </div>
         @endif
         
@@ -38,7 +49,7 @@
                         <th scope="col">Duration of Examination</th>
                         <th scope="col">Status</th>
                         <th scope="col">Release Date</th>
-                        <th scope="col">Operation</th>
+                        <th scope="col" class="text-center">Operation</th>
                     </tr>
                 </thead>
                 <tbody>
@@ -51,8 +62,13 @@
                             <td>{{ $examination->start_date }} - {{ $examination->end_date }} ({{ $duration[$index] }} days)</td>
                             <td>{{ $examination->release_date }}</td>
                             <td>{{ $examination->status }}</td>
-                            <td>
-                                <a href="" class="btn btn-primary tr-button">Add Examination Mark</a>
+                            <td class="text-center">
+                            
+                            @if ($examination->status == 'Pending')
+                                <a href="" class="btn btn-primary tr-button">Add Exam Mark</a>
+                            @else
+                            -
+                            @endif
                             </td>
                         </tr>
                     @endforeach

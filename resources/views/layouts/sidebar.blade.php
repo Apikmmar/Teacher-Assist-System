@@ -18,7 +18,7 @@
     @endcan
     
     @can('classteachers-and-teachers')
-        <a href="" class="btn button-sidebar" type="button"><i class="bi bi-person-lines-fill"></i>Student Examination</a>
+        <a href="{{ route('student_examination') }}" class="btn button-sidebar" type="button"><i class="bi bi-person-lines-fill"></i>Student Examination</a>
     @endcan
 
         <a href="{{ route('all_examination') }}" class="btn button-sidebar" type="button"><i class="bi bi-pen-fill me-2"></i>Manage Examination</a>

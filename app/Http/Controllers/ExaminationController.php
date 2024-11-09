@@ -14,9 +14,8 @@ class ExaminationController extends Controller
 {
     //
     public function viewAllExamination(): View {
-        $examinations = Examination::orderBy('start_date', 'desc')->orderBy('status')->paginate(10);
+        $examinations = Examination::orderBy('end_date', 'desc')->orderBy('status')->paginate(10);
         $duration = $this->convertExamDate($examinations);
-
 
         return view('manageExamGrade.all_examination', [
             'examinations' => $examinations,
@@ -32,6 +31,21 @@ class ExaminationController extends Controller
         
         return view('manageExamGrade.examination_details', [
             'exam' => Examination::findOrFail($id),
+        ]);
+    }
+
+    public function viewStudentExamination(Request $request): View {
+        if($request->exam_status != '') {
+            $examinations = Examination::where('status', $request->exam_status)->orderBy('end_date', 'desc')->paginate(10);
+        } else {
+            $examinations = Examination::orderBy('status', 'desc')->orderBy('end_date', 'desc')->paginate(10);
+        }
+
+        $duration = $this->convertExamDate($examinations);
+
+        return view('manageExamGrade.all_student_exam', [
+            'examinations' => $examinations,
+            'duration' => $duration,
         ]);
     }
 
@@ -98,6 +112,26 @@ class ExaminationController extends Controller
         $duration = $this->convertExamDate($examinations);
 
         return view('manageExamGrade.all_examination', [
+            'examinations' => $examinations,
+            'duration' => $duration,
+        ]);
+    }
+
+    public function searchStudentExamination(Request $request): View {
+        $validator = Validator::make($request->all(), [
+            'search_examination' => 'required | string | max:100',
+        ]);
+
+        if ($validator->fails()) {
+            return redirect()->back()->withErrors($validator)->withInput();
+        }
+        
+        $searchTerm = $request->input('search_examination');
+
+        $examinations = Examination::where('name', 'LIKE', '%' . $searchTerm . '%')->orderBy('start_date', 'desc')->orderBy('status')->paginate(10);
+        $duration = $this->convertExamDate($examinations);
+
+        return view('manageExamGrade.all_student_exam', [
             'examinations' => $examinations,
             'duration' => $duration,
         ]);
