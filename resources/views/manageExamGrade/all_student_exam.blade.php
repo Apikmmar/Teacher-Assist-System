@@ -65,7 +65,7 @@
                             <td class="text-center">
                             
                             @if ($examination->status == 'Pending')
-                                <a href="" class="btn btn-primary tr-button">Add Exam Mark</a>
+                                <a href="{{ route('view_classexam', ['id' => $examination->id]) }}" class="btn btn-primary tr-button">Add Exam Mark</a>
                             @else
                             -
                             @endif

@@ -3,12 +3,15 @@
 namespace App\Http\Controllers;
 
 use App\Http\Requests\AddExaminationRequest;
+use App\Models\Classroom;
 use App\Models\Examination;
 use Carbon\Carbon;
 use Illuminate\Http\Request;
 use Illuminate\Contracts\View\View;
 use Illuminate\Http\RedirectResponse;
+use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Validator;
+
 
 class ExaminationController extends Controller
 {
@@ -46,6 +49,56 @@ class ExaminationController extends Controller
         return view('manageExamGrade.all_student_exam', [
             'examinations' => $examinations,
             'duration' => $duration,
+        ]);
+    }
+
+    public function viewClassExamination($id): View {
+        $user = Auth::user();
+        $examination = Examination::findOrFail($id);
+
+        $examination->start_date = Carbon::parse($examination->start_date)->format('j F Y');
+        $examination->end_date = Carbon::parse($examination->end_date)->format('j F Y');
+        $examination->release_date = Carbon::parse($examination->release_date)->format('j F Y');
+
+        $subjectClass = [];
+        
+        foreach ($user->subjects as $subs) {
+            $subjectID = $subs->id;
+            $subjectTeach = $subs->name;
+            $subjectForm = $subs->form->name;
+
+            $teachesClass = $user->subjecttaken->where('subject_id', $subs->id);
+
+            $classes = [];
+
+            foreach ($teachesClass as $classT) {
+                $class = Classroom::find($classT->classroom_id);
+
+                $className = $class ? $class->name : 'No Class';
+                $classID = $class ? $class->id : 'No ID';
+
+                $classes[] = [
+                    'className' => $className,
+                    'classID' => $classID,
+                ];
+            }
+
+            $subjectClass[] = [
+                'subjectID' => $subjectID,
+                'subjectTeach' => $subjectTeach,
+                'subjectForm' => $subjectForm,
+                'classes' => $classes,
+            ];
+        }
+
+        usort($subjectClass, function ($a, $b) {
+            return strcmp($a['subjectForm'], $b['subjectForm']);
+        });
+
+        return view('manageExamGrade.class_examination', [
+            'examination' => $examination,
+            'userSubs' => $user,
+            'subjectClass' => $subjectClass
         ]);
     }
 

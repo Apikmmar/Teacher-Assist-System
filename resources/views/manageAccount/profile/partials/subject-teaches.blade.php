@@ -13,7 +13,7 @@
                     <th scope="col">No</th>
                     <th scope="col">Subject Name</th>
                     <th scope="col">Form</th>
-                    <th scope="col">Subject Descrption</th>
+                    <th scope="col">Class Teaches</th>
                 </tr>
             </thead>
             <tbody>

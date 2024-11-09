@@ -26,7 +26,6 @@ class AccountController extends Controller
         ]);
     }
 
-    // if more than 10 name it display all at second paginate
     public function searchTeacherName(Request $request): View|RedirectResponse {
         $validator = Validator::make($request->all(), [
             'search_teacher' => 'required|string|max:100',
