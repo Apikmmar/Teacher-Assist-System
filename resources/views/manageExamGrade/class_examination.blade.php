@@ -73,7 +73,7 @@
                                 <div class="d-flex justify-content-between align-items-center mb-2">
                                     @if ($class)
                                         <span>{{ $class['className'] }}</span>
-                                        <a href="" class="btn btn-sm btn-primary tr-button">Add Marks</a>
+                                        <a href="{{ route('students_exam_mark', ['class_id'=> $class['classID'], 'subject_id'=> $subject['subjectID'], 'exam_id'=> $examination->id]) }}" class="btn btn-sm btn-primary tr-button">Add Marks</a>
                                     @else
                                         <span>-</span>
                                     @endif

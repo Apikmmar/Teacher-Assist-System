@@ -5,6 +5,7 @@ namespace App\Http\Controllers;
 use App\Http\Requests\AddExaminationRequest;
 use App\Models\Classroom;
 use App\Models\Examination;
+use App\Models\Subject;
 use Carbon\Carbon;
 use Illuminate\Http\Request;
 use Illuminate\Contracts\View\View;
@@ -99,6 +100,19 @@ class ExaminationController extends Controller
             'examination' => $examination,
             'userSubs' => $user,
             'subjectClass' => $subjectClass
+        ]);
+    }
+
+    public function viewStudentsExamMark($class_id, $subject_id, $exam_id) {
+        $class = Classroom::findOrFail($class_id);
+        $subject = Subject::findOrFail($subject_id);
+        $exam = Examination::findOrFail($exam_id);
+
+        return view('manageExamGrade.students_exam_mark', [
+            'class' => $class,
+            'subject' => $subject,
+            'exam' => $exam,
+            'students' => $class->students,
         ]);
     }
 
