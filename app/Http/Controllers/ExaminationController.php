@@ -103,6 +103,41 @@ class ExaminationController extends Controller
         ]);
     }
 
+    public function filterExamination(Request $request): View {
+        $query = Examination::query();
+
+        if ($request->filled('sort_name')) {
+            $order = $request->sort_name === 'ASC' ? 'asc' : 'desc';
+            $query->orderBy('name', $order);
+        }
+
+        if ($request->filled('sort_duration')) {
+            $order = $request->sort_duration === 'ASC' ? 'asc' : 'desc';
+            $query->selectRaw('*, DATEDIFF(end_date, start_date) + 1 as duration')->orderBy('duration', $order);
+        }
+
+        if ($request->filled('sort_release')) {
+            $order = $request->sort_release === 'ASC' ? 'asc' : 'desc';
+            $query->orderBy('release_date', $order);
+        }
+
+        if ($request->filled('status_release')) {
+            $query->where('status', 'Release');
+        }
+
+        if ($request->filled('status_pending')) {
+            $query->where('status', 'Pending');
+        }
+
+        $examinations = $query->paginate(10);
+        $duration = $this->convertExamDate($examinations);
+
+        return view('manageExamGrade.all_examination', [
+            'examinations' => $examinations,
+            'duration' => $duration,
+        ]);
+    }
+
     private function convertExamDate($examinations) {
         $duration = [];
 

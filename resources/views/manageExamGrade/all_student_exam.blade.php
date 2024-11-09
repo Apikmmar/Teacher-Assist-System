@@ -7,13 +7,6 @@
     <div class="container">
         <div class="d-flex justify-content-end me-4">
 
-        @can('coordinator')
-            <div>
-                <a href="{{ route('add_examination') }}" class="btn tr-button btn-primary">Register Exam</a>
-                &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
-            </div>
-        @endcan
-
         @if ($examinations->isNotEmpty())
             <div>
                 <form action="{{ route('search_examination') }}" method="get">
@@ -29,7 +22,7 @@
             </div>
             &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
             <div>
-                <button type="button" class="btn tr-button btn-primary" data-bs-toggle="modal" data-bs-target="#filterModal">Filter Exam</button>
+                {{-- sorting status --}}
             </div>
         @endif
         
@@ -45,8 +38,7 @@
                         <th scope="col">Duration of Examination</th>
                         <th scope="col">Status</th>
                         <th scope="col">Release Date</th>
-                        <th scope="col">Type</th>
-                        <th scope="col">Action</th>
+                        <th scope="col">Operation</th>
                     </tr>
                 </thead>
                 <tbody>
@@ -57,26 +49,10 @@
                             <th scope="row">{{ $loopIndex + $index }}</th>
                             <td>{{ $examination->name }}</td>
                             <td>{{ $examination->start_date }} - {{ $examination->end_date }} ({{ $duration[$index] }} days)</td>
-                            <td>{{ $examination->status }}</td>
                             <td>{{ $examination->release_date }}</td>
-                            <td>{{ $examination->type }}</td>
+                            <td>{{ $examination->status }}</td>
                             <td>
-                                <a href="{{ route('view_examination', ['id' => $examination->id ]) }}" class="btn text-white btn-warning tr-button">View</a>
-                            
-                            @can('coordinator')
-                                <button data-bs-toggle="modal" data-bs-target="#confirmDelete{{ $examination->id }}" class="btn btn-danger tr-button">Delete</button>
-
-                                @include('layouts.partials.modal', [
-                                    'id' => $examination->id, 
-                                    'name' => "Are you sure you want to remove " . $examination->name . " from from the database?",
-                                    'deleteRoute' => route('delete.view_examination', ['id' => $examination->id]),
-                                    'method' => 'DELETE'
-                                ])
-                            @endcan
-
-                            @if ($examination->status == 'Release')
-                                <a href="" class="btn btn-success tr-button">Report</a>
-                            @endif
+                                <a href="" class="btn btn-primary tr-button">Add Examination Mark</a>
                             </td>
                         </tr>
                     @endforeach

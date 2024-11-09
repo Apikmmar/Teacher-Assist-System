@@ -17,7 +17,7 @@
         <a href="{{ route('all_subjects') }}" class="btn button-sidebar" type="button"><i class="bi bi-book-half me-2"></i>Manage Subject</a>
     @endcan
     
-    @can('coordinator-or-management')
+    @can('classteachers-and-teachers')
         <a href="" class="btn button-sidebar" type="button"><i class="bi bi-person-lines-fill"></i>Student Examination</a>
     @endcan
 

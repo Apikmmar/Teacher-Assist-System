@@ -39,5 +39,9 @@ class AppServiceProvider extends ServiceProvider
         Gate::define('not-have-role', function($user) {
             return !$user->can('classteacher') && !$user->can('coordinator') && !$user->can('management');
         });
+
+        Gate::define('classteachers-and-teachers', function($user) {
+            return $user->can('classteacher') || $user->can('not-have-role');
+        });
     }
 }
