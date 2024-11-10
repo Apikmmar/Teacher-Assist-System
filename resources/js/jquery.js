@@ -1,4 +1,6 @@
 $(document).ready(function() {
+    console.log('JQUERY IS ON FIRE!!!');
+
     $('#flexCheckChecked').on('change', function() {
         var passwordInput = $('input[name="password"]');
         var icInput = $('input[name="ic"]');
@@ -88,5 +90,23 @@ $(document).ready(function() {
         } else {
             $('#otherExam').hide();
         }
+    });
+
+
+    $('.teacher-list').on('input', '.mark-input', function() {
+        var mark = parseFloat($(this).val());
+        var grade = 'Error';
+        var pointer = 0.00;
+
+        $.each(window.gradeRanges, function(index, range) {
+            if (mark >= range.mark_min && mark <= range.mark_max) {
+                grade = range.grade;
+                pointer = range.grade_value;
+                return false;
+            }
+        });
+    
+        $(this).closest('tr').find('.grade-output').val(grade);
+        $(this).closest('tr').find('.grade-val-output').val(pointer);
     });
 });

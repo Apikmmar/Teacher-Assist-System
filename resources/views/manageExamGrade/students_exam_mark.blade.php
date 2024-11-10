@@ -35,7 +35,12 @@
 
         <hr>
 
-        <form action="">
+        <form action="{{ route('add_exam_mark.create') }}" method="post">
+            @csrf
+
+            <input type="hidden" name="exam_id" value="{{ $exam->id }}">
+            <input type="hidden" name="subject_id" value="{{ $subject->id }}">
+
             <div class="d-flex justify-content-center">
                 <div class="row">
                     <table class="table table-hover" style="min-width: 600px">
@@ -49,27 +54,33 @@
                             </tr>
                         </thead>
                         <tbody>
-                            @foreach ($students as $index => $student)
-                                <tr class="align-middle teacher-list text-center" style="height: 40px;">
-                                    <th scope="row" class="py-1">{{ 1 + $index }}</th>
-                                    <td class="py-1">{{ $student->ic }}</td>
-                                    <td class="py-1">{{ $student->name }}</td>
-                                    <td>
-                                        <div class="d-flex justify-content-center">
-                                            <div class="input-group" style="max-width: 70px;">
-                                                <input type="text" class="form-control text-center" id="mark" placeholder="Mark" style="height: 40px" aria-label="Mark input">
-                                            </div>
+
+                        @foreach ($students as $index => $student)
+                            <input type="hidden" value="{{ $student->id }}" name="students_id[]">
+                            <input type="hidden" value="{{ $class->id }}" name="class_id">
+
+                            <tr class="align-middle teacher-list text-center" style="height: 40px;">
+                                <th scope="row" class="py-1">{{ 1 + $index }}</th>
+                                <td class="py-1">{{ $student->ic }}</td>
+                                <td class="py-1">{{ $student->name }}</td>
+                                <td>
+                                    <div class="d-flex justify-content-center">
+                                        <div class="input-group" style="max-width: 70px;">
+                                            <input type="text" class="form-control text-center mark-input" name="student_marks[]" placeholder="Mark" style="height: 40px" aria-label="Mark input">
                                         </div>
-                                    </td>
-                                    <td>
-                                        <div class="d-flex justify-content-center">
-                                            <div class="input-group" style="max-width: 70px;">
-                                                <input type="text" class="form-control text-center" placeholder="Grade" style="height: 40px" aria-label="Grade input" readonly>
-                                            </div>
+                                    </div>
+                                </td>
+                                <td>
+                                    <div class="d-flex justify-content-center">
+                                        <div class="input-group" style="max-width: 70px;">
+                                            <input type="text" class="form-control text-center grade-output" name="student_grades[]" placeholder="Grade" style="height: 40px" aria-label="Grade input" readonly>
                                         </div>
-                                    </td>
-                                </tr>
-                            @endforeach
+                                    </div>
+                                    <input type="hidden" name="grade_values[]" class="grade-val-output">
+                                </td>
+                            </tr>
+                        @endforeach
+                        
                         </tbody>
                     </table>
                 </div>
@@ -81,4 +92,6 @@
             </div>
         </form>
     </div>
+    
+    <script>window.gradeRanges = @json($grades)</script>
 @endsection

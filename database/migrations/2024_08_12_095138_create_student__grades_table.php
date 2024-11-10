@@ -20,7 +20,7 @@ return new class extends Migration
             $table->double('marks');
             $table->double('grade_value');
             $table->enum('is_passed', ['passed', 'failed']);
-            $table->string('feedback', 100);
+            $table->string('feedback', 100)->nullable();
             $table->timestamps();
         });
     }

@@ -3,9 +3,12 @@
 namespace App\Http\Controllers;
 
 use App\Http\Requests\AddExaminationRequest;
+use App\Http\Requests\AddExamMarkRequest;
 use App\Models\Classroom;
 use App\Models\Examination;
 use App\Models\Examination_Grade;
+use App\Models\Student;
+use App\Models\Student_Grade;
 use App\Models\Subject;
 use Carbon\Carbon;
 use Illuminate\Http\Request;
@@ -13,7 +16,7 @@ use Illuminate\Contracts\View\View;
 use Illuminate\Http\RedirectResponse;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Validator;
-
+use PhpParser\Node\Stmt\Return_;
 
 class ExaminationController extends Controller
 {
@@ -240,6 +243,45 @@ class ExaminationController extends Controller
             'examinations' => $examinations,
             'duration' => $duration,
         ]);
+    }
+
+    public function addStudentExamMark(AddExamMarkRequest $request): RedirectResponse {
+        $request->validated();
+
+        $std = $request->input('students_id');
+        $marks = $request->input('student_marks');
+        $grade = $request->input('student_grades');
+        $pointers = $request->input('grade_values');
+
+        $exam = Examination::findOrFail($request->exam_id);
+        $subject = Subject::findOrFail($request->subject_id);
+        $class = Classroom::findOrFail($request->class_id);
+
+        $students = Student::whereIn('id', $std)->get();
+
+        foreach($students as $index => $student) {
+
+            if($marks[$index] >= 40) {
+                $is_pass = 'PASSED';
+            } else {
+                $is_pass = 'FAILED';
+            }
+
+            Student_Grade::create([
+                'examination_id' => $exam->id,
+                'subject_id' => $subject->id,
+                'student_id' => $student->id,
+                'grade' => $grade[$index],
+                'marks' => $marks[$index],
+                'grade_value' => $pointers[$index],
+                'is_passed' => $is_pass,
+                'feedback' => NULL,
+                'created_at' => now(),
+                'updated_at' => now(),
+            ]);
+        }
+
+        return redirect()->route('student_examination')->with('blue-message', 'Class ' . $class->name . ' Examination Marks Is Saved!');
     }
 
     private function convertExamDate($examinations) {
