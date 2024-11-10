@@ -5,6 +5,7 @@ namespace App\Http\Controllers;
 use App\Http\Requests\AddExaminationRequest;
 use App\Models\Classroom;
 use App\Models\Examination;
+use App\Models\Examination_Grade;
 use App\Models\Subject;
 use Carbon\Carbon;
 use Illuminate\Http\Request;
@@ -107,12 +108,14 @@ class ExaminationController extends Controller
         $class = Classroom::findOrFail($class_id);
         $subject = Subject::findOrFail($subject_id);
         $exam = Examination::findOrFail($exam_id);
+        $grades = Examination_Grade::where('form_id', $subject->form->id)->get();
 
         return view('manageExamGrade.students_exam_mark', [
             'class' => $class,
             'subject' => $subject,
             'exam' => $exam,
             'students' => $class->students,
+            'grades' => $grades,
         ]);
     }
 
