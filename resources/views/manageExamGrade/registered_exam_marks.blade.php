@@ -1,4 +1,4 @@
-@extends('layouts.app', ['title' => 'Students Examination Mark'])
+@extends('layouts.app', ['title' => 'Registered Students Examination Mark'])
 
 @section('content')
     <div class="container fade-in-text">
@@ -35,10 +35,10 @@
 
         <hr>
 
-        <form action="{{ route('add_exam_mark.create') }}" method="post">
+        <form action="" method="post">
             @csrf
 
-            <input type="hidden" name="exam_id" value="{{ $exam->id }}">
+            <input type="hidden" name="examination_id" value="{{ $exam->id }}">
             <input type="hidden" name="subject_id" value="{{ $subject->id }}">
 
             <div class="d-flex justify-content-center">
@@ -66,14 +66,14 @@
                                 <td>
                                     <div class="d-flex justify-content-center">
                                         <div class="input-group" style="max-width: 70px;">
-                                            <input type="text" class="form-control text-center mark-input" name="student_marks[]" placeholder="Mark" style="height: 40px" aria-label="Mark input">
+                                            <input type="text" class="form-control text-center mark-input" name="student_marks[]" value="{{ $studentGrades[$student->id]->marks ?? '' }}"  placeholder="Mark" style="height: 40px" aria-label="Mark input">
                                         </div>
                                     </div>
                                 </td>
                                 <td>
                                     <div class="d-flex justify-content-center">
                                         <div class="input-group" style="max-width: 70px;">
-                                            <input type="text" class="form-control text-center grade-output" name="student_grades[]" placeholder="Grade" style="height: 40px" aria-label="Grade input" readonly>
+                                            <input type="text" class="form-control text-center grade-output" name="student_grades[]" value="{{ $studentGrades[$student->id]->grade ?? '' }}"  placeholder="Grade" style="height: 40px" aria-label="Grade input" readonly>
                                         </div>
                                     </div>
                                     <input type="hidden" name="grade_values[]" class="grade-val-output">

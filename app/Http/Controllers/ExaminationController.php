@@ -4,6 +4,7 @@ namespace App\Http\Controllers;
 
 use App\Http\Requests\AddExaminationRequest;
 use App\Http\Requests\AddExamMarkRequest;
+use App\Http\Requests\UpdateExamMarkRequest;
 use App\Models\Classroom;
 use App\Models\Examination;
 use App\Models\Examination_Grade;
@@ -66,6 +67,7 @@ class ExaminationController extends Controller
         $examination->release_date = Carbon::parse($examination->release_date)->format('j F Y');
 
         $subjectClass = [];
+        $registeredMarks = [];
         
         foreach ($user->subjects as $subs) {
             $subjectID = $subs->id;
@@ -86,6 +88,19 @@ class ExaminationController extends Controller
                     'className' => $className,
                     'classID' => $classID,
                 ];
+                
+                if ($class) {
+                    $students = $class->students;
+                    $studentGrades = Student_Grade::where('examination_id', $examination->id)->where('subject_id', $subjectID)->whereIn('student_id', $students->pluck('id'))->get()->keyBy('student_id');
+    
+                    if ($studentGrades->isNotEmpty()) {
+                        $registeredMarks[] = 'Has Grade';
+                    } else {
+                        $registeredMarks[] = 'No Grade';
+                    }
+                } else {
+                    $registeredMarks[] = 'No Grade';
+                }
             }
 
             $subjectClass[] = [
@@ -103,11 +118,12 @@ class ExaminationController extends Controller
         return view('manageExamGrade.class_examination', [
             'examination' => $examination,
             'userSubs' => $user,
-            'subjectClass' => $subjectClass
+            'subjectClass' => $subjectClass,
+            'registeredMarks' => $registeredMarks,
         ]);
     }
 
-    public function viewStudentsExamMark($class_id, $subject_id, $exam_id) {
+    public function viewClassroomExamMark($class_id, $subject_id, $exam_id): View {
         $class = Classroom::findOrFail($class_id);
         $subject = Subject::findOrFail($subject_id);
         $exam = Examination::findOrFail($exam_id);
@@ -119,6 +135,25 @@ class ExaminationController extends Controller
             'exam' => $exam,
             'students' => $class->students,
             'grades' => $grades,
+        ]);
+    }
+
+    public function viewRegisteredExamMark($class_id, $subject_id, $exam_id): View {
+        $class = Classroom::findOrFail($class_id);
+        $subject = Subject::findOrFail($subject_id);
+        $exam = Examination::findOrFail($exam_id);
+        $grades = Examination_Grade::where('form_id', $subject->form->id)->get();
+        
+        $students = $class->students;
+        $studentGrades = Student_Grade::where('examination_id', $exam->id)->where('subject_id', $subject->id)->whereIn('student_id', $students->pluck('id'))->get()->keyBy('student_id');
+
+        return view('manageExamGrade.registered_exam_marks', [
+            'class' => $class,
+            'subject' => $subject,
+            'exam' => $exam,
+            'students' => $students,
+            'grades' => $grades,
+            'studentGrades' => $studentGrades,
         ]);
     }
 
@@ -281,8 +316,64 @@ class ExaminationController extends Controller
             ]);
         }
 
-        return redirect()->route('student_examination')->with('blue-message', 'Class ' . $class->name . ' Examination Marks Is Saved!');
+        return redirect()->route('view_classexam', ['id' => $exam->id])->with('blue-message', 'Class ' . $class->name . ' Examination Marks Is Saved!');
     }
+
+    public function updateStudentsExamMarks(UpdateExamMarkRequest $request): RedirectResponse {
+        // Find the examination, subject, and class
+        $exam = Examination::findOrFail($request->input('examination_id'));
+        $subject = Subject::findOrFail($request->input('subject_id'));
+        $class = Classroom::findOrFail($request->class_id);
+    
+        // Retrieve the student IDs and the corresponding marks, grades, and grade values
+        $students = Student::whereIn('id', $request->input('students_id'))->get();
+    
+        // Define the passing mark threshold
+        $passingMark = 50; // Adjust this value as needed
+    
+        // Prepare the data for each student
+        $data = [];
+        foreach ($students as $student) {
+            $marks = $request->input('student_marks')[$student->id] ?? null;
+            $is_pass = $marks >= $passingMark; // Determine if the student has passed
+            $feedback = $is_pass ? null : 'Needs Improvement'; // Example feedback for failed students
+    
+            $data[] = [
+                'student_id' => $student->id,
+                'marks' => $marks,
+                'grade' => $request->input('student_grades')[$student->id] ?? null,
+                'grade_value' => $request->input('grade_values')[$student->id] ?? null,
+                'examination_id' => $exam->id,
+                'subject_id' => $subject->id,
+                'is_passed' => $is_pass,
+                'feedback' => $feedback,
+            ];
+        }
+    
+        // Perform the update in the database
+        foreach ($data as $updateData) {
+            $existingRecord = Student_Grade::where('student_id', $updateData['student_id'])
+                                           ->where('examination_id', $updateData['examination_id'])
+                                           ->where('subject_id', $updateData['subject_id'])
+                                           ->first();
+    
+            if ($existingRecord) {
+                // Update existing record
+                $existingRecord->update($updateData);
+            } else {
+                // Create a new record if not found
+                Student_Grade::create($updateData);
+            }
+        }
+    
+        return redirect()->route('registered_exam_marks', [
+            'class_id' => $class->id,
+            'subject_id' => $subject->id,
+            'exam_id' => $exam->id
+        ])->with('blue-message', 'Class ' . $class->name . ' Examination Marks Is Updated!');
+    }
+    
+    
 
     private function convertExamDate($examinations) {
         $duration = [];

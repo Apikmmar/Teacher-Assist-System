@@ -78,7 +78,8 @@ Route::middleware('auth')->group(function () {
     Route::get('/examination_details/{id}', [ExaminationController::class, 'viewExaminationDetails'])->name('view_examination');
     Route::get('/all_examination/filter', [ExaminationController::class, 'filterExamination'])->name('filter_examination');
     Route::get('/class_examination/{id}', [ExaminationController::class, 'viewClassExamination'])->name('view_classexam');
-    Route::get('/students_exam_mark/class={class_id}&subject={subject_id}&exam={exam_id}', [ExaminationController::class, 'viewStudentsExamMark'])->name('students_exam_mark');
+    Route::get('/students_exam_mark/class={class_id}&subject={subject_id}&exam={exam_id}', [ExaminationController::class, 'viewClassroomExamMark'])->name('students_exam_mark');
+    Route::get('/registered_exam_marks/class={class_id}&subject={subject_id}&exam={exam_id}', [ExaminationController::class, 'viewRegisteredExamMark'])->name('registered_exam_marks');
     Route::post('/add_examination/create', [ExaminationController::class, 'addNewExamination'])->name('create.add_examination');
     Route::patch('/examination_details/update/{id}', [ExaminationController::class, 'updateExaminationDetails'])->name('update.view_examination');
     Route::delete('/examination_details/delete/{id}', [ExaminationController::class, 'deleteExamination'])->name('delete.view_examination');

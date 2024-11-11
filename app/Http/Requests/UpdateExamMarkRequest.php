@@ -4,7 +4,7 @@ namespace App\Http\Requests;
 
 use Illuminate\Foundation\Http\FormRequest;
 
-class AddExamMarkRequest extends FormRequest
+class UpdateExamMarkRequest extends FormRequest
 {
     /**
      * Determine if the user is authorized to make this request.
@@ -23,7 +23,7 @@ class AddExamMarkRequest extends FormRequest
     {
         return [
             //
-            'exam_id' => ['required', 'exists:examinations,id'],
+            'examination_id' => ['required', 'exists:examinations,id'],
             'subject_id' => ['required', 'exists:subjects,id'],
             'student_marks' => ['required', 'array', 'min:1'],
             'student_marks.*' => ['required', 'numeric', 'min:0', 'max:100'],
