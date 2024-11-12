@@ -30,6 +30,7 @@ class AddExamMarkRequest extends FormRequest
             'student_grades' => ['required', 'array', 'min:1'],
             'student_grades.*' => ['required', 'string'],
             'grade_values' => ['required', 'array', 'min:1'],
+            'student_feedbacks' => ['nullable', 'array', 'min:1'],
             'students_id' => ['required', 'array', 'min:1'],
             'students_id.*' => ['exists:students,id'],
         ];

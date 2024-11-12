@@ -43,7 +43,7 @@
 
             <div class="d-flex justify-content-center">
                 <div class="row">
-                    <table class="table table-hover" style="min-width: 600px">
+                    <table class="table table-hover" style="min-width: 700px">
                         <thead>
                             <tr class="text-center">
                                 <th scope="col">No</th>
@@ -51,6 +51,7 @@
                                 <th scope="col">Name</th>
                                 <th scope="col">Marks</th>
                                 <th scope="col">Grade</th>
+                                <th scope="col">Feedback</th>
                             </tr>
                         </thead>
                         <tbody>
@@ -77,6 +78,13 @@
                                         </div>
                                     </div>
                                     <input type="hidden" name="grade_values[]" class="grade-val-output">
+                                </td>
+                                <td>
+                                    <div class="d-flex justify-content-center">
+                                        <div class="input-group" style="max-width: 200px;">
+                                            <input type="text" class="form-control text-center" name="student_feedbacks[]" placeholder="Feedback" style="height: 40px" aria-label="Mark input">
+                                        </div>
+                                    </div>
                                 </td>
                             </tr>
                         @endforeach

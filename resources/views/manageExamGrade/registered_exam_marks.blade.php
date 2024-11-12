@@ -35,15 +35,17 @@
 
         <hr>
 
-        <form action="" method="post">
+        <form action="{{ route('update_exam_mark.update') }}" method="post">
             @csrf
+            @method('PATCH')
 
             <input type="hidden" name="examination_id" value="{{ $exam->id }}">
             <input type="hidden" name="subject_id" value="{{ $subject->id }}">
+            <input type="hidden" name="class_id" value="{{ $class->id }}">
 
             <div class="d-flex justify-content-center">
                 <div class="row">
-                    <table class="table table-hover" style="min-width: 600px">
+                    <table class="table table-hover" style="min-width: 700px">
                         <thead>
                             <tr class="text-center">
                                 <th scope="col">No</th>
@@ -51,6 +53,7 @@
                                 <th scope="col">Name</th>
                                 <th scope="col">Marks</th>
                                 <th scope="col">Grade</th>
+                                <th scope="col">Feedback</th>
                             </tr>
                         </thead>
                         <tbody>
@@ -76,7 +79,14 @@
                                             <input type="text" class="form-control text-center grade-output" name="student_grades[]" value="{{ $studentGrades[$student->id]->grade ?? '' }}"  placeholder="Grade" style="height: 40px" aria-label="Grade input" readonly>
                                         </div>
                                     </div>
-                                    <input type="hidden" name="grade_values[]" class="grade-val-output">
+                                    <input type="hidden" name="grade_values[]" class="grade-val-output"  value="{{ $studentGrades[$student->id]->grade_value ?? '' }}">
+                                </td>
+                                <td>
+                                    <div class="d-flex justify-content-center">
+                                        <div class="input-group" style="max-width: 200px;">
+                                            <input type="text" class="form-control text-center" name="student_feedbacks[]" value="{{ $studentGrades[$student->id]->feedback ?? '' }}"  placeholder="Feedback" style="height: 40px" aria-label="Grade input">
+                                        </div>
+                                    </div>
                                 </td>
                             </tr>
                         @endforeach
@@ -86,7 +96,7 @@
                 </div>
             </div>
             <div class="text-center mt-2">
-                <button type="submit" class="btn btn-primary tr-button">Add Mark</button>
+                <button type="submit" class="btn btn-primary tr-button">Update Mark</button>
                 &nbsp;&nbsp;&nbsp;
                 <button type="reset" class="btn btn-danger tr-button">Reset</button>
             </div>

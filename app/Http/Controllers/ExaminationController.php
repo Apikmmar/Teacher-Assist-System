@@ -287,6 +287,7 @@ class ExaminationController extends Controller
         $marks = $request->input('student_marks');
         $grade = $request->input('student_grades');
         $pointers = $request->input('grade_values');
+        $feedback = $request->input('student_feedbacks');
 
         $exam = Examination::findOrFail($request->exam_id);
         $subject = Subject::findOrFail($request->subject_id);
@@ -296,11 +297,7 @@ class ExaminationController extends Controller
 
         foreach($students as $index => $student) {
 
-            if($marks[$index] >= 40) {
-                $is_pass = 'PASSED';
-            } else {
-                $is_pass = 'FAILED';
-            }
+            $is_pass = ($marks >= 40) ? 'PASSED' : 'FAILED';
 
             Student_Grade::create([
                 'examination_id' => $exam->id,
@@ -310,7 +307,7 @@ class ExaminationController extends Controller
                 'marks' => $marks[$index],
                 'grade_value' => $pointers[$index],
                 'is_passed' => $is_pass,
-                'feedback' => NULL,
+                'feedback' => $feedback[$index] ?? '-',
                 'created_at' => now(),
                 'updated_at' => now(),
             ]);
@@ -320,57 +317,50 @@ class ExaminationController extends Controller
     }
 
     public function updateStudentsExamMarks(UpdateExamMarkRequest $request): RedirectResponse {
-        // Find the examination, subject, and class
+        $request->validated();
+
         $exam = Examination::findOrFail($request->input('examination_id'));
         $subject = Subject::findOrFail($request->input('subject_id'));
-        $class = Classroom::findOrFail($request->class_id);
-    
-        // Retrieve the student IDs and the corresponding marks, grades, and grade values
         $students = Student::whereIn('id', $request->input('students_id'))->get();
-    
-        // Define the passing mark threshold
-        $passingMark = 50; // Adjust this value as needed
-    
-        // Prepare the data for each student
-        $data = [];
-        foreach ($students as $student) {
-            $marks = $request->input('student_marks')[$student->id] ?? null;
-            $is_pass = $marks >= $passingMark; // Determine if the student has passed
-            $feedback = $is_pass ? null : 'Needs Improvement'; // Example feedback for failed students
-    
-            $data[] = [
-                'student_id' => $student->id,
-                'marks' => $marks,
-                'grade' => $request->input('student_grades')[$student->id] ?? null,
-                'grade_value' => $request->input('grade_values')[$student->id] ?? null,
+
+        $studentMarks = $request->input('student_marks');
+        $studentGrades = $request->input('student_grades');
+        $gradeValues = $request->input('grade_values');
+        $feedbackValues = $request->input('student_feedbacks');
+
+        $newData = [];
+        foreach ($students as $index => $student) {
+            $marks = $studentMarks[$index];
+            $grade = $studentGrades[$index];
+            $grade_value = $gradeValues[$index];
+            $feedback = $feedbackValues[$index] ?? '-';
+
+            $is_passed = ($marks >= 40) ? 'PASSED' : 'FAILED';
+
+            $newData[$student->id] = [
                 'examination_id' => $exam->id,
                 'subject_id' => $subject->id,
-                'is_passed' => $is_pass,
+                'student_id' => $student->id,
+                'grade' => $grade,
+                'marks' => $marks,
+                'grade_value' => $grade_value,
+                'is_passed' => $is_passed,
                 'feedback' => $feedback,
             ];
         }
-    
-        // Perform the update in the database
-        foreach ($data as $updateData) {
-            $existingRecord = Student_Grade::where('student_id', $updateData['student_id'])
-                                           ->where('examination_id', $updateData['examination_id'])
-                                           ->where('subject_id', $updateData['subject_id'])
-                                           ->first();
-    
-            if ($existingRecord) {
-                // Update existing record
-                $existingRecord->update($updateData);
-            } else {
-                // Create a new record if not found
-                Student_Grade::create($updateData);
+
+        // dd($newData);
+        
+        $currentGrades = Student_Grade::where('examination_id', $exam->id)->where('subject_id', $subject->id)->whereIn('student_id', $students->pluck('id'))->get()->keyBy('student_id');
+        
+        foreach ($currentGrades as $studentId => $newGrade) {
+            if (isset($newData[$studentId])) {
+                $newGrade->update($newData[$studentId]);
             }
         }
-    
-        return redirect()->route('registered_exam_marks', [
-            'class_id' => $class->id,
-            'subject_id' => $subject->id,
-            'exam_id' => $exam->id
-        ])->with('blue-message', 'Class ' . $class->name . ' Examination Marks Is Updated!');
+        
+        $class = Classroom::findOrFail($request->class_id);
+        return redirect()->route('registered_exam_marks', ['class_id' => $class->id, 'subject_id' => $subject->id, 'exam_id' => $exam->id])->with('blue-message', 'Class ' . $class->name . ' Examination Marks Is Updated!');
     }
     
     

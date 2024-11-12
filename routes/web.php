@@ -85,6 +85,7 @@ Route::middleware('auth')->group(function () {
     Route::delete('/examination_details/delete/{id}', [ExaminationController::class, 'deleteExamination'])->name('delete.view_examination');
     Route::put('/examination_details/release/{id}', [ExaminationController::class, 'releaseExamination'])->name('update_release.view_examination');
     Route::post('/add_student_exam_mark/create', [ExaminationController::class, 'addStudentExamMark'])->name('add_exam_mark.create');
+    Route::patch('/update_student_exam_mark/update', [ExaminationController::class, 'updateStudentsExamMarks'])->name('update_exam_mark.update');
 });
 
 require __DIR__.'/auth.php';
