@@ -9,6 +9,7 @@ use App\Models\Classroom;
 use App\Models\Examination;
 use App\Models\Examination_Grade;
 use App\Models\Student;
+use App\Models\Student_Examination_Report;
 use App\Models\Student_Grade;
 use App\Models\Subject;
 use Carbon\Carbon;
@@ -61,48 +62,41 @@ class ExaminationController extends Controller
     public function viewClassExamination($id): View {
         $user = Auth::user();
         $examination = Examination::findOrFail($id);
-
+    
         $examination->start_date = Carbon::parse($examination->start_date)->format('j F Y');
         $examination->end_date = Carbon::parse($examination->end_date)->format('j F Y');
         $examination->release_date = Carbon::parse($examination->release_date)->format('j F Y');
-
+    
         $subjectClass = [];
         $registeredMarks = [];
-        
+    
         foreach ($user->subjects as $subs) {
             $subjectID = $subs->id;
             $subjectTeach = $subs->name;
             $subjectForm = $subs->form->name;
-
+    
             $teachesClass = $user->subjecttaken->where('subject_id', $subs->id);
-
             $classes = [];
-
+    
             foreach ($teachesClass as $classT) {
-                $class = Classroom::find($classT->classroom_id);
-
+                $class = $classT->classroom;
                 $className = $class ? $class->name : 'No Class';
                 $classID = $class ? $class->id : 'No ID';
-
+    
                 $classes[] = [
                     'className' => $className,
                     'classID' => $classID,
                 ];
-                
-                if ($class) {
-                    $students = $class->students;
-                    $studentGrades = Student_Grade::where('examination_id', $examination->id)->where('subject_id', $subjectID)->whereIn('student_id', $students->pluck('id'))->get()->keyBy('student_id');
     
-                    if ($studentGrades->isNotEmpty()) {
-                        $registeredMarks[] = 'Has Grade';
-                    } else {
-                        $registeredMarks[] = 'No Grade';
-                    }
+                if ($class) {
+                    $studentGrades = Student_Grade::where('examination_id', $examination->id)->where('subject_id', $subjectID)->whereIn('student_id', $class->students->pluck('id'))->get()->keyBy('student_id');
+    
+                    $registeredMarks[] = $studentGrades->isNotEmpty() ? 'Has Grade' : 'No Grade';
                 } else {
                     $registeredMarks[] = 'No Grade';
                 }
             }
-
+    
             $subjectClass[] = [
                 'subjectID' => $subjectID,
                 'subjectTeach' => $subjectTeach,
@@ -110,18 +104,10 @@ class ExaminationController extends Controller
                 'classes' => $classes,
             ];
         }
-
-        usort($subjectClass, function ($a, $b) {
-            return strcmp($a['subjectForm'], $b['subjectForm']);
-        });
-
-        return view('manageExamGrade.class_examination', [
-            'examination' => $examination,
-            'userSubs' => $user,
-            'subjectClass' => $subjectClass,
-            'registeredMarks' => $registeredMarks,
-        ]);
+        
+        return view('manageExamGrade.class_examination', compact('examination', 'subjectClass', 'registeredMarks'));
     }
+    
 
     public function viewClassroomExamMark($class_id, $subject_id, $exam_id): View {
         $class = Classroom::findOrFail($class_id);
@@ -199,9 +185,28 @@ class ExaminationController extends Controller
 
     public function releaseExamination($id): RedirectResponse {
         $exam = Examination::findOrFail($id);
+        $allMarks = Student_Grade::where('examination_id', $exam->id)->get()->groupBy('student_id');
+        
+        foreach ($allMarks as $student_id => $stdExamReport) {
+            $total_mark = $stdExamReport->sum('marks');
+            $total_subs = $stdExamReport->count();
+            $average_mark = $total_subs > 0 ? $total_mark / $total_subs : 0;
+            $pointer = $stdExamReport->sum('grade_value') / $total_subs;
+            $is_passed = $stdExamReport->contains('is_passed', 'failed') ? 'failed' : 'passed';
+
+            Student_Examination_Report::create([
+                'examination_id' => $exam->id,
+                'student_id' => $student_id,
+                'total_mark' => $total_mark,
+                'average_mark' => $average_mark,
+                'pointer' => $pointer,
+                'is_passed' => $is_passed,
+                'feedback' => '-',
+            ]);
+        }
 
         $exam->update(['status' => 'Release']);
-
+        
         return redirect()->route('view_examination', ['id' => $id])->with('blue-message', 'Examination Data Is Released');
     }
     

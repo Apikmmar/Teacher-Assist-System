@@ -4,7 +4,7 @@
 
     @include('manageExamGrade.partials.filter')
 
-    <div class="container">
+    <div class="fade-in-text container">
         <div class="d-flex justify-content-end me-4">
 
         @if ($examinations->isNotEmpty())

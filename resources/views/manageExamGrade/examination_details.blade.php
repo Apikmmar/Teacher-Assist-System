@@ -133,7 +133,8 @@
                                 'id' => $exam->id, 
                                 'name' => "Are you sure you want to release " . $exam->name . " marks?",
                                 'deleteRoute' => route('update_release.view_examination', ['id' => $exam->id]),
-                                'method' => 'PUT'
+                                'method' => 'PUT',
+                                'callItem' => 'Release'
                             ])
                     </div>
                 @endif

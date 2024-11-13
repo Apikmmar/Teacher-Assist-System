@@ -12,7 +12,7 @@
                 <form action="{{ $deleteRoute }}" method="POST">
                     @csrf
                     @method($method)
-                    <button type="submit" class="btn btn-secondary tr-button">Delete</button>
+                    <button type="submit" class="btn btn-secondary tr-button">{{ $callItem ?? 'Delete' }}</button>
                 </form>
                 <button type="button" class="btn btn-danger tr-button" data-bs-dismiss="modal">Cancel</button>
             </div>

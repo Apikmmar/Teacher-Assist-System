@@ -19,8 +19,6 @@ return new class extends Migration
             $table->double('average_mark');
             $table->double('pointer');
             $table->enum('is_passed', ['passed', 'failed']);
-            $table->integer('class_rank');
-            $table->integer('form_rank');
             $table->string('feedback', 100)->nullable();
             $table->timestamps();
         });

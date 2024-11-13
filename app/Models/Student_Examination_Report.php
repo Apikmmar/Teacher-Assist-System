@@ -17,8 +17,6 @@ class Student_Examination_Report extends Model
         'average_mark',
         'pointer',
         'is_passed',
-        'class_rank',
-        'form_rank',
         'feedback',
     ];
 
