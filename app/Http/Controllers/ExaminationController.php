@@ -17,6 +17,7 @@ use Illuminate\Http\Request;
 use Illuminate\Contracts\View\View;
 use Illuminate\Http\RedirectResponse;
 use Illuminate\Support\Facades\Auth;
+use Illuminate\Support\Facades\Redirect;
 use Illuminate\Support\Facades\Validator;
 use PhpParser\Node\Stmt\Return_;
 
@@ -353,8 +354,6 @@ class ExaminationController extends Controller
                 'feedback' => $feedback,
             ];
         }
-
-        // dd($newData);
         
         $currentGrades = Student_Grade::where('examination_id', $exam->id)->where('subject_id', $subject->id)->whereIn('student_id', $students->pluck('id'))->get()->keyBy('student_id');
         
@@ -367,8 +366,6 @@ class ExaminationController extends Controller
         $class = Classroom::findOrFail($request->class_id);
         return redirect()->route('registered_exam_marks', ['class_id' => $class->id, 'subject_id' => $subject->id, 'exam_id' => $exam->id])->with('blue-message', 'Class ' . $class->name . ' Examination Marks Is Updated!');
     }
-    
-    
 
     private function convertExamDate($examinations) {
         $duration = [];

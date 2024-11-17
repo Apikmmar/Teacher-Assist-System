@@ -72,6 +72,10 @@
                                                 <a href="{{ route('registered_exam_marks', ['class_id' => $class['classID'], 'subject_id' => $subject['subjectID'], 'exam_id' => $examination->id]) }}" class="btn btn-sm btn-warning text-white tr-button">
                                                     Update Mark
                                                 </a>
+                                                &nbsp;
+                                                <a href="{{ route('exam_mark_feedbacks', ['class_id' => $class['classID'], 'subject_id' => $subject['subjectID'], 'exam_id' => $examination->id]) }}" class="btn btn-sm btn-primary text-white tr-button">
+                                                    Add Feedback
+                                                </a>
                                             </div>
                                         @endforeach
                                     </td>

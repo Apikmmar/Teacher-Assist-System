@@ -4,7 +4,7 @@
 
     @include('manageExamGrade.partials.filter')
 
-    <div class="container">
+    <div class="container fade-in-text">
         <div class="d-flex justify-content-end me-4">
 
         @can('coordinator')

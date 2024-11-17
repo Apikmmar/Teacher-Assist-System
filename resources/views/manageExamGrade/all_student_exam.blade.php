@@ -63,9 +63,14 @@
                             <td>{{ $examination->release_date }}</td>
                             <td>{{ $examination->status }}</td>
                             <td class="text-center">
-                            
+
                             @if ($examination->status == 'Pending')
-                                <a href="{{ route('view_classexam', ['id' => $examination->id]) }}" class="btn btn-primary tr-button">Add Exam Mark</a>
+                                <a href="{{ route('view_classexam', ['id' => $examination->id]) }}" class="btn btn-primary tr-button">Add Mark</a>
+
+                            @can('classteacher')
+                                <a href="{{ route('myclass_exam-feed', ['id' => $examination->id]) }}" class="btn btn-success tr-button">My Class</a>
+                            @endcan
+
                             @else
                             -
                             @endif
