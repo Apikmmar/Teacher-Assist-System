@@ -356,6 +356,10 @@ class ExaminationController extends Controller
         }
         
         $currentGrades = Student_Grade::where('examination_id', $exam->id)->where('subject_id', $subject->id)->whereIn('student_id', $students->pluck('id'))->get()->keyBy('student_id');
+
+        if ($currentGrades->isEmpty()) {
+            return redirect()->back()->withErrors('No grades found for the selected examination and subject.');
+        }
         
         foreach ($currentGrades as $studentId => $newGrade) {
             if (isset($newData[$studentId])) {

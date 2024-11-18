@@ -66,14 +66,12 @@
 
                             @if ($examination->status == 'Pending')
                                 <a href="{{ route('view_classexam', ['id' => $examination->id]) }}" class="btn btn-primary tr-button">Add Mark</a>
+                            @endif
 
                             @can('classteacher')
                                 <a href="{{ route('myclass_exam-feed', ['id' => $examination->id]) }}" class="btn btn-success tr-button">My Class</a>
                             @endcan
-
-                            @else
-                            -
-                            @endif
+                            
                             </td>
                         </tr>
                     @endforeach

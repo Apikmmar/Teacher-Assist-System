@@ -118,7 +118,7 @@ class ClassroomController extends Controller
             $student->save();
         }
 
-        return redirect()->route('all_classroom')->with('blue-message', 'Classroom Successfully Registered');
+        return redirect()->route('class_subject', ['id' => $classroom->id])->with('blue-message', 'Classroom Successfully Registered');
     }
 
     public function searchClassroomName(Request $request): View|RedirectResponse {

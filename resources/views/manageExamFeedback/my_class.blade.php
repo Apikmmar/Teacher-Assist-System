@@ -63,7 +63,7 @@
                                 <td>{{ $student->ic }}</td>
                                 <td>{{ $student->student_id }}</td>
                                 <td class="text-center">
-                                    <a href="" class="btn btn-primary tr-button">View</a>
+                                    <a href="{{ route('student_ferformance.feedback', ['examID' => $exam->id, 'stdID' => $student->id]) }}" class="btn btn-primary tr-button">View</a>
                                 </td>
                             </tr>
                         @endforeach

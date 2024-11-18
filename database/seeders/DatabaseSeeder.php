@@ -26,7 +26,7 @@ class DatabaseSeeder extends Seeder
             SubjectTakenSeeder::class,
             ExaminationSeeder::class,
             ExamGradeSeeder::class,
-            StudentGradeSeeder::class,
+            // StudentGradeSeeder::class,
         ]);
     }
 }

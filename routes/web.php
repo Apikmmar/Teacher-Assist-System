@@ -8,9 +8,6 @@ use App\Http\Controllers\FeedbackController;
 use App\Http\Controllers\ProfileController;
 use App\Http\Controllers\StudentsController;
 use App\Http\Controllers\SubjectController;
-use App\Models\Examination;
-use App\Models\Student;
-use App\Models\Subject;
 use Illuminate\Support\Facades\Route;
 
 Route::get('/', function () {
@@ -90,10 +87,9 @@ Route::middleware('auth')->group(function () {
     Route::patch('/update_student_exam_mark/update', [ExaminationController::class, 'updateStudentsExamMarks'])->name('update_exam_mark.update');
     
     Route::get('/exam_feedback/class={class_id}&subject={subject_id}&exam={exam_id}', [FeedbackController::class, 'viewClassroomFeedback'])->name('exam_mark_feedbacks');
-    Route::get('/exams/{id}/my-class-feed', [FeedbackController::class, 'viewMyClassFeed'])->name('myclass_exam-feed');
-    Route::patch('/update/student-feedback', [FeedbackController::class, 'updateStudentFeedback'])->name('studente-feedback.update');
-    Route::patch('/delete/student-feedback', [FeedbackController::class, 'updateStudentFeedback'])->name('studente-feedback.delete');
-
+    Route::get('/examination={id}/my-class-feed', [FeedbackController::class, 'viewMyClassFeed'])->name('myclass_exam-feed');
+    Route::patch('/update/student-feedback', [FeedbackController::class, 'manageStudentFeedback'])->name('studente-feedback.update');
+    Route::get('performance_feedback/examination={examID}/student_id={stdID}', [FeedbackController::class, 'viewStudentPerformanceFeedback'])->name('student_ferformance.feedback');
 });
 
 require __DIR__.'/auth.php';
