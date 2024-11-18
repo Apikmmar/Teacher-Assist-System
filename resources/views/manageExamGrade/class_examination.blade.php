@@ -45,7 +45,7 @@
             <div class="d-flex justify-content-start">
 
                 @if ($subjectClass)
-                    <table class="table table-hover" style="max-width: 700px">
+                    <table class="table table-hover" style="max-width: 750px">
                         <thead>
                             <tr>
                                 <th scope="col">No</th>
@@ -65,10 +65,12 @@
                                             <div class="d-flex justify-content-start align-items-center mb-2">
                                                 <span>{{ $class['className'] }}</span>
                                                 &nbsp;&nbsp;
+                                            @if ($class['markAvailability'] == 'No Grade')
                                                 <a href="{{ route('students_exam_mark', ['class_id' => $class['classID'], 'subject_id' => $subject['subjectID'], 'exam_id' => $examination->id]) }}" class="btn btn-sm btn-primary tr-button">
                                                     Add Marks
                                                 </a>
-                                                &nbsp;
+
+                                            @elseif($class['markAvailability'] == 'Has Grade')
                                                 <a href="{{ route('registered_exam_marks', ['class_id' => $class['classID'], 'subject_id' => $subject['subjectID'], 'exam_id' => $examination->id]) }}" class="btn btn-sm btn-warning text-white tr-button">
                                                     Update Mark
                                                 </a>
@@ -76,6 +78,7 @@
                                                 <a href="{{ route('exam_mark_feedbacks', ['class_id' => $class['classID'], 'subject_id' => $subject['subjectID'], 'exam_id' => $examination->id]) }}" class="btn btn-sm btn-primary text-white tr-button">
                                                     Add Feedback
                                                 </a>
+                                            @endif
                                             </div>
                                         @endforeach
                                     </td>
@@ -89,15 +92,6 @@
                     </div>
                 @endif
             </div>
-        </div>
-        <hr>
-        <div>
-            <h5>Registered Marks Status:</h5>
-            <ul>
-                @foreach ($registeredMarks as $status)
-                    <li>{{ $status }}</li>
-                @endforeach
-            </ul>
         </div>
     </div>
 @endsection

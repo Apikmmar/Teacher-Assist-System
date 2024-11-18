@@ -69,13 +69,98 @@
         </div>
         <hr>
         <div>
-            @foreach ($stdResult as $result)
-                {{ $result }} <br>
-            @endforeach
+            <table class="table table-borderless">
+                <thead>
+                    <tr>
+                        <th scope="col">No</th>
+                        <th scope="col">Subject Name</th>
+                        <th scope="col">Mark</th>
+                        <th scope="col">Result</th>
+                        <th scope="col">Status</th>
+                    </tr>
+                </thead>
+                <tbody>
+
+                @foreach ($stdResult as $index => $result)
+                    <tr>
+                        <th scope="row">{{ 1 + $index }}</th>
+                        <td style="width: 75%">{{ $result->subject->name }}</td>
+                        <td>{{ $result->marks }}</td>
+                        <td>{{ $result->grade }}</td>
+                        <td class="text-uppercase">{{ $result->is_passed }}</td>
+                    </tr>
+                @endforeach
+
+                </tbody>
+            </table>
         </div>
         <hr>
-        <div>
+        <div class="container">
+            <div class="row fw-bold">
+                <div class="col-md-4">
+                    <div class="form-group row">
+                        <label class="col-5 col-form-label">Position In Class:</label>
+                        <div class="col-6">
+                            <div class="form-control-plaintext">9/10</div>
+                        </div>
+                    </div>
+                    <div class="form-group row">
+                        <label class="col-5 col-form-label">Position In Form:</label>
+                        <div class="col-6">
+                            <div class="form-control-plaintext">18/20</div>
+                        </div>
+                    </div>
+                </div>
+                <div class="col-md-4">
+                    <div class="form-group row">
+                        <label class="col-5 col-form-label">Total Marks:</label>
+                        <div class="col-6">
+                            <div class="form-control-plaintext">{{ $stdReport->total_mark }}</div>
+                        </div>
+                    </div>
+                    <div class="form-group row">
+                        <label class="col-5 col-form-label">Average Mark:</label>
+                        <div class="col-6">
+                            <div class="form-control-plaintext">{{ $stdReport->average_mark }}</div>
+                        </div>
+                    </div>
+                </div>
+                <div class="col-md-4">
+                    <div class="form-group row">
+                        <label class="col-5 col-form-label">Pointer:</label>
+                        <div class="col-6">
+                            <div class="form-control-plaintext">{{ $stdReport->pointer }}</div>
+                        </div>
+                    </div>
+                    <div class="form-group row">
+                        <label class="col-5 col-form-label">Status:</label>
+                        <div class="col-6">
+                            <div class="form-control-plaintext text-uppercase">{{ $stdReport->is_passed }}</div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <br>
+        <div class="d-flex justify-content-center align-items-center gap-2">
+            <form action="{{ route('student_ferformance.update_feedback', ['id' => $stdReport->id]) }}" method="post" class="d-flex align-items-center gap-2">
+                @csrf
+                @method('PATCH')
 
+                <div class="form-group mb-0">
+                    <label for="feedback" class="me-2">Feedback:</label>
+                    <input class="form-control d-inline-block" name="feedback" id="feedback" value="{{ $stdReport->feedback }}" style="width: 300px;"/>
+                </div>
+            
+                <div>
+                    <button type="submit" name="action" value="update" class="btn btn-primary tr-button me-2">Update Feedback</button>
+                    @if (($stdReport->feedback == '-') || ($stdReport->feedback == ''))
+                    <button type="reset" class="btn btn-danger tr-button">Reset</button>
+                    @else
+                    <button type="submit" name="action" value="delete" class="btn btn-secondary tr-button me-2">Delete Feedback</button>
+                    @endif
+                </div>
+            </form>
         </div>
     </div>
 

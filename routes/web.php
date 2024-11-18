@@ -90,6 +90,7 @@ Route::middleware('auth')->group(function () {
     Route::get('/examination={id}/my-class-feed', [FeedbackController::class, 'viewMyClassFeed'])->name('myclass_exam-feed');
     Route::patch('/update/student-feedback', [FeedbackController::class, 'manageStudentFeedback'])->name('studente-feedback.update');
     Route::get('performance_feedback/examination={examID}/student_id={stdID}', [FeedbackController::class, 'viewStudentPerformanceFeedback'])->name('student_ferformance.feedback');
+    Route::patch('performance_feedback/update-feedback/{id}', [FeedbackController::class, 'AddExamReportFeedback'])->name('student_ferformance.update_feedback');
 });
 
 require __DIR__.'/auth.php';

@@ -69,7 +69,6 @@ class ExaminationController extends Controller
         $examination->release_date = Carbon::parse($examination->release_date)->format('j F Y');
     
         $subjectClass = [];
-        $registeredMarks = [];
     
         foreach ($user->subjects as $subs) {
             $subjectID = $subs->id;
@@ -83,19 +82,15 @@ class ExaminationController extends Controller
                 $class = $classT->classroom;
                 $className = $class ? $class->name : 'No Class';
                 $classID = $class ? $class->id : 'No ID';
-    
+                $studentGrades = Student_Grade::where('examination_id', $examination->id)->where('subject_id', $subjectID)->whereIn('student_id', $class->students->pluck('id'))->get()->keyBy('student_id');
+                
+                $markAvailability = $studentGrades->isNotEmpty() ? 'Has Grade' : 'No Grade';
+
                 $classes[] = [
                     'className' => $className,
                     'classID' => $classID,
+                    'markAvailability' => $markAvailability,
                 ];
-    
-                if ($class) {
-                    $studentGrades = Student_Grade::where('examination_id', $examination->id)->where('subject_id', $subjectID)->whereIn('student_id', $class->students->pluck('id'))->get()->keyBy('student_id');
-    
-                    $registeredMarks[] = $studentGrades->isNotEmpty() ? 'Has Grade' : 'No Grade';
-                } else {
-                    $registeredMarks[] = 'No Grade';
-                }
             }
     
             $subjectClass[] = [
@@ -105,10 +100,13 @@ class ExaminationController extends Controller
                 'classes' => $classes,
             ];
         }
-        
-        return view('manageExamGrade.class_examination', compact('examination', 'subjectClass', 'registeredMarks'));
-    }
     
+        usort($subjectClass, function ($a, $b) {
+            return strcmp($a['subjectForm'], $b['subjectForm']);
+        });
+    
+        return view('manageExamGrade.class_examination', compact('examination', 'subjectClass'));
+    }
 
     public function viewClassroomExamMark($class_id, $subject_id, $exam_id): View {
         $class = Classroom::findOrFail($class_id);
@@ -199,8 +197,8 @@ class ExaminationController extends Controller
                 'examination_id' => $exam->id,
                 'student_id' => $student_id,
                 'total_mark' => $total_mark,
-                'average_mark' => $average_mark,
-                'pointer' => $pointer,
+                'average_mark' => number_format($average_mark, 2),
+                'pointer' => number_format($pointer, 2),
                 'is_passed' => $is_passed,
                 'feedback' => '-',
             ]);
@@ -303,7 +301,7 @@ class ExaminationController extends Controller
 
         foreach($students as $index => $student) {
 
-            $is_pass = ($marks >= 40) ? 'PASSED' : 'FAILED';
+            $is_pass = ($marks[$index] >= 40) ? 'passed' : 'failed';
 
             Student_Grade::create([
                 'examination_id' => $exam->id,
@@ -341,7 +339,7 @@ class ExaminationController extends Controller
             $grade_value = $gradeValues[$index];
             $feedback = $feedbackValues[$index] ?? '-';
 
-            $is_passed = ($marks >= 40) ? 'PASSED' : 'FAILED';
+            $is_passed = ($marks >= 40) ? 'passed' : 'failed';
 
             $newData[$student->id] = [
                 'examination_id' => $exam->id,

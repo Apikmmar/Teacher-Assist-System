@@ -49,8 +49,12 @@ class FeedbackController extends Controller
     public function viewStudentPerformanceFeedback($examID, $stdID) {
         $student = Student::findOrFail($stdID);
         $examination = Examination::findOrFail($examID);
-        $stdResult = Student_Grade::where('examination_id', 4)->where('student_id', 5)->get();
+        $stdResult = Student_Grade::where('examination_id', $examination->id)->where('student_id', $student->id)->get();
         $stdReport = Student_Examination_Report::where('examination_id', $examination->id)->where('student_id', $student->id)->first();
+
+        if(!$stdReport) {
+            return redirect()->back()->withErrors('Examination Report Not Found!');
+        }
 
         $class = $student->classroom;
         $student->dob = Carbon::parse($student->dob)->format('j F Y');
@@ -98,5 +102,26 @@ class FeedbackController extends Controller
     
         return redirect()->route('exam_mark_feedbacks', ['class_id' => $class_id, 'subject_id' => $subject->id, 'exam_id' => $exam->id])->with($messageType, $message);
     }
-    
+
+    public function AddExamReportFeedback(Request $request, $id) {
+        $request->validate([
+            'feedback' => ['nullable' , 'string' , 'max:100'],
+            'action' => 'required|string|in:update,delete',
+        ]);
+        
+        $examReport = Student_Examination_Report::findOrFail($id);
+
+        if ($request->input('action') === 'update') {
+            $examReport->update(['feedback' => $request->input('feedback')]);
+            $message = 'Successfully Update Report Feedback for Student';
+            $messageType = 'blue-message';
+
+        } elseif ($request->input('action') === 'delete') {
+            $examReport->update(['feedback' => '-']);
+            $message = 'Successfully Deleted Report Feedback of Student';
+            $messageType = 'red-message';
+        }
+
+        return redirect()->route('student_ferformance.feedback', ['examID' => $examReport->examination_id, 'stdID' => $examReport->student_id])->with($messageType, $message);
+    }
 }
