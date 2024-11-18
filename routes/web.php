@@ -6,6 +6,7 @@ use App\Http\Controllers\ClassroomController;
 use App\Http\Controllers\ExaminationController;
 use App\Http\Controllers\FeedbackController;
 use App\Http\Controllers\ProfileController;
+use App\Http\Controllers\ReportController;
 use App\Http\Controllers\StudentsController;
 use App\Http\Controllers\SubjectController;
 use Illuminate\Support\Facades\Route;
@@ -90,7 +91,10 @@ Route::middleware('auth')->group(function () {
     Route::get('/examination={id}/my-class-feed', [FeedbackController::class, 'viewMyClassFeed'])->name('myclass_exam-feed');
     Route::patch('/update/student-feedback', [FeedbackController::class, 'manageStudentFeedback'])->name('studente-feedback.update');
     Route::get('performance_feedback/examination={examID}/student_id={stdID}', [FeedbackController::class, 'viewStudentPerformanceFeedback'])->name('student_ferformance.feedback');
-    Route::patch('performance_feedback/update-feedback/{id}', [FeedbackController::class, 'AddExamReportFeedback'])->name('student_ferformance.update_feedback');
+    Route::patch('performance_feedback/update-feedback/{id}', [FeedbackController::class, 'addExamReportFeedback'])->name('student_ferformance.update_feedback');
+
+    Route::get('/examination={id}/subject/report', [ReportController::class, 'viewReportBySubject'])->name('report_subject');
+    Route::get('/examination={id}/classroom/report', [ReportController::class, 'viewReportByClassroom'])->name('report_classroom');
 });
 
 require __DIR__.'/auth.php';

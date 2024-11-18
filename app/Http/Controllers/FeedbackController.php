@@ -103,7 +103,7 @@ class FeedbackController extends Controller
         return redirect()->route('exam_mark_feedbacks', ['class_id' => $class_id, 'subject_id' => $subject->id, 'exam_id' => $exam->id])->with($messageType, $message);
     }
 
-    public function AddExamReportFeedback(Request $request, $id) {
+    public function addExamReportFeedback(Request $request, $id) {
         $request->validate([
             'feedback' => ['nullable' , 'string' , 'max:100'],
             'action' => 'required|string|in:update,delete',
