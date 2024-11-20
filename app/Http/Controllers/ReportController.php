@@ -8,6 +8,7 @@ use App\Models\Form;
 use App\Models\Student_Examination_Report;
 use App\Models\Student_Grade;
 use App\Models\Subject;
+use Illuminate\Contracts\View\View;
 use Illuminate\Http\Request;
 
 class ReportController extends Controller
@@ -20,7 +21,7 @@ class ReportController extends Controller
         ]);
     }
 
-    public function viewSubjectReport(Request $request, $id) {
+    public function viewSubjectReport(Request $request, $id): View {
         $examination = Examination::findOrFail($id);
         $forms = Form::all();
         $subjects = Subject::all();
@@ -33,6 +34,7 @@ class ReportController extends Controller
             'examination' => $examination,
             'forms' => $forms,
             'subjects' => $subjects,
+            'examResults' => collect(),
         ]);
     }
 
@@ -45,9 +47,9 @@ class ReportController extends Controller
         $subject = Subject::findOrFail($request->subject_id);
 
         $examResults = Student_Grade::where('examination_id', $examination->id)->where('subject_id', $subject->id)->orderBy('marks', 'desc')->get();
-        $passedStudents = Student_Grade::where('examination_id', $request->examination_id)->where('subject_id', $subject->id)->where('is_passed', 'passed')->count();
 
         $passedStudents = $examResults->where('is_passed', 'passed')->count();
+
         $totalStudent = $examResults->count();
         $failedStudents = $totalStudent - $passedStudents;
 
@@ -62,39 +64,37 @@ class ReportController extends Controller
         ]);
     }
 
-    public function viewClassroomReport(Request $request, $id) {
+    public function viewClassroomReport(Request $request, $id): View {
         $examination = Examination::findOrFail($id);
         $forms = Form::all();
         $classrooms = Classroom::all();
-
-        if($request->has('classroom_id')) {
+        $studentGrades = collect();
+        $grades = collect();
+    
+        if ($request->has('classroom_id')) {
             $request->validate([
                 'classroom_id' => 'required|exists:classrooms,id',
             ]);
     
             $class = Classroom::findOrFail($request->classroom_id);
-
             $students = $class->students;
-
-            dd($students);
-            // $studentGrades = Student_Examination_Report::where('examination_id', $examination->id)->whereIn('student_id', $students->pluck('id'))
-            //                                         ->orderBy('is_passed', 'desc')->orderBy('pointer', 'desc')->orderBy('average_mark', 'desc')
-            //                                         ->get();
-
-            // return view('ManageExamReport.class_report', [
-            //     'examination' => $examination,
-            //     'forms' => $forms,
-            //     'classrooms' => $classrooms,
-            //     'studentGrades' => $studentGrades,
-            // ]);
+    
+            $studentGrades = Student_Examination_Report::where('examination_id', $examination->id)->whereIn('student_id', $students->pluck('id'))
+                                                        ->orderBy('is_passed', 'asc')->orderBy('pointer', 'desc')->orderBy('average_mark', 'desc')
+                                                        ->get()->keyBy('student_id');
+            
+            // SHALL RETRIEVE GRADE FOR STUDENT IN THT EXAM
         }
-
+    
         return view('ManageExamReport.class_report', [
             'examination' => $examination,
             'forms' => $forms,
             'classrooms' => $classrooms,
+            'studentGrades' => $studentGrades,
+            'grades' => $grades,
         ]);
     }
+    
 
     // private function viewReportByClassroom(Request $request, $id) {
     //     $request->validate([

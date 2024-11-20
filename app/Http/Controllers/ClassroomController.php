@@ -98,7 +98,7 @@ class ClassroomController extends Controller
             'form_id' => $request->form,
             'name' => $request->name,
             'classteacher_id' => $request->class_teacher,
-            'session' => now()->year(),
+            'session' => now()->year,
             'num_student' => count($students),
         ]);
 

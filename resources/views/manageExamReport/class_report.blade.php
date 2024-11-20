@@ -44,6 +44,11 @@
                         <th scope="col">No</th>
                         <th scope="col">Identity Card Number</th>
                         <th scope="col">Name</th>
+                        <th scope="col">Class</th>
+                        <th scope="col">Result</th>
+                        <th scope="col">Pointer</th>
+                        <th scope="col">Average Marks</th>
+                        <th scope="col">Status</th>
                     </tr>
                 </thead>
                 <tbody>
@@ -51,8 +56,15 @@
                     @foreach ($studentGrades as $index => $studentGrade)
                         <tr class="align-middle teacher-list">
                             <th scope="row">{{ 1 + $index }}</th>
-                            <td>{{ $studentGrade->student }}</td>
-                            <td>{{ $studentGrade->student }}</td>
+                            <td>{{ $studentGrade->student->ic }}({{ $studentGrade->student->id }})</td>
+                            <td>{{ $studentGrade->student->name }}</td>
+                            <td>{{ $studentGrade->student->classroom->name }}</td>
+                            <td>
+                                {{-- SHALL DISPLAY GRADE FOR STUDENT IN THT EXAM --}}
+                            </td>
+                            <td>{{ $studentGrade->pointer }}</td>
+                            <td>{{ $studentGrade->average_mark }}%</td>
+                            <td class="text-uppercase">{{ $studentGrade->is_passed }}</td>
                         </tr>
                     @endforeach
 

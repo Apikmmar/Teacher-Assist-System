@@ -5,6 +5,7 @@ namespace App\Models;
 // use Illuminate\Contracts\Auth\MustVerifyEmail;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Relations\BelongsToMany;
+use Illuminate\Database\Eloquent\Relations\HasMany;
 use Illuminate\Database\Eloquent\Relations\HasManyThrough;
 use Illuminate\Database\Eloquent\Relations\HasOne;
 use Illuminate\Foundation\Auth\User as Authenticatable;
@@ -76,5 +77,9 @@ class User extends Authenticatable
 
     public function subjecttaken(): HasManyThrough {
         return $this->hasManyThrough(Subject_Taken::class, Subject_Teacher::class, 'user_id', 'subject_teacher_id', 'id', 'id');
+    }
+
+    public function examReports(): HasMany {
+        return $this->hasMany(Student_Examination_Report::class, 'student_id');
     }
 }

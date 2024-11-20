@@ -25,7 +25,7 @@ class ExaminationController extends Controller
 {
     //
     public function viewAllExamination(): View {
-        $examinations = Examination::orderBy('end_date', 'desc')->orderBy('status')->paginate(10);
+        $examinations = Examination::orderBy('release_date', 'desc')->orderBy('status')->paginate(10);
         $duration = $this->convertExamDate($examinations);
 
         return view('manageExamGrade.all_examination', [
