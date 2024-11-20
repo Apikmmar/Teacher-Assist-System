@@ -18,14 +18,15 @@ class ExaminationSeeder extends Seeder
         //
         $now = now();
 
-        for ($i=1; $i < 8 ; $i++) {
+        for ($i=1; $i <= 6 ; $i++) {
             $strtDate = Carbon::today()->subDays(rand(0, 365));
             $endDate = $strtDate->copy()->addDays(rand(10, 31));
             $releaseDate = $endDate->copy()->addDays(30);
             $status = ['Pending', 'Release'][rand(0, 1)];
+            $examStatus = ['Peperiksaan Awal Tahun', 'Peperiksaan Pertengahan Tahun', 'Peperiksaan Akhir Tahun'][rand(0, 2)];
 
             DB::table('examinations')->insert([
-                'name' => 'Exam Dummy', 'start_date' => $strtDate, 'end_date' => $endDate, 'status' => $status, 'release_date' => $releaseDate ,'type' => 'Type Dummy', 'created_at' => $now, 'updated_at' => $now,
+                'name' => $examStatus.' '.$strtDate->year, 'start_date' => $strtDate, 'end_date' => $endDate, 'status' => $status, 'release_date' => $releaseDate ,'type' => $examStatus, 'created_at' => $now, 'updated_at' => $now,
             ]);
         }
     }

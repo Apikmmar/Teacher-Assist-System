@@ -17,6 +17,7 @@ class Classroom extends Model
         'classteacher_id',
         'name',
         'num_student',
+        'session',
     ];
 
     public function classteacher(): BelongsTo {

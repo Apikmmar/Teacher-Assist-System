@@ -16,6 +16,7 @@ return new class extends Migration
             $table->foreignId('form_id')->constrained()->onDelete('cascade');
             $table->foreignId('classteacher_id')->nullable()->constrained('users')->onDelete('set null');
             $table->string('name', 50);
+            $table->year('session');
             $table->integer('num_student');
             $table->timestamps();
         });

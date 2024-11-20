@@ -23,9 +23,9 @@ class ClassroomController extends Controller
     public function viewAllClassroom(Request $request): View {
 
         if($request->class_form != '') {
-            $classrooms = Classroom::where('form_id', $request->class_form)->orderBy('name')->paginate(10);
+            $classrooms = Classroom::where('form_id', $request->class_form)->orderBy('form_id', 'asc')->paginate(10);
         } else {
-            $classrooms = Classroom::orderBy('name')->paginate(10);
+            $classrooms = Classroom::orderBy('form_id', 'asc')->paginate(10);
         }
 
         $classrooms = $this->setTeacherName($classrooms);
@@ -85,9 +85,7 @@ class ClassroomController extends Controller
 
         return view('manageClassroom.manageClass.edit_classroom', $data, [
             'forms' => Form::all(),
-            'teachers' => User::whereDoesntHave('classroom', function($query) {
-                $query->whereNotNull('classteacher_id');
-            })->get(),
+            'teachers' => User::all(),
         ]);
     }
 
@@ -100,6 +98,7 @@ class ClassroomController extends Controller
             'form_id' => $request->form,
             'name' => $request->name,
             'classteacher_id' => $request->class_teacher,
+            'session' => now()->year(),
             'num_student' => count($students),
         ]);
 

@@ -37,6 +37,14 @@
                     <input id="ic" type="text" class="form-control @error('ic') is-invalid @enderror" name="ic" value="{{ $classroom->num_student }} students" readonly autocomplete="ic" autofocus>
                 </div>
             </div>
+
+            <div class="row mb-3">
+                <label for="ic" class="col-md-4 col-form-label text-md-end fw-bold">{{ __('Session') }}</label>
+                
+                <div class="col-md-6">
+                    <input id="ic" type="text" class="form-control @error('ic') is-invalid @enderror" name="ic" value="{{ $classroom->session }}" readonly autocomplete="ic" autofocus>
+                </div>
+            </div>
         </div>
         <hr>
         <div class="">

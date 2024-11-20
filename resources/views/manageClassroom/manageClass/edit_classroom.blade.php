@@ -56,6 +56,13 @@
                         <input id="num_student" type="text" class="form-control" name="" value="{{ $classroom->num_student }} students" readonly>
                     </div>
                 </div>
+
+                <div class="row mb-3">
+                    <label for="num_student" class="col-md-4 col-form-label text-md-end fw-bold">{{ __('Number of Students') }}</label>
+                    <div class="col-md-6">
+                        <input id="num_student" type="text" class="form-control" name="" value="{{ $classroom->session }} students" readonly>
+                    </div>
+                </div>
             
                 <div class="d-flex justify-content-center">
                     <button class="btn user-update-button text-white" type="submit">Update</button>

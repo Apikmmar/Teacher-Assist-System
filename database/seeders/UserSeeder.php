@@ -30,7 +30,7 @@ class UserSeeder extends Seeder
             ['teacher_id' => 'TC99999', 'name' => 'daisy', 'ic' => '999999999999', 'gender' => 'Women', 'contact' => '1234567890', 'email' => 'daisy@gmail.com', 'password' => Hash::make('999999999999'), 'verification' => 'teacher_verification.pdf', 'photo' => NULL, 'created_at' => $now, 'updated_at' => $now],
         ]);
 
-        for ($i=0; $i < 30; $i++) {
+        for ($i=0; $i < 10; $i++) {
             $randomDOB = Carbon::create(rand(1974, 2000), rand(1, 12), rand(1, 28));
             $randomTCID = 'TC' . rand(11111, 99999);
             $icFormat = $randomDOB->format('ymd') . str_pad(rand(1, 12), 2, '0', STR_PAD_LEFT) . str_pad(rand(0, 9999), 4, '0', STR_PAD_LEFT);

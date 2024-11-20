@@ -61,6 +61,7 @@
                 <th scope="col">Form</th>
                 <th scope="col">Number Of Student</th>
                 <th scope="col">Class Teacher</th>
+                <th scope="col">Session</th>
                 <th scope="col" class="text-center">Operation</th>
             </tr>
         </thead>
@@ -74,6 +75,7 @@
                     <td>{{ $classroom->form->name }}</td>
                     <td>{{ $classroom->num_student }} students</td>
                     <td>{{ $classroom->teacher_title }}</td>
+                    <td>{{ $classroom->session }}</td>
                     <td class="text-center">
                         <a href="{{ route('view_classroom', ['id' => $classroom->id ]) }}" class="btn btn-success tr-button">View</a>
 

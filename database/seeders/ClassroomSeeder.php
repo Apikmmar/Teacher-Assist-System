@@ -16,11 +16,11 @@ class ClassroomSeeder extends Seeder
         $now = now();
 
         DB::table('classrooms')->insert([
-            ['form_id' => 1, 'classteacher_id' => 6, 'name' => '1 TOO', 'num_student' => '5', 'created_at' => $now, 'updated_at' => $now],
-            ['form_id' => 2, 'classteacher_id' => 7, 'name' => '2 GOOD', 'num_student' => '5', 'created_at' => $now, 'updated_at' => $now],
-            ['form_id' => 3, 'classteacher_id' => 8, 'name' => '3 TOO', 'num_student' => '5', 'created_at' => $now, 'updated_at' => $now],
-            ['form_id' => 4, 'classteacher_id' => 9, 'name' => '4 BE', 'num_student' => '5', 'created_at' => $now, 'updated_at' => $now],
-            ['form_id' => 5, 'classteacher_id' => 10, 'name' => '5 TRUE', 'num_student' => '5', 'created_at' => $now, 'updated_at' => $now],
+            ['form_id' => 1, 'classteacher_id' => 1, 'name' => '1 TOO', 'num_student' => '5', 'session' => 2024, 'created_at' => $now, 'updated_at' => $now],
+            ['form_id' => 2, 'classteacher_id' => 2, 'name' => '2 GOOD', 'num_student' => '5', 'session' => 2024, 'created_at' => $now, 'updated_at' => $now],
+            ['form_id' => 3, 'classteacher_id' => 5, 'name' => '3 TOO', 'num_student' => '5', 'session' => 2024, 'created_at' => $now, 'updated_at' => $now],
+            ['form_id' => 4, 'classteacher_id' => 7, 'name' => '4 BE', 'num_student' => '5', 'session' => 2024, 'created_at' => $now, 'updated_at' => $now],
+            ['form_id' => 5, 'classteacher_id' => 8, 'name' => '5 TRUE', 'num_student' => '5', 'session' => 2024, 'created_at' => $now, 'updated_at' => $now],
         ]);
     }
 }
