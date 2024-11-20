@@ -4,7 +4,7 @@
     <div class="container fade-in-text">
         <div class="row d-flex justify-content-center">
             <div class="report-col">
-                <a href="" style="text-decoration: none;">
+                <a href="{{ route('subject_report', ['id' => $examination->id]) }}" style="text-decoration: none;">
                     <div class="report-card card">
                         <div class="card-body text-center">
                             <h4 class="card-title">Subject Report</h4>

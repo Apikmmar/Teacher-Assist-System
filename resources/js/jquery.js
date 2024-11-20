@@ -109,4 +109,23 @@ $(document).ready(function() {
         $(this).closest('tr').find('.grade-output').val(grade);
         $(this).closest('tr').find('.grade-val-output').val(pointer);
     });
+
+    $('#form-select').on('change', function() {
+        const formID = $(this).val();
+        const filteredSubjects = window.subjects.filter(subject => subject.form_id == formID);
+        
+        const $subjectSelect = $('#subject-select');
+        $subjectSelect.empty();
+        $subjectSelect.append('<option selected disabled>Select Subject</option>');
+
+        if(filteredSubjects.length > 0) {
+            filteredSubjects.forEach(subject => {
+                $subjectSelect.append(`<option value="${subject.id}">${subject.name}</option>`);
+            });
+            $subjectSelect.prop('disabled', false);
+        } else {
+            $subjectSelect.append('<option disabled>No subjects available</option>');
+            $subjectSelect.prop('disabled', true);
+        }
+    })
 });

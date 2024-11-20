@@ -4,7 +4,9 @@ namespace App\Http\Controllers;
 
 use App\Models\Classroom;
 use App\Models\Examination;
+use App\Models\Form;
 use App\Models\Student_Examination_Report;
+use App\Models\Student_Grade;
 use App\Models\Subject;
 use Illuminate\Http\Request;
 
@@ -18,23 +20,46 @@ class ReportController extends Controller
         ]);
     }
 
-    public function viewReportBySubject(Request $request, $id) {
+    public function viewSubjectReport(Request $request, $id) {
+        $examination = Examination::findOrFail($id);
+        $forms = Form::all();
+        $subjects = Subject::all();
+
+        if($request->has('subject_id')) {
+            return $this->viewReportBySubject($request, $examination, $forms, $subjects);
+        }
+
+        return view('ManageExamReport.subject_report', [
+            'examination' => $examination,
+            'forms' => $forms,
+            'subjects' => $subjects,
+        ]);
+    }
+
+    private function viewReportBySubject($request, $examination, $forms, $subjects) {
         $request->validate([
+            'form' => 'required|exists:forms,id',
             'subject_id' => 'required|exists:subjects,id',
         ]);
 
-        $examination = Examination::findOrFail($id);
         $subject = Subject::findOrFail($request->subject_id);
 
-        if (!$subject) {
-            return redirect()->back()->withErrors('Subject Not Found!');
-        }
+        $examResults = Student_Grade::where('examination_id', $examination->id)->where('subject_id', $subject->id)->orderBy('marks', 'desc')->get();
+        $passedStudents = Student_Grade::where('examination_id', $request->examination_id)->where('subject_id', $subject->id)->where('is_passed', 'passed')->count();
 
-        $examResult = Student_Examination_Report::where('examination_id', $examination->id)->where('subject_id', $subject->id)->orderBy('marks', 'desc')->get();
-        $passedStudents = Student_Examination_Report::where('examination_id', $request->examination_id)->where('subject_id', $subject->id)->where('status', 'passed')->count();
-
-        $totalStudent = $examResult->count();
+        $passedStudents = $examResults->where('is_passed', 'passed')->count();
+        $totalStudent = $examResults->count();
         $failedStudents = $totalStudent - $passedStudents;
+
+        return view('ManageExamReport.subject_report', [
+            'examination' => $examination,
+            'forms' => $forms,
+            'subjects' => $subjects,
+            'examResults' => $examResults,
+            'totalStudent' => $totalStudent,
+            'passedStudents' => $passedStudents,
+            'failedStudents' => $failedStudents,
+        ]);
     }
 
     public function viewReportByClassroom(Request $request, $id) {
