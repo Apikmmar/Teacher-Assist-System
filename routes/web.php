@@ -93,6 +93,7 @@ Route::middleware('auth')->group(function () {
     Route::get('performance_feedback/examination={examID}/student_id={stdID}', [FeedbackController::class, 'viewStudentPerformanceFeedback'])->name('student_ferformance.feedback');
     Route::patch('performance_feedback/update-feedback/{id}', [FeedbackController::class, 'addExamReportFeedback'])->name('student_ferformance.update_feedback');
 
+    Route::get('/all_report/{id}', [ReportController::class, 'viewAllReport'])->name('all_report');
     Route::get('/examination={id}/subject/report', [ReportController::class, 'viewReportBySubject'])->name('report_subject');
     Route::get('/examination={id}/classroom/report', [ReportController::class, 'viewReportByClassroom'])->name('report_classroom');
 });

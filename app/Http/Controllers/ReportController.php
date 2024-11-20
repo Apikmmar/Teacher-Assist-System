@@ -11,6 +11,13 @@ use Illuminate\Http\Request;
 class ReportController extends Controller
 {
     //
+    public function viewAllReport($id) {
+
+        return view('ManageExamReport.all_report', [
+            'examination' => Examination::findOrFail($id),
+        ]);
+    }
+
     public function viewReportBySubject(Request $request, $id) {
         $request->validate([
             'subject_id' => 'required|exists:subjects,id',

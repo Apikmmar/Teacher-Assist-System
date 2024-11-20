@@ -75,7 +75,7 @@
                             @endcan
 
                             @if ($examination->status == 'Release')
-                                <a href="" class="btn btn-success tr-button">Report</a>
+                                <a href="{{ route('all_report', ['id' => $examination->id]) }}" class="btn btn-success tr-button">Report</a>
                             @endif
                             </td>
                         </tr>

@@ -58,6 +58,19 @@ input.form-control {
     -ms-overflow-style: none; /* Hides scrollbar in Internet Explorer and Edge */
 }
 
+.content-apps-2 {
+    background-color: rgb(247, 247, 247);
+    padding: 20px;
+    margin-left:290px;
+    width: calc(100% - 310px);
+    border-radius: 15px;
+    height: calc(100vh - 150px);
+    overflow-y: scroll;
+    scrollbar-width: none;
+    scroll-behavior: smooth;
+    -ms-overflow-style: none; /* Hides scrollbar in Internet Explorer and Edge */
+}
+
 .content-apps::-webkit-scrollbar {
     display: none; /* Hides scrollbar in Chrome, Safari, and Opera */
 }
@@ -90,6 +103,77 @@ input.form-control {
     }
 }
 
+.report-col {
+    flex: 0 0 auto;
+    width: 350px;
+}
+
+.report-card {
+    background: white;
+    border: none;
+    border-radius: 15px;
+    overflow: hidden;
+    transition: all 0.3s ease;
+    height: 100%;
+}
+
+.report-card:hover {
+    transform: translateY(-10px);
+    box-shadow: 0 15px 30px rgba(0, 0, 0, 0.1);
+}
+
+.report-card .card-body {
+    padding: 1.5rem;
+}
+
+.report-card .card-title {
+    color: #2c3e50;
+    font-size: 1.5rem;
+    margin-bottom: 1rem;
+    position: relative;
+}
+
+.report-card .card-title:after {
+    content: '';
+    position: absolute;
+    bottom: -8px;
+    left: 50%;
+    transform: translateX(-50%);
+    width: 50px;
+    height: 3px;
+    background: #3498db;
+    border-radius: 2px;
+}
+
+.report-img {
+    height: 180px;
+    width: 100%;
+    object-fit: contain;
+    padding: 1.5rem;
+    transition: all 0.3s ease;
+}
+
+.report-card:hover .report-img {
+    transform: scale(1.1);
+}
+
+.report-row::-webkit-scrollbar {
+    height: 8px;
+}
+
+.report-row::-webkit-scrollbar-track {
+    background: #f1f1f1;
+    border-radius: 4px;
+}
+
+.report-row::-webkit-scrollbar-thumb {
+    background: #888;
+    border-radius: 4px;
+}
+
+.report-row::-webkit-scrollbar-thumb:hover {
+    background: #555;
+}
 
 /* fade in 1s */
 @keyframes fadeIn {
