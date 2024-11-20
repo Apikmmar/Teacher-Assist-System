@@ -62,19 +62,53 @@ class ReportController extends Controller
         ]);
     }
 
-    public function viewReportByClassroom(Request $request, $id) {
-        $request->validate([
-            'classroom_id' => 'required|exists:classroom,id',
-        ]);
-
-        $class = Classroom::findOrFaiil($request->classroom_id);
+    public function viewClassroomReport(Request $request, $id) {
         $examination = Examination::findOrFail($id);
+        $forms = Form::all();
+        $classrooms = Classroom::all();
 
-        if (!$class) {
-            return redirect()->back()->withErrors('Subject Not Found!');
+        if($request->has('classroom_id')) {
+            $request->validate([
+                'classroom_id' => 'required|exists:classrooms,id',
+            ]);
+    
+            $class = Classroom::findOrFail($request->classroom_id);
+
+            $students = $class->students;
+
+            dd($students);
+            // $studentGrades = Student_Examination_Report::where('examination_id', $examination->id)->whereIn('student_id', $students->pluck('id'))
+            //                                         ->orderBy('is_passed', 'desc')->orderBy('pointer', 'desc')->orderBy('average_mark', 'desc')
+            //                                         ->get();
+
+            // return view('ManageExamReport.class_report', [
+            //     'examination' => $examination,
+            //     'forms' => $forms,
+            //     'classrooms' => $classrooms,
+            //     'studentGrades' => $studentGrades,
+            // ]);
         }
 
-        $students = $class->students;
-        $studentGrades = Student_Examination_Report::where('examination_id', $examination->id)->whereIn('student_id', $students->pluck('id'))->get()->keyBy('student_id');
+        return view('ManageExamReport.class_report', [
+            'examination' => $examination,
+            'forms' => $forms,
+            'classrooms' => $classrooms,
+        ]);
     }
+
+    // private function viewReportByClassroom(Request $request, $id) {
+    //     $request->validate([
+    //         'classroom_id' => 'required|exists:classroom,id',
+    //     ]);
+
+    //     $class = Classroom::findOrFaiil($request->classroom_id);
+    //     $examination = Examination::findOrFail($id);
+
+    //     if (!$class) {
+    //         return redirect()->back()->withErrors('Subject Not Found!');
+    //     }
+
+    //     $students = $class->students;
+    //     $studentGrades = Student_Examination_Report::where('examination_id', $examination->id)->whereIn('student_id', $students->pluck('id'))->get()->keyBy('student_id');
+    // }
 }

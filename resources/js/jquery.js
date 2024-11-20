@@ -128,4 +128,23 @@ $(document).ready(function() {
             $subjectSelect.prop('disabled', true);
         }
     })
+
+    $('#form-select-class').on('change', function() {
+        const formID = $(this).val();
+        const filteredClassroom = window.classrooms.filter(classroom => classroom.form_id == formID);
+        
+        const $classroomSelect = $('#class-select');
+        $classroomSelect.empty();
+        $classroomSelect.append('<option selected disabled>Select Classroom</option>');
+
+        if(filteredClassroom.length > 0) {
+            filteredClassroom.forEach(classroom => {
+                $classroomSelect.append(`<option value="${classroom.id}">${classroom.name}</option>`);
+            });
+            $classroomSelect.prop('disabled', false);
+        } else {
+            $classroomSelect.append('<option disabled>No subjects available</option>');
+            $classroomSelect.prop('disabled', true);
+        }
+    })
 });

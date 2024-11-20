@@ -21,10 +21,10 @@ class Student_Examination_Report extends Model
     ];
 
     public function student(): BelongsTo {
-        return $this->belongsTo(Student_Examination_Report::class);
+        return $this->belongsTo(User::class, 'student_id');
     }
 
     public function examination():BelongsTo {
-        return $this->belongsTo(Examination::class);
+        return $this->belongsTo(Examination::class, 'examination_id');
     }
 }

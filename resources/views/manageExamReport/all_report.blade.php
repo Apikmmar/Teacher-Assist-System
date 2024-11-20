@@ -24,7 +24,7 @@
                 </a>
             </div>
             <div class="report-col">
-                <a href="" style="text-decoration: none;">
+                <a href="{{ route('classroom_report', ['id' => $examination->id]) }}" style="text-decoration: none;">
                     <div class="report-card card">
                         <div class="card-body text-center">
                             <h4 class="card-title">Class Report</h4>
