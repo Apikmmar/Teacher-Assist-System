@@ -1,4 +1,4 @@
-@extends('manageExamReport.report_app', ['title' => 'Main Report'])
+@extends('manageExamReport.report_app', ['title' => 'Classroom '.  $class_name  .' Examination Report'])
 
 @section('content')
     <div class="container fade-in-text">
@@ -53,19 +53,20 @@
                 </thead>
                 <tbody>
 
-                    @foreach ($studentGrades as $index => $studentGrade)
+                    @php $index = 1; @endphp
+                    @foreach ($studentGrades as $studentGrade)
                         <tr class="align-middle teacher-list">
-                            <th scope="row">{{ 1 + $index }}</th>
+                            <th scope="row">{{ $index }}</th>
                             <td>{{ $studentGrade->student->ic }}({{ $studentGrade->student->id }})</td>
                             <td>{{ $studentGrade->student->name }}</td>
                             <td>{{ $studentGrade->student->classroom->name }}</td>
-                            <td>
-                                {{-- SHALL DISPLAY GRADE FOR STUDENT IN THT EXAM --}}
-                            </td>
+                            <td>{{ $grades[$studentGrade->student_id] }}</td>
                             <td>{{ $studentGrade->pointer }}</td>
                             <td>{{ $studentGrade->average_mark }}%</td>
                             <td class="text-uppercase">{{ $studentGrade->is_passed }}</td>
                         </tr>
+                        @php $index++ @endphp
+
                     @endforeach
 
                 </tbody>

@@ -25,7 +25,7 @@ class Student_Examination_Report extends Model
         return $this->belongsTo(Student::class, 'student_id');
     }
 
-    public function examination():BelongsTo {
+    public function examination(): BelongsTo {
         return $this->belongsTo(Examination::class, 'examination_id');
     }
 }
