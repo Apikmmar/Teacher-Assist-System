@@ -2,38 +2,24 @@
 
 @section('content')
     <div class="container fade-in-text">
-        
         <div class="form-container">
-            <form action="{{ route('classroom_report', ['id' => $examination->id]) }}" method="get">
-                <div class="row mb-3">
-                    <div class="col-md-6">
-                        <div class="row mb-3">
-                            <label for="form-select" class="col-md-4 col-form-label text-md-end fw-bold">Select Form</label>
-                            <div class="col-md-6">
-                                <select id="form-select-class" name="form" class="form-select" aria-label="Form">
-                                    <option selected disabled>Select Form</option>
-                                    @foreach ($forms as $form)
-                                        <option value="{{ $form->id }}">{{ $form->name }}</option>
-                                    @endforeach
-                                </select>
-                            </div> 
+            @include('layouts.message')
+
+            <form action="{{ route('form_report', ['id' => $examination->id]) }}" method="get">
+                <div class="col">
+                    <div class="row">
+                        <label for="form-select" class="col-md-4 col-form-label text-md-end fw-bold">Select Form</label>
+                        <div class="col-md-6 d-flex align-items-center">
+                            <select id="form-select-class" name="form_id" class="form-select me-2" aria-label="Form">
+                                <option selected disabled>Select Form</option>
+                                @foreach ($forms as $form)
+                                    <option value="{{ $form->id }}">{{ $form->name }}</option>
+                                @endforeach
+                            </select>
+                            <button type="submit" class="btn btn-primary tr-button" style="min-width: 120px;">View Report</button>
                         </div>
                     </div>
-                    
-                    <div class="col-md-6">
-                        <div class="row mb-3">
-                            <label for="subject-select" class="col-md-4 col-form-label text-md-end fw-bold">Select Classroom</label>
-                            <div class="col-md-8">
-                                <select id="class-select" name="classroom_id" class="form-select" aria-label="Subject" disabled>
-                                    <option selected disabled>Select Classroom</option>
-                                </select>
-                            </div>
-                        </div>
-                    </div>
-                </div>
-                <div class="d-flex justify-content-center pt-2">
-                    <button type="submit" class="btn btn-primary tr-button">View Report</button>
-                </div>
+                </div>                
             </form>
         </div>
         <br>
@@ -48,7 +34,6 @@
                         <th scope="col">Class</th>
                         <th scope="col">Result</th>
                         <th scope="col">Pointer</th>
-                        <th scope="col">Average Marks</th>
                         <th scope="col">Status</th>
                     </tr>
                 </thead>
@@ -58,12 +43,11 @@
                     @foreach ($studentGrades as $studentGrade)
                         <tr class="align-middle teacher-list">
                             <th scope="row">{{ $index }}</th>
-                            <td>{{ $studentGrade->student->ic }}({{ $studentGrade->student->id }})</td>
+                            <td>{{ $studentGrade->student->ic }}</td>
                             <td>{{ $studentGrade->student->name }}</td>
                             <td>{{ $studentGrade->student->classroom->name }}</td>
                             <td>{{ $grades[$studentGrade->student_id] }}</td>
                             <td>{{ $studentGrade->pointer }}</td>
-                            <td>{{ $studentGrade->average_mark }}%</td>
                             <td class="text-uppercase">{{ $studentGrade->is_passed }}</td>
                         </tr>
                         @php $index++ @endphp
@@ -76,7 +60,4 @@
     </div>
     @endif
 
-    <script>
-        window.classrooms = @json($classrooms);
-    </script>
 @endsection

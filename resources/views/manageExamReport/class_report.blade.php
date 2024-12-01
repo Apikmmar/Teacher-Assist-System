@@ -3,6 +3,8 @@
 @section('content')
     <div class="container fade-in-text">
         <div class="form-container">
+            @include('layouts.message')
+            
             <form action="{{ route('classroom_report', ['id' => $examination->id]) }}" method="get">
                 <div class="row mb-3">
                     <div class="col-md-6">
@@ -57,7 +59,7 @@
                     @foreach ($studentGrades as $studentGrade)
                         <tr class="align-middle teacher-list">
                             <th scope="row">{{ $index }}</th>
-                            <td>{{ $studentGrade->student->ic }}({{ $studentGrade->student->id }})</td>
+                            <td>{{ $studentGrade->student->ic }}</td>
                             <td>{{ $studentGrade->student->name }}</td>
                             <td>{{ $studentGrade->student->classroom->name }}</td>
                             <td>{{ $grades[$studentGrade->student_id] }}</td>

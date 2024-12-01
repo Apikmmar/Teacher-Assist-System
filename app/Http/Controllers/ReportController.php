@@ -12,7 +12,6 @@ use Illuminate\Contracts\View\View;
 use Illuminate\Http\RedirectResponse;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
-use Illuminate\Support\Facades\Redirect;
 
 class ReportController extends Controller
 {
@@ -38,6 +37,9 @@ class ReportController extends Controller
             'forms' => $forms,
             'subjects' => $subjects,
             'examResults' => collect(),
+            'totalStudent' => 0,
+            'passedStudents' => 0,
+            'failedStudents' => 0,
         ]);
     }
 
@@ -52,7 +54,7 @@ class ReportController extends Controller
         $examResults = Student_Grade::where('examination_id', $examination->id)->where('subject_id', $subject->id)->orderBy('marks', 'desc')->get();
 
         if($examResults->isEmpty()) {
-            return redirect()->back()->withErrors('message', 'Data Not Found');
+            return redirect()->back()->withErrors('Data Not Available');
         }
 
         $passedStudents = $examResults->where('is_passed', 'passed')->count();
@@ -105,7 +107,7 @@ class ReportController extends Controller
                                                 ->get()->keyBy('student_id');
 
         if($studentGrades->isEmpty()) {
-            return redirect()->back()->withErrors('message', 'Data Not Found');
+            return redirect()->back()->withErrors('Data Not Available');
         }
     
         $grades = $students->mapWithKeys(function ($student) use ($examination) {
@@ -131,4 +133,62 @@ class ReportController extends Controller
         ]);
     }
     
+    public function viewFormReport(Request $request, $id): View | RedirectResponse {
+        $examination = Examination::findOrFail($id);
+        $forms = Form::all();
+        $studentGrades = collect();
+        $grades = collect();
+
+        if ($request->has('form_id')) {
+            return $this->viewReportByForm($request, $examination, $forms, $studentGrades, $grades);
+        }
+
+        return view('ManageExamReport.form_report', [
+            'forms' => $forms,
+            'examination' => $examination,
+            'studentGrades' => $studentGrades,
+            'grades' => $grades,
+        ]);
+    }
+
+    private function viewReportByForm($request, $examination, $forms, $studentGrades, $grades) {
+        $request->validate([
+            'form_id' => 'required|exists:forms,id',
+        ]);
+
+        $form = Form::findOrFail($request->form_id);
+        $classes = $form->classrooms;
+
+        foreach ($classes as $index => $classroom) {
+            $class = Classroom::findOrFail($classroom->id);
+            $students = $class->students;
+    
+            $studentGrades = Student_Examination_Report::where('examination_id', $examination->id)->whereIn('student_id', $students->pluck('id'))
+                                                    ->orderBy('is_passed', 'asc')->orderBy('pointer', 'desc')->orderBy('average_mark', 'desc')
+                                                    ->get()->keyBy('student_id');
+
+            if($studentGrades->isEmpty()) {
+                return redirect()->back()->withErrors('Data Not Available');
+            }
+        
+            $grades = $students->mapWithKeys(function ($student) use ($examination) {
+                $gradeCounts = Student_Grade::where('examination_id', $examination->id)->where('student_id', $student->id)
+                                            ->select('grade', DB::raw('COUNT(*) as count'))
+                                            ->groupBy('grade')->get();
+        
+                $gradeString = $gradeCounts->map(function ($record) {
+                    return "{$record->count}{$record->grade}";
+                })->join(' ');
+        
+                return [$student->id => $gradeString ?: 'N/A'];
+            });
+        }
+
+        return view('ManageExamReport.form_report', [
+            'forms' => $forms,
+            'examination' => $examination,
+            'studentGrades' => $studentGrades,
+            'grades' => $grades,
+        ]);
+    }
 }
