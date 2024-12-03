@@ -39,6 +39,31 @@
         </div>
         <br>
         @if ($studentGrades->isNotEmpty())
+        <div class="col-md-8">
+            <div class="row">
+                <div class="col-md-8 offset-md-2">
+                    <div class="d-flex justify-content-between">
+                        <div class="chart-container flex-fill">
+                            <canvas id="examPieChart"></canvas>
+                        </div>
+                        <div class="exam-stats-card flex-fill ms-4">
+                            <h5 class="card-title text-center mb-4">Subject Statistics</h5>
+                            <p>Total Students: <span class="stat-value">{{ $totalStudent }}</span></p>
+                            <div class="progress mb-3" style="height: 5px;">
+                                <div class="progress-bar bg-success" role="progressbar" 
+                                        style="width: {{ ($passedStudents / $totalStudent) * 100 }}%" 
+                                        aria-valuenow="{{ ($passedStudents / $totalStudent) * 100 }}" 
+                                        aria-valuemin="0" aria-valuemax="100">
+                                </div>
+                            </div>
+                            <p>Passed: <span class="stat-value text-success">{{ $passedStudents }} students ({{ number_format(($passedStudents / $totalStudent) * 100, 2) }}%)</span></p>
+                            <p>Failed: <span class="stat-value text-danger">{{ $failedStudents }} students ({{ number_format(($failedStudents / $totalStudent) * 100, 2) }}%)</span></p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <br>
         <div class="form-container">
             <table class="table table-hover">
                 <thead>
@@ -79,5 +104,8 @@
 
     <script>
         window.classrooms = @json($classrooms);
+        
+        const passedStudents = @json($passedStudents);
+        const failedStudents = @json($failedStudents);
     </script>
 @endsection

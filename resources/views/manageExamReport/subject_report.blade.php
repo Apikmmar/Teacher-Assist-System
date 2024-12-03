@@ -1,4 +1,4 @@
-@extends('manageExamReport.report_app', ['title' => 'Subject Examination Report'])
+@extends('manageExamReport.report_app', ['title' => 'Subject ' .($subjectName ?? '').' Report In Examination'])
 
 @section('content')
     <div class="container fade-in-text">
@@ -43,7 +43,7 @@
         <div class="col-md-8">
             <div class="row">
                 <div class="col-md-8 offset-md-2">
-                    <div class="d-flex justify-content-between mb-4">
+                    <div class="d-flex justify-content-between">
                         <div class="chart-container flex-fill">
                             <canvas id="examPieChart"></canvas>
                         </div>
@@ -66,6 +66,7 @@
         </div>
         <br>
         <div class="form-container">
+            <p class="h5">Position of students baesd on subject</p>
             <table class="table table-hover mt-4">
                 <thead>
                     <tr>
@@ -93,44 +94,12 @@
         </div>
         @endif
     </div>
-    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
 
     <script>
         window.subjects = @json($subjects);
 
         const passedStudents = @json($passedStudents);
         const failedStudents = @json($failedStudents);
-
-        const data = {
-            labels: ['Passed', 'Failed'],
-            datasets: [{
-                label: 'Exam Results',
-                data: [passedStudents, failedStudents],
-                backgroundColor: ['#4CAF50', '#F44336'],
-                hoverOffset: 4
-            }]
-        };
-
-        const config = {
-            type: 'pie',
-            data: data,
-            options: {
-                responsive: true,
-                plugins: {
-                    legend: {
-                        position: 'bottom',
-                    },
-                    tooltip: {
-                        enabled: true,
-                    },
-                },
-            },
-        };
-
-        const examPieChart = new Chart(
-            document.getElementById('examPieChart'),
-            config
-        );
     </script>
 
 @endsection

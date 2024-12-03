@@ -70,6 +70,7 @@ class ReportController extends Controller
             'totalStudent' => $totalStudent,
             'passedStudents' => $passedStudents,
             'failedStudents' => $failedStudents,
+            'subjectName' => $subject->name . ' '. $subject->form->name,
         ]);
     }
 
@@ -91,6 +92,9 @@ class ReportController extends Controller
             'studentGrades' => $studentGrades,
             'grades' => $grades,
             'class_name' => NULL,
+            'totalStudent' => 0,
+            'passedStudents' => 0,
+            'failedStudents' => 0,
         ]);
     }
     
@@ -109,6 +113,18 @@ class ReportController extends Controller
         if($studentGrades->isEmpty()) {
             return redirect()->back()->withErrors('Data Not Available');
         }
+
+        $totalStudent = $students->count();
+        $passedStudents = 0;
+        $failedStudents = 0;
+
+        $studentGrades->each(function ($grade) use (&$passedStudents, &$failedStudents) {
+            if ($grade->is_passed === 'passed') {
+                $passedStudents++;
+            } else {
+                $failedStudents++;
+            }
+        });
     
         $grades = $students->mapWithKeys(function ($student) use ($examination) {
             $gradeCounts = Student_Grade::where('examination_id', $examination->id)->where('student_id', $student->id)
@@ -129,29 +145,33 @@ class ReportController extends Controller
             'studentGrades' => $studentGrades,
             'grades' => $grades,
             'selectedClassroom' => $classroom,
-            'class_name' => $classroom->name
+            'class_name' => $classroom->name,
+            'totalStudent' => $totalStudent,
+            'passedStudents' => $passedStudents,
+            'failedStudents' => $failedStudents,
         ]);
     }
     
     public function viewFormReport(Request $request, $id): View | RedirectResponse {
         $examination = Examination::findOrFail($id);
         $forms = Form::all();
-        $studentGrades = collect();
-        $grades = collect();
 
         if ($request->has('form_id')) {
-            return $this->viewReportByForm($request, $examination, $forms, $studentGrades, $grades);
+            return $this->viewReportByForm($request, $examination, $forms);
         }
 
         return view('ManageExamReport.form_report', [
             'forms' => $forms,
             'examination' => $examination,
-            'studentGrades' => $studentGrades,
-            'grades' => $grades,
+            'studentGrades' => collect(),
+            'grades' => collect(),
+            'totalStudent' => 0,
+            'passedStudents' => 0,
+            'failedStudents' => 0,
         ]);
     }
 
-    private function viewReportByForm($request, $examination, $forms, $studentGrades, $grades) {
+    private function viewReportByForm($request, $examination, $forms) {
         $request->validate([
             'form_id' => 'required|exists:forms,id',
         ]);
@@ -159,9 +179,25 @@ class ReportController extends Controller
         $form = Form::findOrFail($request->form_id);
         $classes = $form->classrooms;
 
+        $studentGrades = collect();
+        $grades = collect();
+        $totalStudent = 0;
+        $passedStudents = 0;
+        $failedStudents = 0;
+
         foreach ($classes as $index => $classroom) {
             $class = Classroom::findOrFail($classroom->id);
             $students = $class->students;
+
+            $totalStudent += $students->count();
+
+            $studentGrades->each(function ($grade) use (&$passedStudents, &$failedStudents) {
+                if ($grade->is_passed === 'passed') {
+                    $passedStudents++;
+                } else {
+                    $failedStudents++;
+                }
+            });
     
             $studentGrades = Student_Examination_Report::where('examination_id', $examination->id)->whereIn('student_id', $students->pluck('id'))
                                                     ->orderBy('is_passed', 'asc')->orderBy('pointer', 'desc')->orderBy('average_mark', 'desc')
@@ -189,6 +225,10 @@ class ReportController extends Controller
             'examination' => $examination,
             'studentGrades' => $studentGrades,
             'grades' => $grades,
+            'formName' => $form->name,
+            'totalStudent' => $totalStudent,
+            'passedStudents' => $passedStudents,
+            'failedStudents' => $failedStudents,
         ]);
     }
 }

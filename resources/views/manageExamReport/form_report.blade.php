@@ -1,4 +1,4 @@
-@extends('manageExamReport.report_app', ['title' => 'Main Report'])
+@extends('manageExamReport.report_app', ['title' => ($formName ?? 'Form') .' Report In Examination'])
 
 @section('content')
     <div class="container fade-in-text">
@@ -23,7 +23,33 @@
             </form>
         </div>
         <br>
-        @if ($studentGrades->isNotEmpty())
+
+    @if ($studentGrades->isNotEmpty())
+        <div class="col-md-8">
+            <div class="row">
+                <div class="col-md-8 offset-md-2">
+                    <div class="d-flex justify-content-between">
+                        <div class="chart-container flex-fill">
+                            <canvas id="examPieChart"></canvas>
+                        </div>
+                        <div class="exam-stats-card flex-fill ms-4">
+                            <h5 class="card-title text-center mb-4">Subject Statistics</h5>
+                            <p>Total Students: <span class="stat-value">{{ $totalStudent }}</span></p>
+                            <div class="progress mb-3" style="height: 5px;">
+                                <div class="progress-bar bg-success" role="progressbar" 
+                                        style="width: {{ ($passedStudents / $totalStudent) * 100 }}%" 
+                                        aria-valuenow="{{ ($passedStudents / $totalStudent) * 100 }}" 
+                                        aria-valuemin="0" aria-valuemax="100">
+                                </div>
+                            </div>
+                            <p>Passed: <span class="stat-value text-success">{{ $passedStudents }} students ({{ number_format(($passedStudents / $totalStudent) * 100, 2) }}%)</span></p>
+                            <p>Failed: <span class="stat-value text-danger">{{ $failedStudents }} students ({{ number_format(($failedStudents / $totalStudent) * 100, 2) }}%)</span></p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <br>
         <div class="form-container">
             <table class="table table-hover">
                 <thead>
@@ -39,25 +65,30 @@
                 </thead>
                 <tbody>
 
-                    @php $index = 1; @endphp
                     @foreach ($studentGrades as $studentGrade)
-                        <tr class="align-middle teacher-list">
-                            <th scope="row">{{ $index }}</th>
-                            <td>{{ $studentGrade->student->ic }}</td>
-                            <td>{{ $studentGrade->student->name }}</td>
-                            <td>{{ $studentGrade->student->classroom->name }}</td>
-                            <td>{{ $grades[$studentGrade->student_id] }}</td>
-                            <td>{{ $studentGrade->pointer }}</td>
-                            <td class="text-uppercase">{{ $studentGrade->is_passed }}</td>
-                        </tr>
-                        @php $index++ @endphp
-
-                    @endforeach
+                    <tr class="align-middle teacher-list">
+                        <th scope="row">{{ $loop->iteration }}</th>
+                        <td>{{ $studentGrade->student->ic }}</td>
+                        <td>{{ $studentGrade->student->name }}</td>
+                        <td>{{ $studentGrade->student->classroom->name }}</td>
+                        <td>{{ $grades[$studentGrade->student_id] ?? 'N/A' }}</td>
+                        <td>{{ $studentGrade->pointer }}</td>
+                        <td class="text-uppercase {{ $studentGrade->is_passed === 'passed' ? 'text-success' : 'text-danger' }}">
+                            {{ $studentGrade->is_passed }}
+                        </td>
+                    </tr>
+                @endforeach
 
                 </tbody>
             </table>
         </div>
-    </div>
     @endif
+    
+    </div>
+
+    <script>
+        const passedStudents = @json($passedStudents);
+        const failedStudents = @json($failedStudents);
+    </script>
 
 @endsection
