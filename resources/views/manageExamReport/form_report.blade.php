@@ -24,6 +24,7 @@
         </div>
         <br>
 
+        {{-- shall use @if (!is_null($studentGrades) --}}
     @if ($studentGrades->isNotEmpty())
         <div class="col-md-8">
             <div class="row">
@@ -65,7 +66,7 @@
                 </thead>
                 <tbody>
 
-                    @foreach ($studentGrades as $studentGrade)
+                @foreach ($studentGrades as $studentGrade)
                     <tr class="align-middle teacher-list">
                         <th scope="row">{{ $loop->iteration }}</th>
                         <td>{{ $studentGrade->student->ic }}</td>

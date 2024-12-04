@@ -1,4 +1,4 @@
-@extends('manageExamReport.report_app', ['title' => 'Classroom '.  $class_name  .' Examination Report'])
+@extends('manageExamReport.report_app', ['title' => 'Classroom Recomendation '.  $class_name  .' Examination Report'])
 
 @section('content')
     <div class="container fade-in-text">
@@ -38,33 +38,9 @@
             </form>
         </div>
         <br>
-        @if ($studentGrades->isNotEmpty())
-        <div class="col-md-8">
-            <div class="row">
-                <div class="col-md-8 offset-md-2">
-                    <div class="d-flex justify-content-between">
-                        <div class="chart-container flex-fill">
-                            <canvas id="examPieChart"></canvas>
-                        </div>
-                        <div class="exam-stats-card flex-fill ms-4">
-                            <h5 class="card-title text-center mb-4">Subject Statistics</h5>
-                            <p>Total Students: <span class="stat-value">{{ $totalStudent }}</span></p>
-                            <div class="progress mb-3" style="height: 5px;">
-                                <div class="progress-bar bg-success" role="progressbar" 
-                                        style="width: {{ ($passedStudents / $totalStudent) * 100 }}%" 
-                                        aria-valuenow="{{ ($passedStudents / $totalStudent) * 100 }}" 
-                                        aria-valuemin="0" aria-valuemax="100">
-                                </div>
-                            </div>
-                            <p>Passed: <span class="stat-value text-success">{{ $passedStudents }} students ({{ number_format(($passedStudents / $totalStudent) * 100, 2) }}%)</span></p>
-                            <p>Failed: <span class="stat-value text-danger">{{ $failedStudents }} students ({{ number_format(($failedStudents / $totalStudent) * 100, 2) }}%)</span></p>
-                        </div>
-                    </div>
-                </div>
-            </div>
-        </div>
-        <br>
+    @if ($upgradeClass->isNotEmpty())
         <div class="form-container">
+            <p class="h4">Student That Recomended to Upgrade Class</p>
             <table class="table table-hover">
                 <thead>
                     <tr>
@@ -81,13 +57,13 @@
                 <tbody>
 
                     @php $index = 1; @endphp
-                    @foreach ($studentGrades as $studentGrade)
+                    @foreach ($upgradeClass as $studentGrade)
                         <tr class="align-middle teacher-list">
                             <th scope="row">{{ $index }}</th>
                             <td>{{ $studentGrade->student->ic }}</td>
                             <td>{{ $studentGrade->student->name }}</td>
                             <td>{{ $studentGrade->student->classroom->name }}</td>
-                            <td>{{ $grades[$studentGrade->student_id] }}</td>
+                            <td>{{ $upgradegrades[$studentGrade->student_id] }}</td>
                             <td>{{ $studentGrade->pointer }}</td>
                             <td>{{ $studentGrade->average_mark }}%</td>
                             <td class="text-uppercase {{ $studentGrade->is_passed === 'passed' ? 'text-success' : 'text-danger' }}">
@@ -101,13 +77,53 @@
                 </tbody>
             </table>
         </div>
-    </div>
     @endif
+
+    @if ($downgradeClass->isNotEmpty())
+        <br>
+        <div class="form-container">
+            <p class="h4">Student That Recomended to Downgrade Class</p>
+            <table class="table table-hover">
+                <thead>
+                    <tr>
+                        <th scope="col">No</th>
+                        <th scope="col">Identity Card Number</th>
+                        <th scope="col">Name</th>
+                        <th scope="col">Class</th>
+                        <th scope="col">Result</th>
+                        <th scope="col">Pointer</th>
+                        <th scope="col">Average Marks</th>
+                        <th scope="col">Status</th>
+                    </tr>
+                </thead>
+                <tbody>
+
+                    @php $index = 1; @endphp
+                    @foreach ($downgradeClass as $studentGrade)
+                        <tr class="align-middle teacher-list">
+                            <th scope="row">{{ $index }}</th>
+                            <td>{{ $studentGrade->student->ic }}</td>
+                            <td>{{ $studentGrade->student->name }}</td>
+                            <td>{{ $studentGrade->student->classroom->name }}</td>
+                            <td>{{ $downgradegrades[$studentGrade->student_id] }}</td>
+                            <td>{{ $studentGrade->pointer }}</td>
+                            <td>{{ $studentGrade->average_mark }}%</td>
+                            <td class="text-uppercase {{ $studentGrade->is_passed === 'passed' ? 'text-success' : 'text-danger' }}">
+                                {{ $studentGrade->is_passed }}
+                            </td>
+                        </tr>
+                        @php $index++ @endphp
+
+                    @endforeach
+
+                </tbody>
+            </table>
+        </div>
+    @endif
+
+    </div>
 
     <script>
         window.classrooms = @json($classrooms);
-        
-        const passedStudents = @json($passedStudents);
-        const failedStudents = @json($failedStudents);
     </script>
 @endsection

@@ -163,8 +163,8 @@ class ReportController extends Controller
         return view('ManageExamReport.form_report', [
             'forms' => $forms,
             'examination' => $examination,
-            'studentGrades' => collect(),
-            'grades' => collect(),
+            'studentGrades' => collect(), // shall use 'studentGrades' => NULL,
+            'grades' => collect(), // shall use 'grades' => NULL,
             'totalStudent' => 0,
             'passedStudents' => 0,
             'failedStudents' => 0,
@@ -179,8 +179,8 @@ class ReportController extends Controller
         $form = Form::findOrFail($request->form_id);
         $classes = $form->classrooms;
 
-        $studentGrades = collect();
-        $grades = collect();
+        $studentGrades = collect(); // shall use 'studentGrades' => NULL,
+        $grades = collect(); // shall use 'grades' => NULL,
         $totalStudent = 0;
         $passedStudents = 0;
         $failedStudents = 0;
@@ -191,21 +191,23 @@ class ReportController extends Controller
 
             $totalStudent += $students->count();
 
-            $studentGrades->each(function ($grade) use (&$passedStudents, &$failedStudents) {
+            $studentResults = Student_Examination_Report::where('examination_id', $examination->id)->whereIn('student_id', $students->pluck('id'))
+                                                        ->orderBy('is_passed', 'asc')->orderBy('pointer', 'desc')->orderBy('average_mark', 'desc')
+                                                        ->get()->keyBy('student_id');
+            
+            if($studentResults->isEmpty()) {
+                return redirect()->back()->withErrors('Data Not Available');
+            }
+
+            $studentGrades = $studentResults;
+
+            $studentResults->each(function ($grade) use (&$passedStudents, &$failedStudents) {
                 if ($grade->is_passed === 'passed') {
                     $passedStudents++;
                 } else {
                     $failedStudents++;
                 }
             });
-    
-            $studentGrades = Student_Examination_Report::where('examination_id', $examination->id)->whereIn('student_id', $students->pluck('id'))
-                                                    ->orderBy('is_passed', 'asc')->orderBy('pointer', 'desc')->orderBy('average_mark', 'desc')
-                                                    ->get()->keyBy('student_id');
-
-            if($studentGrades->isEmpty()) {
-                return redirect()->back()->withErrors('Data Not Available');
-            }
         
             $grades = $students->mapWithKeys(function ($student) use ($examination) {
                 $gradeCounts = Student_Grade::where('examination_id', $examination->id)->where('student_id', $student->id)
@@ -231,4 +233,81 @@ class ReportController extends Controller
             'failedStudents' => $failedStudents,
         ]);
     }
+
+    public function viewClassRecomendationReport(Request $request, $id): View | RedirectResponse {
+        $examination = Examination::findOrFail($id);
+        $forms = Form::take(3)->get();
+        $classrooms = Classroom::all();
+
+        if ($request->has('classroom_id')) {
+            return $this->viewReportByClassRecomendation($request, $examination, $forms, $classrooms);
+        }
+    
+        return view('ManageExamReport.classrecomendation_report', [
+            'examination' => $examination,
+            'forms' => $forms,
+            'classrooms' => $classrooms,
+            'upgradeClass' => collect(),
+            'downgradeClass' => collect(),
+            'upgradegrades' => collect(),
+            'downgradegrades' => collect(),
+            'class_name' => NULL,
+        ]);
+    }
+
+    private function viewReportByClassRecomendation($request, $examination, $forms, $classrooms) {
+        $request->validate([
+            'classroom_id' => 'required|exists:classrooms,id',
+        ]);
+    
+        $classroom = Classroom::findOrFail($request->classroom_id);
+        $students = $classroom->students;
+    
+        if ($students->isEmpty()) {
+            return redirect()->back()->withErrors('No students found in the selected classroom.');
+        }
+    
+        $upgradeClass = Student_Examination_Report::where('examination_id', $examination->id)->whereIn('student_id', $students->modelKeys())
+                                                ->orderBy('is_passed', 'asc')->orderBy('pointer', 'desc')->orderBy('average_mark', 'desc')
+                                                ->take(4)->get()->keyBy('student_id');
+    
+        if ($upgradeClass->isEmpty()) {
+            return redirect()->back()->withErrors('Upgrade data not available.');
+        }
+    
+        $downgradeClass = Student_Examination_Report::where('examination_id', $examination->id)->whereIn('student_id', $students->modelKeys())
+                                                ->orderBy('is_passed', 'desc')->orderBy('pointer', 'asc')->orderBy('average_mark', 'asc')
+                                                ->take(4)->get()->keyBy('student_id');
+    
+        if ($downgradeClass->isEmpty()) {
+            return redirect()->back()->withErrors('Downgrade data not available.');
+        }
+    
+        $transformGrades = function ($students, $examination) {
+            return $students->mapWithKeys(function ($student) use ($examination) {
+                $gradeCounts = Student_Grade::where('examination_id', $examination->id)->where('student_id', $student->id)
+                                            ->select('grade', DB::raw('COUNT(*) as count'))
+                                            ->groupBy('grade')->get();
+    
+                $gradeString = $gradeCounts->map(fn($record) => "{$record->count}{$record->grade}")->join(' ');
+                return [$student->id => $gradeString ?: 'N/A'];
+            });
+        };
+    
+        $upgradegrades = $transformGrades($students, $examination);
+        $downgradegrades = $transformGrades($students, $examination);
+    
+        return view('ManageExamReport.classrecomendation_report', [
+            'examination' => $examination,
+            'forms' => $forms,
+            'classrooms' => $classrooms,
+            'upgradeClass' => $upgradeClass,
+            'downgradeClass' => $downgradeClass,
+            'upgradegrades' => $upgradegrades,
+            'downgradegrades' => $downgradegrades,
+            'selectedClassroom' => $classroom,
+            'class_name' => $classroom->name,
+        ]);
+    }
+    
 }

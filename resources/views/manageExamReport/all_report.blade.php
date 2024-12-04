@@ -37,7 +37,7 @@
         <br>
         <div class="row justify-content-center">
             <div class="report-col col-md-6 col-lg-4" style="min-width: 500px">
-                <a href="" style="text-decoration: none;">
+                <a href="{{ route('classrec_report', ['id' => $examination->id]) }}" style="text-decoration: none;">
                     <div class="report-card card">
                         <div class="card-body text-center">
                             <h4 class="card-title">Class Recomendation</h4>
