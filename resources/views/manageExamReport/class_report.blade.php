@@ -5,7 +5,7 @@
         <div class="form-container">
             @include('layouts.message')
             
-            <form action="{{ route('classrec_report', ['id' => $examination->id]) }}" method="get">
+            <form action="{{ route('classroom_report', ['id' => $examination->id]) }}" method="get">
                 <div class="row mb-3">
                     <div class="col-md-6">
                         <div class="row mb-3">
@@ -76,6 +76,7 @@
                         <th scope="col">Pointer</th>
                         <th scope="col">Average Marks</th>
                         <th scope="col">Status</th>
+                        <th scope="col">View</th>
                     </tr>
                 </thead>
                 <tbody>
@@ -92,6 +93,9 @@
                             <td>{{ $studentGrade->average_mark }}%</td>
                             <td class="text-uppercase {{ $studentGrade->is_passed === 'passed' ? 'text-success' : 'text-danger' }}">
                                 {{ $studentGrade->is_passed }}
+                            </td>
+                            <td>
+                                <a href="{{ route('performance_report', ['examReport' => $examination->id,'stdID' => $studentGrade->student->id]) }}" class="btn btn-primary ">View</a>
                             </td>
                         </tr>
                         @php $index++ @endphp

@@ -5,9 +5,11 @@ namespace App\Http\Controllers;
 use App\Models\Classroom;
 use App\Models\Examination;
 use App\Models\Form;
+use App\Models\Student;
 use App\Models\Student_Examination_Report;
 use App\Models\Student_Grade;
 use App\Models\Subject;
+use Carbon\Carbon;
 use Illuminate\Contracts\View\View;
 use Illuminate\Http\RedirectResponse;
 use Illuminate\Http\Request;
@@ -310,4 +312,27 @@ class ReportController extends Controller
         ]);
     }
     
+    public function viewStudentReport($examReport, $stdID): View {
+        $examination = Examination::findOrFail($examReport);
+        $student = Student::findOrFail($stdID);
+        $stdResult = Student_Grade::where('examination_id', $examination->id)->where('student_id', $student->id)->get();
+        $stdReport = Student_Examination_Report::where('examination_id', $examination->id)->where('student_id', $student->id)->first();
+
+        if(!$stdReport) {
+            return redirect()->back()->withErrors('Examination Report Not Found!');
+        }
+
+        $class = $student->classroom;
+        $student->dob = Carbon::parse($student->dob)->format('j F Y');
+        $examination->start_date = Carbon::parse($examination->start_date)->format('j F Y');
+        $examination->end_date = Carbon::parse($examination->end_date)->format('j F Y');
+
+        return view('ManageExamReport.student_report',[
+            'examination' => $examination,
+            'student' => $student,
+            'class' => $class,
+            'stdResult' => $stdResult,
+            'stdReport' => $stdReport,
+        ]);
+    }
 }
