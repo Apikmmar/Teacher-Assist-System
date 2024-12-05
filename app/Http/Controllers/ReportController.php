@@ -14,6 +14,7 @@ use Illuminate\Contracts\View\View;
 use Illuminate\Http\RedirectResponse;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
+use Barryvdh\DomPDF\Facade\Pdf;
 
 class ReportController extends Controller
 {
@@ -334,5 +335,25 @@ class ReportController extends Controller
             'stdResult' => $stdResult,
             'stdReport' => $stdReport,
         ]);
+    }
+
+    public function downloadExamResult($exam, $stdID) {
+        $examination = Examination::findOrFail($exam);
+        $student = Student::findOrFail($stdID);
+        $stdResult = Student_Grade::where('examination_id', $examination->id)->where('student_id', $student->id)->get();
+        $stdReport = Student_Examination_Report::where('examination_id', $examination->id)->where('student_id', $student->id)->first();
+
+        if(!$stdReport) {
+            return redirect()->back()->withErrors('Examination Report Not Found!');
+        }
+
+        $class = $student->classroom;
+        $student->dob = Carbon::parse($student->dob)->format('j F Y');
+        $examination->start_date = Carbon::parse($examination->start_date)->format('j F Y');
+        $examination->end_date = Carbon::parse($examination->end_date)->format('j F Y');
+
+        $pdf = Pdf::loadView('ManageExamReport.exam_result', compact('examination', 'student', 'class', 'stdResult', 'stdReport'));
+
+        return $pdf->download('examination result-' . $student->name . '.pdf');
     }
 }

@@ -99,6 +99,7 @@ Route::middleware('auth')->group(function () {
     Route::get('/all_report/form_report/examination={id}', [ReportController::class, 'viewFormReport'])->name('form_report');
     Route::get('/all_report/class_recomendation_report/examination={id}', [ReportController::class, 'viewClassRecomendationReport'])->name('classrec_report');
     Route::get('/all_report/student_report/examination={examReport}/student={stdID}', [ReportController::class, 'viewStudentReport'])->name('performance_report');
+    Route::get('/download_student_report/examination={exam}/student={stdID}', [ReportController::class, 'downloadExamResult'])->name('download_report');
 });
 
 require __DIR__.'/auth.php';

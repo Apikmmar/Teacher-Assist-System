@@ -140,6 +140,16 @@
                     </div>
                 </div>
             </div>
+            <div class="row fw-bold">
+                <div class="col-md-12">
+                    <label class="col-3 col-form-label">Class Teacher Feedback: {{ $stdReport->feedback }}</label>
+                </div>
+            </div>
+        </div>
+        <div class="row">
+            <div class="col d-flex justify-content-center">
+                <a href="{{ route('download_report', ['exam' => $examination->id ,'stdID' => $student->id]) }}" class="btn btn-primary tr-button">Download Result</a>
+            </div>
         </div>
     </div>
 
