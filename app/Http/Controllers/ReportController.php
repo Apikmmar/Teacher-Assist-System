@@ -354,6 +354,6 @@ class ReportController extends Controller
 
         $pdf = Pdf::loadView('ManageExamReport.exam_result', compact('examination', 'student', 'class', 'stdResult', 'stdReport'));
 
-        return $pdf->download('examination result-' . $student->name . '.pdf');
+        return $pdf->download('Result ' . $examination->name . ' ' . $student->name . '.pdf');
     }
 }
