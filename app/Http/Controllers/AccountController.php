@@ -15,7 +15,7 @@ class AccountController extends Controller
 {
     //
     public function viewAllTeacher(): View {
-        $teachers = User::where('id', '!=', Auth::id())->paginate(10);
+        $teachers = User::where('id', '!=', Auth::id())->orderBy('name', 'asc')->orderBy('ic', 'asc')->paginate(10);
 
         foreach ($teachers as $teacher) {
             $teacher->name =  Str::title($teacher->name);

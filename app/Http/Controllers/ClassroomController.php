@@ -23,7 +23,7 @@ class ClassroomController extends Controller
     public function viewAllClassroom(Request $request): View {
 
         if($request->class_form != '') {
-            $classrooms = Classroom::where('form_id', $request->class_form)->orderBy('form_id', 'asc')->paginate(10);
+            $classrooms = Classroom::where('form_id', $request->class_form)->orderBy('form_id', 'asc')->orderBy('name', 'asc')->paginate(10);
         } else {
             $classrooms = Classroom::orderBy('form_id', 'asc')->paginate(10);
         }

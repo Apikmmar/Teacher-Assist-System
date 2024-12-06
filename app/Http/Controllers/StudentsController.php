@@ -20,7 +20,7 @@ class StudentsController extends Controller
 {
 
     public function viewAllStudent(): View {
-        $students = Student::paginate(10);
+        $students = Student::orderBy('ic', 'asc')->orderBy('name', 'asc')->paginate(10);
 
         foreach ($students as $student) {
             $student->name =  Str::title($student->name);
