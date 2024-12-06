@@ -232,7 +232,7 @@
                                 <td>{{ $result->grade }}</td>
                                 <td>
                                     <span class="badge {{ $result->is_passed === 'passed' ? 'badge-success' : 'badge-danger' }}">
-                                        {{ $result->is_passed }}
+                                        {{ strtoupper($result->is_passed) }}
                                     </span>
                                 </td>
                             </tr>
@@ -242,6 +242,14 @@
             </div>
 
             <div class="summary-grid d-flex justify-content-center">
+                <div class="summary-section">
+                    <h4>Position In Classroom</h4>
+                    <p>{{ $placeInClass }} / {{ $totalStudentInClass }}</p>
+                </div>
+                <div class="summary-section">
+                    <h4>Position In Form</h4>
+                    <p>{{ $placeInForms }} / {{ $totalStudentInForm }}</p>
+                </div>
                 <div class="summary-section">
                     <h4>Total Marks</h4>
                     <p>{{ $stdReport->total_mark }}</p>

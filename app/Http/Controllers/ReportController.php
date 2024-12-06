@@ -129,15 +129,16 @@ class ReportController extends Controller
             }
         });
     
-        $grades = $students->mapWithKeys(function ($student) use ($examination) {
-            $gradeCounts = Student_Grade::where('examination_id', $examination->id)->where('student_id', $student->id)
-                                        ->select('grade', DB::raw('COUNT(*) as count'))
-                                        ->groupBy('grade')->get();
-    
-            $gradeString = $gradeCounts->map(function ($record) {
+        $studentGradeCounts = Student_Grade::where('examination_id', $examination->id)->whereIn('student_id', $students->pluck('id'))
+                                        ->select('student_id', 'grade', DB::raw('COUNT(*) as count'))
+                                        ->groupBy('student_id', 'grade')->get()->groupBy('student_id');
+
+        $grades = $students->mapWithKeys(function ($student) use ($studentGradeCounts) {
+            $gradeData = $studentGradeCounts->get($student->id, collect())->sort();
+            $gradeString = $gradeData->map(function ($record) {
                 return "{$record->count}{$record->grade}";
             })->join(' ');
-    
+
             return [$student->id => $gradeString ?: 'N/A'];
         });
     
@@ -166,8 +167,8 @@ class ReportController extends Controller
         return view('ManageExamReport.form_report', [
             'forms' => $forms,
             'examination' => $examination,
-            'studentGrades' => collect(), // shall use 'studentGrades' => NULL,
-            'grades' => collect(), // shall use 'grades' => NULL,
+            'studentGrades' => collect(),
+            'grades' => collect(),
             'totalStudent' => 0,
             'passedStudents' => 0,
             'failedStudents' => 0,
@@ -182,48 +183,44 @@ class ReportController extends Controller
         $form = Form::findOrFail($request->form_id);
         $classes = $form->classrooms;
 
-        $studentGrades = collect(); // shall use 'studentGrades' => NULL,
-        $grades = collect(); // shall use 'grades' => NULL,
+        $studentGrades = collect();
+        $grades = [];
         $totalStudent = 0;
         $passedStudents = 0;
         $failedStudents = 0;
+        $students = collect();
 
-        foreach ($classes as $index => $classroom) {
-            $class = Classroom::findOrFail($classroom->id);
-            $students = $class->students;
+        $classrooms = Classroom::whereIn('id', $classes->pluck('id'))->with('students')->get();
 
-            $totalStudent += $students->count();
-
-            $studentResults = Student_Examination_Report::where('examination_id', $examination->id)->whereIn('student_id', $students->pluck('id'))
-                                                        ->orderBy('is_passed', 'asc')->orderBy('pointer', 'desc')->orderBy('average_mark', 'desc')
-                                                        ->get()->keyBy('student_id');
-            
-            if($studentResults->isEmpty()) {
-                return redirect()->back()->withErrors('Data Not Available');
-            }
-
-            $studentGrades = $studentResults;
-
-            $studentResults->each(function ($grade) use (&$passedStudents, &$failedStudents) {
-                if ($grade->is_passed === 'passed') {
-                    $passedStudents++;
-                } else {
-                    $failedStudents++;
-                }
-            });
-        
-            $grades = $students->mapWithKeys(function ($student) use ($examination) {
-                $gradeCounts = Student_Grade::where('examination_id', $examination->id)->where('student_id', $student->id)
-                                            ->select('grade', DB::raw('COUNT(*) as count'))
-                                            ->groupBy('grade')->get();
-        
-                $gradeString = $gradeCounts->map(function ($record) {
-                    return "{$record->count}{$record->grade}";
-                })->join(' ');
-        
-                return [$student->id => $gradeString ?: 'N/A'];
-            });
+        foreach ($classrooms as $classroom) {
+            $students = $students->merge($classroom->students);
+            $totalStudent += $classroom->students->count();
         }
+
+        $studentIds = $students->pluck('id');
+        $studentGrades = Student_Examination_Report::where('examination_id', $examination->id)->whereIn('student_id', $studentIds)
+                        ->orderBy('is_passed', 'asc')->orderBy('pointer', 'desc')->orderBy('average_mark', 'desc')
+                        ->get();
+        
+        if($studentGrades->isEmpty()) {
+            return redirect()->back()->withErrors('Data Not Available');
+        }
+
+        $passedStudents = $studentGrades->where('is_passed', 'passed')->count();
+        $failedStudents = $studentGrades->where('is_passed', 'failed')->count();
+
+        $studentGradeCounts = Student_Grade::where('examination_id', $examination->id)->whereIn('student_id', $studentIds)
+                                        ->select('student_id', 'grade', DB::raw('COUNT(*) as count'))
+                                        ->groupBy('student_id', 'grade')->get()->groupBy('student_id');
+
+        $grades = $students->mapWithKeys(function ($student) use ($studentGradeCounts) {
+            $gradeData = $studentGradeCounts->get($student->id, collect())->sort();
+            $gradeString = $gradeData->map(function ($record) {
+                return "{$record->count}{$record->grade}";
+            })->join(' ');
+
+            return [$student->id => $gradeString ?: 'N/A'];
+        });
 
         return view('ManageExamReport.form_report', [
             'forms' => $forms,
@@ -328,12 +325,39 @@ class ReportController extends Controller
         $examination->start_date = Carbon::parse($examination->start_date)->format('j F Y');
         $examination->end_date = Carbon::parse($examination->end_date)->format('j F Y');
 
+        $stdResult->each(function ($grade) {
+            $grade->subName = $grade->subject ? $grade->subject->name : 'N/A';
+        });
+
+        $class = $student->classroom;
+        $studentsInClass = $class->students;
+        $totalStudentInClass = $studentsInClass->count();
+
+        $placeInClass = $this->calculatePlace($examination, $studentsInClass, $stdReport);
+
+        $studentsInForm = $studentsInClass;
+        $totalStudentInForm = 0;
+        $form = $class->form;
+        $classForm = $form->classrooms;
+
+        $classrooms = Classroom::whereIn('id', $classForm->pluck('id'))->with('students')->get();
+        foreach ($classrooms as $classroom) {
+            $studentsInForm = $studentsInForm->merge($classroom->students);
+            $totalStudentInForm += $classroom->students->count();
+        }
+
+        $placeInForms = $this->calculatePlace($examination, $studentsInForm, $stdReport);
+
         return view('ManageExamReport.student_report',[
             'examination' => $examination,
             'student' => $student,
             'class' => $class,
             'stdResult' => $stdResult,
             'stdReport' => $stdReport,
+            'placeInClass' => $placeInClass,
+            'totalStudentInClass' => $totalStudentInClass,
+            'totalStudentInForm' => $totalStudentInForm,
+            'placeInForms' => $placeInForms,
         ]);
     }
 
@@ -352,8 +376,40 @@ class ReportController extends Controller
         $examination->start_date = Carbon::parse($examination->start_date)->format('j F Y');
         $examination->end_date = Carbon::parse($examination->end_date)->format('j F Y');
 
-        $pdf = Pdf::loadView('ManageExamReport.exam_result', compact('examination', 'student', 'class', 'stdResult', 'stdReport'));
+        $class = $student->classroom;
+        $students = $class->students;
+        $totalStudentInClass = $students->count();
+
+        $placeInClass = $this->calculatePlace($examination, $students, $stdReport);
+
+        $totalStudentInForm = 0;
+        $studentsInForm = $students;
+        $form = $class->form;
+        $classForm = $form->classrooms;
+
+        $classrooms = Classroom::whereIn('id', $classForm->pluck('id'))->with('students')->get();
+
+        foreach ($classrooms as $classroom) {
+            $students = $students->merge($classroom->students);
+            $totalStudentInForm += $classroom->students->count();
+        }
+
+        $placeInForms = $this->calculatePlace($examination, $studentsInForm, $stdReport);
+
+        $pdf = Pdf::loadView('ManageExamReport.exam_result', compact('examination', 'student', 'class', 'stdResult', 'stdReport','placeInClass', 'totalStudentInClass', 'totalStudentInForm', 'placeInForms'));
 
         return $pdf->download('Result ' . $examination->name . ' ' . $student->name . '.pdf');
+    }
+
+    private function calculatePlace($examination, $students, $stdReport) {
+        $classReports = Student_Examination_Report::where('examination_id', $examination->id)->whereIn('student_id', $students->pluck('id'))
+                                                ->orderBy('is_passed', 'asc')->orderBy('pointer', 'desc')->orderBy('average_mark', 'desc')
+                                                ->get();
+
+        $index = $classReports->search(function ($classReport) use ($stdReport) {
+            return $classReport->id == $stdReport->id;
+        });
+
+        return $index !== false ? $index + 1 : null;
     }
 }
