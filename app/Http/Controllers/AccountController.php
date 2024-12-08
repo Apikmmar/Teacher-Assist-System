@@ -8,6 +8,7 @@ use Illuminate\Contracts\View\View;
 use Illuminate\Http\RedirectResponse;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
+use Illuminate\Support\Facades\Hash;
 use Illuminate\Support\Facades\Validator;
 use Illuminate\Support\Str;
 
@@ -111,5 +112,55 @@ class AccountController extends Controller
         });
 
         return $subClassTeacher;
+    }
+
+    public function importUser(Request $request) {
+        $request->validate([
+            'import_csv' => 'required|mimes:csv',
+        ]);
+
+        $file = $request->file('import_csv');
+        $handle = fopen($file->path(), 'r');
+
+        fgetcsv($handle);
+
+        $chunksize = 25;
+
+        while(!feof($handle)) {
+            $chunkdata = [];
+
+            for ($i=0; $i < $chunksize; $i++) { 
+                $data = fgetcsv($handle);
+
+                if ($data === false) {
+                    break;
+                }
+                $chunkdata[] = $data;
+            }
+
+            foreach($chunkdata as $column) {
+                $teacher_id = $column[0];
+                $name = $column[1];
+                $ic = $column[2];
+                $gender = $column[3];
+                $contact = $column[4];
+                $email = $column[5];
+
+                $teacher = new User();
+                $teacher->teacher_id = $teacher_id;
+                $teacher->name = $name;
+                $teacher->ic = $ic;
+                $teacher->gender = $gender;
+                $teacher->contact = $contact;
+                $teacher->email = $email;
+                $teacher->password = Hash::make($ic);
+                $teacher->verification = NULL;
+                $teacher->photo = NULL;
+
+                $teacher->save();
+            }
+        }
+
+        return redirect()->route('all_teacher')->with('blue-message', 'Successfully Import New Teacher Data!');
     }
 }

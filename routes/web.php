@@ -30,6 +30,7 @@ Route::middleware('auth')->group(function () {
     Route::get('/teacher_details/{id}', [AccountController::class, 'viewTeacherDetails'])->name('view_teacher');
     Route::post('/register', [RegisteredUserController::class, 'store'])->name('register.create');
     Route::delete('/delete_teacher/{id}', [AccountController::class, 'destroyTeacher'])->name('delete.teacher');
+    Route::post('import-csv', [AccountController::class, 'importUser'])->name('import.teacher');
 
     Route::get('/all_student', [StudentsController::class, 'viewAllStudent'])->name('all_student');
     Route::get('/all_student/search', [StudentsController::class, 'searchStudentName'])->name('search_student');
