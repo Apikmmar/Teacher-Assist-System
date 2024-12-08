@@ -19,6 +19,7 @@ use Illuminate\Http\RedirectResponse;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Redirect;
 use Illuminate\Support\Facades\Validator;
+use Maatwebsite\Excel\Facades\Excel;
 use PhpParser\Node\Stmt\Return_;
 
 class ExaminationController extends Controller
@@ -108,7 +109,7 @@ class ExaminationController extends Controller
         return view('manageExamGrade.class_examination', compact('examination', 'subjectClass'));
     }
 
-    public function viewClassroomExamMark($class_id, $subject_id, $exam_id): View {
+    public function viewClassroomExamMark(Request $request, $class_id, $subject_id, $exam_id): View {
         $class = Classroom::findOrFail($class_id);
         $subject = Subject::findOrFail($subject_id);
         $exam = Examination::findOrFail($exam_id);

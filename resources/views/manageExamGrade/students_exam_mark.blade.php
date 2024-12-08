@@ -34,6 +34,14 @@
         </div>
 
         <hr>
+        <h4 class="mb-4">Upload Student Marks</h4>
+        <form id="uploadForm" enctype="multipart/form-data" class="mb-2">
+            <label for="marksFile" class="form-label me-3">Select CSV File:</label>
+            <div class="mb-3 d-flex justify-content-start">
+                <input type="file" id="marksFile" name="marksFile" accept=".csv" class="form-control me-4 w-75" />
+                <button type="button" id="uploadButton" class="btn btn-success tr-button">Import Marks</button>
+            </div>
+        </form>
 
         <form action="{{ route('add_exam_mark.create') }}" method="post">
             @csrf
@@ -41,7 +49,7 @@
             <input type="hidden" name="exam_id" value="{{ $exam->id }}">
             <input type="hidden" name="subject_id" value="{{ $subject->id }}">
 
-            <div class="d-flex justify-content-center">
+            <div class="d-flex justify-content-center" id="studentsTable" >
                 <div class="row">
                     <table class="table table-hover" style="min-width: 700px">
                         <thead>
@@ -103,6 +111,7 @@
     
     <script>
         window.gradeRanges = @json($grades);
+        window.students = @json($students)
     </script>
 
 @endsection

@@ -3,12 +3,14 @@
 namespace App\Http\Controllers;
 
 use App\Models\Classroom;
+use App\Models\Role;
 use App\Models\User;
 use Illuminate\Contracts\View\View;
 use Illuminate\Http\RedirectResponse;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Hash;
+use Illuminate\Support\Facades\Redirect;
 use Illuminate\Support\Facades\Validator;
 use Illuminate\Support\Str;
 
@@ -49,6 +51,8 @@ class AccountController extends Controller
 
     public function viewTeacherDetails($id): View {
         $teacher = User::findOrFail($id);
+        $allRoles = Role::all();
+        $teacher_roles = $teacher->roles;
 
         $teacher->name = Str::title($teacher->name);
 
@@ -61,7 +65,7 @@ class AccountController extends Controller
 
         $subClassTeacher = $this->getTeachesSubjectClass($teacher);
 
-        return view('manageAccount.teacher_details', compact('teacher', 'age', 'subClassTeacher'));
+        return view('manageAccount.teacher_details', compact('teacher', 'age', 'subClassTeacher', 'teacher_roles', 'allRoles'));
     }
 
     public function destroyTeacher($id): RedirectResponse {        
@@ -80,39 +84,9 @@ class AccountController extends Controller
         return redirect()->route('all_teacher')->with('red-message', 'Successfully Delete Teacher');
     }
 
-    private function getTeachesSubjectClass($user) {
-        $subClassTeacher = [];
+    // public function updateRoles(Request $request): RedirectResponse {
 
-        foreach ($user->subjects as $subs) {
-            $subjectTeach = $subs->name;
-            $subjectForm = $subs->form->name;
-
-            $takenSubjects = $user->subjecttaken->where('subject_id', $subs->id);
-
-            $classNames = [];
-
-            foreach ($takenSubjects as $takenSubject) {
-                $class = Classroom::find($takenSubject->classroom_id);
-                $classNames[] = $class ? $class->name : 'No Class Teaches';
-            }
-
-            if (empty($classNames)) {
-                $classNames[] = 'No Class Teaches';
-            }
-
-            $subClassTeacher[] = [
-                'subjectTeach' => $subjectTeach,
-                'subjectForm' => $subjectForm,
-                'classNames' => $classNames,
-            ];
-        }
-
-        usort($subClassTeacher, function ($a, $b) {
-            return strcmp($a['subjectForm'], $b['subjectForm']);
-        });
-
-        return $subClassTeacher;
-    }
+    // };
 
     public function importUser(Request $request): RedirectResponse {
         $request->validate([
@@ -167,5 +141,39 @@ class AccountController extends Controller
         fclose($handle);
 
         return redirect()->route('all_teacher')->with('blue-message', 'Successfully Import New Teacher Data!');
+    }
+
+    private function getTeachesSubjectClass($user) {
+        $subClassTeacher = [];
+
+        foreach ($user->subjects as $subs) {
+            $subjectTeach = $subs->name;
+            $subjectForm = $subs->form->name;
+
+            $takenSubjects = $user->subjecttaken->where('subject_id', $subs->id);
+
+            $classNames = [];
+
+            foreach ($takenSubjects as $takenSubject) {
+                $class = Classroom::find($takenSubject->classroom_id);
+                $classNames[] = $class ? $class->name : 'No Class Teaches';
+            }
+
+            if (empty($classNames)) {
+                $classNames[] = 'No Class Teaches';
+            }
+
+            $subClassTeacher[] = [
+                'subjectTeach' => $subjectTeach,
+                'subjectForm' => $subjectForm,
+                'classNames' => $classNames,
+            ];
+        }
+
+        usort($subClassTeacher, function ($a, $b) {
+            return strcmp($a['subjectForm'], $b['subjectForm']);
+        });
+
+        return $subClassTeacher;
     }
 }

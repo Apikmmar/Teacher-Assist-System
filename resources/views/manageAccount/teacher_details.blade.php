@@ -2,13 +2,11 @@
 
 @section('content')
     <div class="container fade-in-text">
-
         <div class="row mt-2">
             <div class="col-4 d-flex justify-content-center align-items-center">
                 <img src="{{ asset('storage/asset/profile-photos/' . $teacher->photo) }}" style="max-width: 250px;" class="img-fluid" alt="SMK Baling Teacher.png">
             </div>
             
-    
             <div class="col-8">
                 <div class="row mb-3">
                     <label for="ic" class="col-md-4 col-form-label text-md-end fw-bold">{{ __('Identity Card Number') }}</label>
@@ -65,8 +63,61 @@
                         <input id="ic" type="text" class="form-control @error('ic') is-invalid @enderror" name="ic" value="{{ $teacher->email }}" placeholder="Email" readonly autocomplete="ic" autofocus>
                     </div>
                 </div>
-    
+                
+            @if ($teacher_roles->isNotEmpty())
+                <div class="row mb-3">
+                    <label for="ic" class="col-md-4 col-form-label text-md-end fw-bold">{{ __('Roles') }}</label>
+                    
+                    <div class="col-md-8 mt-2">
+                    @foreach ($teacher_roles as $roles)
+                        <input class="form-check-input" type="checkbox" value="" id="flexCheckChecked" checked style="pointer-events: none;">
+                        <label class="form-check-label" for="flexCheckChecked">{{ $roles->name }}</label>
+                    @endforeach
+                    </div>
+                </div>
+            @endif
+
             </div>
+
+        @can('coordinator')
+            <div class="row">
+                <div class="col d-flex justify-content-end">
+                    <button class="btn btn-success tr-button" id="updateRoleSwitch">Set Teacher's Roles</button>
+                </div>
+            </div>
+            <div id="updateRoleForm">
+                <hr>
+                <header>
+                    <h4 class="text-lg font-medium text-gray-900 dark:text-gray-100">
+                        {{ __('Update Teacher Role') }}
+                    </h4>
+                </header>
+                <form action="" method="post">
+                    @csrf
+                    @method('')
+
+                    <input type="hidden" name="user_id" value="{{ $teacher->id }}">
+
+                    <div class="row">
+                        <div class="col-8">
+                            <div class="row">
+                            @foreach ($allRoles as $role)
+                                <div class="col-md-3 mb-2 d-flex align-items-center">
+                                    <input class="form-check-input" type="checkbox" name="roles[]" value="{{ $role->id }}" id="role-{{ $role->id }}" 
+                                        @if(in_array($role->id, $teacher_roles->pluck('id')->toArray())) checked @endif>
+                                    <label class="form-check-label ms-2" for="role-{{ $role->id }}">{{ $role->name }}</label>
+                                </div>
+                            @endforeach
+
+                            </div>
+                        </div>
+                        <div class="col">
+                            <button type="submit" class="btn btn-warning text-white tr-button">Update Role</button>                    
+                        </div>
+                    </div>
+                </form>
+            </div>
+        @endcan
         </div>
         <hr>
         <div>

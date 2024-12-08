@@ -147,4 +147,73 @@ $(document).ready(function() {
             $classroomSelect.prop('disabled', true);
         }
     })
+
+    $("#uploadButton").click(function () {
+        const fileInput = $("#marksFile")[0];
+        if (fileInput.files.length === 0) {
+            alert("Please select a file.");
+            return;
+        }
+
+        const file = fileInput.files[0];
+        const reader = new FileReader();
+
+        reader.onload = function (e) {
+            const csvData = e.target.result;
+            const rows = csvData.split("\n").filter(row => row.trim() !== "");
+
+            const data = rows.map(row => {
+                const [ic, mark] = row.split(",").map(item => item.trim());
+                return { ic, mark };
+            });
+
+            updateMarks(data);
+        };
+
+        reader.readAsText(file);
+    });
+
+    function updateMarks(data) {
+        data.forEach(item => {
+            const { ic, mark } = item;
+
+            $("tbody tr").each(function () {
+                const rowIC = $(this).find("td:nth-child(2)").text().trim();
+                if (rowIC === ic) {
+                    $(this).find(".mark-input").val(mark);
+
+                    calculateGrade($(this), mark);
+                }
+            });
+        });
+    }
+
+    function calculateGrade(row, mark) {
+        const grades = window.gradeRanges;
+        let grade = "N/A";
+        let pointer = 0.00;
+
+        for (const range of grades) {
+            if (mark >= range.mark_min && mark <= range.mark_max) {
+                grade = range.grade;
+                pointer = range.grade_value;
+                break;
+            }
+        }
+
+        row.find(".grade-output").val(grade);
+        row.find(".grade-val-output").val(pointer);
+    }
+
+    $('#updateRoleForm').hide();
+
+    $('#updateRoleSwitch').on('click', function() {  // Changed to 'click' instead of 'change'
+        if ($(this).hasClass('active')) {  // Check if the button has 'active' class
+            $('#updateRoleForm').fadeOut();
+            $(this).removeClass('active');
+        } else {
+            $('#updateRoleForm').fadeIn();
+            $(this).addClass('active');
+        }
+    })
 });
