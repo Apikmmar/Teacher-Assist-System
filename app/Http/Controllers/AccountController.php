@@ -114,7 +114,7 @@ class AccountController extends Controller
         return $subClassTeacher;
     }
 
-    public function importUser(Request $request) {
+    public function importUser(Request $request): RedirectResponse {
         $request->validate([
             'import_csv' => 'required|mimes:csv',
         ]);
@@ -146,6 +146,10 @@ class AccountController extends Controller
                 $contact = $column[4];
                 $email = $column[5];
 
+                if (strlen($ic) !== 12 || !ctype_digit($ic)) {
+                    return redirect()->route('all_student')->with('red-message', 'IC Number Must Be 12 Digit!');
+                }
+
                 $teacher = new User();
                 $teacher->teacher_id = $teacher_id;
                 $teacher->name = $name;
@@ -160,6 +164,7 @@ class AccountController extends Controller
                 $teacher->save();
             }
         }
+        fclose($handle);
 
         return redirect()->route('all_teacher')->with('blue-message', 'Successfully Import New Teacher Data!');
     }
