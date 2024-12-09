@@ -207,8 +207,8 @@ $(document).ready(function() {
 
     $('#updateRoleForm').hide();
 
-    $('#updateRoleSwitch').on('click', function() {  // Changed to 'click' instead of 'change'
-        if ($(this).hasClass('active')) {  // Check if the button has 'active' class
+    $('#updateRoleSwitch').on('click', function() {
+        if ($(this).hasClass('active')) {
             $('#updateRoleForm').fadeOut();
             $(this).removeClass('active');
         } else {

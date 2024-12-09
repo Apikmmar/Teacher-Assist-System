@@ -31,6 +31,7 @@ Route::middleware('auth')->group(function () {
     Route::post('/register', [RegisteredUserController::class, 'store'])->name('register.create');
     Route::delete('/delete_teacher/{id}', [AccountController::class, 'destroyTeacher'])->name('delete.teacher');
     Route::post('/import-csv/teachers', [AccountController::class, 'importUser'])->name('import.teacher');
+    Route::post('/teacher_details/{id}/update_role', [AccountController::class, 'updateRoles'])->name('update.teacher_role');
 
     Route::get('/all_student', [StudentsController::class, 'viewAllStudent'])->name('all_student');
     Route::get('/all_student/search', [StudentsController::class, 'searchStudentName'])->name('search_student');

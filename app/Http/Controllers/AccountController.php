@@ -84,9 +84,19 @@ class AccountController extends Controller
         return redirect()->route('all_teacher')->with('red-message', 'Successfully Delete Teacher');
     }
 
-    // public function updateRoles(Request $request): RedirectResponse {
+    public function updateRoles(Request $request, $id): RedirectResponse {
+        $request->validate([
+            'roles' => ['array', 'min:1'],
+        ]);
 
-    // };
+        $newRoleIDs = $request->input('roles');
+
+        $user = User::findOrFail($id);
+
+        $user->roles()->sync($newRoleIDs);
+
+        return redirect()->route('view_teacher', ['id' => $user->id])->with('blue-message', 'Successfully Update Role');
+    }
 
     public function importUser(Request $request): RedirectResponse {
         $request->validate([

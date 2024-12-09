@@ -2,6 +2,8 @@
 
 @section('content')
     <div class="container fade-in-text">
+        @include('layouts.message')
+
         <div class="row mt-2">
             <div class="col-4 d-flex justify-content-center align-items-center">
                 <img src="{{ asset('storage/asset/profile-photos/' . $teacher->photo) }}" style="max-width: 250px;" class="img-fluid" alt="SMK Baling Teacher.png">
@@ -70,7 +72,7 @@
                     
                     <div class="col-md-8 mt-2">
                     @foreach ($teacher_roles as $roles)
-                        <input class="form-check-input" type="checkbox" value="" id="flexCheckChecked" checked style="pointer-events: none;">
+                        <input class="form-check-input" type="checkbox" value="" id="flexCheckChecked" checked disabled>
                         <label class="form-check-label" for="flexCheckChecked">{{ $roles->name }}</label>
                     @endforeach
                     </div>
@@ -92,11 +94,8 @@
                         {{ __('Update Teacher Role') }}
                     </h4>
                 </header>
-                <form action="" method="post">
+                <form action="{{ route('update.teacher_role', ['id' => $teacher->id]) }}" method="post">
                     @csrf
-                    @method('')
-
-                    <input type="hidden" name="user_id" value="{{ $teacher->id }}">
 
                     <div class="row">
                         <div class="col-8">
