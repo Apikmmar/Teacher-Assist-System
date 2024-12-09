@@ -93,5 +93,45 @@
                 @endif
             </div>
         </div>
+        <hr>
+        <div class="mt-2">
+            <header>
+                <h4 class="text-lg font-medium text-gray-900">Elective Subject To Insert Marks</h4>
+            </header>
+            <div>
+                
+            @if ($subjectStudentElective)
+                <table class="table table-hover" style="max-width: 750px">
+                    <thead>
+                        <tr>
+                            <th scope="col">No</th>
+                            <th scope="col">Subject Name</th>
+                            <th scope="col">Student's Name</th>
+                            <th scope="col" class="text-center">Mark</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        @foreach ($subjectStudentElective as $index => $subject)
+                            <tr class="align-middle teacher-list">
+                                <td>{{ $index + 1 }}</td>
+                                <td>{{ $subject['subjectTeach'] }}</td>
+                                <td>{{ $subject['studentName'] }}</td>
+                                <td>
+
+                                    @if ($subject['stdMarkAvailability'] == 'No Grade')
+                                        <a href="" class="btn btn-primary tr-button">Add Mark</a>
+                                    @elseif (($subject['stdMarkAvailability'] == 'No Grade'))
+                                        <a href="" class="btn btn-warning tr-button">Update Mark</a>
+                                    @endif
+
+                                </td>
+                            </tr>
+                        @endforeach
+                    </tbody>
+                </table>
+            @endif
+
+            </div>
+        </div>
     </div>
 @endsection
