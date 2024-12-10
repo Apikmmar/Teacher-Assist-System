@@ -180,6 +180,23 @@ class ExaminationController extends Controller
         ]);
     }
 
+    public function viewEditElectiveSubjectStudenntMark($std_id, $subject_id, $exam_id): View {
+        $student = Student::findOrFail($std_id);
+        $subject = Subject::findOrFail($subject_id);
+        $exam = Examination::findOrFail($exam_id);
+        $grades = Examination_Grade::where('form_id', $subject->form->id)->get();
+
+        $current_mark = Student_Grade::where('student_id', $student->id)->where('subject_id', $subject->id)->where('examination_id', $exam->id)->first();
+
+        return view('manageExamGrade.edit_student_elective_mark', [
+            'student' => $student,
+            'subject' => $subject,
+            'exam' => $exam,
+            'grades' => $grades,
+            'current_mark' => $current_mark,
+        ]);
+    }
+
     public function addNewExamination(AddExaminationRequest $request): RedirectResponse {
         $request->validated();
 
@@ -414,11 +431,34 @@ class ExaminationController extends Controller
             'student_id' => ['required', 'exists:students,id'],
             'mark' => ['required', 'numeric', 'min:0', 'max:100'],
             'grade' => ['required', 'string'],
-            'grade_value' => ['required', 'number'],
+            'grade_value' => ['required', 'numeric'],
             'feedback' => ['nullable', 'string:100'],
         ]);
 
-        return redirect()->route('view_classexam', ['id' => $exam->id])->with('blue-message', 'Class ' . $class->name . ' Examination Marks Is Saved!');
+        $exam = Examination::findOrFail($request->exam_id);
+        $student = Student::findOrFail($request->student_id);
+        $subject = Subject::findOrFail($request->subject_id);
+
+        if ($request->mark < 40) {
+            $is_passed = 'failed';
+        } else {
+            $is_passed = 'passed';
+        }
+
+        Student_Grade::create([
+            'examination_id' => $exam->id,
+            'subject_id' => $subject->id,
+            'student_id' => $student->id,
+            'grade' => $request->grade,
+            'marks' => $request->mark,
+            'grade_value' => $request->grade_value,
+            'is_passed' => $is_passed,
+            'feedback' => $request->feedback,
+            'created_at' => now(),
+            'updated_at' => now(),
+        ]);
+
+        return redirect()->route('view_classexam', ['id' => $exam->id])->with('blue-message', 'Elective Mark For ' . $student->name . ' Successfully Inserted!');
     }
 
     private function convertExamDate($examinations) {

@@ -1,4 +1,4 @@
-@extends('layouts.app', ['title' => 'Student Examination Mark For Elective Subject'])
+@extends('layouts.app', ['title' => 'Edit Student Examination Mark For Elective Subject'])
 
 @section('content')
     <div class="container fade-in-text py-4">
@@ -34,7 +34,7 @@
         <hr>
         <div class="d-flex justify-content-center min-vh-100">
             <div class="card shadow p-4" style="max-width: 800px; width: 100%; max-height:480px">
-                <form action="{{ route('create.elective_mark') }}" method="POST">
+                <form action="" method="POST">
                     @csrf
                     
                     <input type="hidden" name="exam_id" value="{{ $exam->id }}">
@@ -58,7 +58,7 @@
                     <div class="mb-3 row">
                         <label for="mark" class="col-md-4 col-form-label text-end fw-bold">{{ __('Marks') }}</label>
                         <div class="col-md-8">
-                            <input id="mark" type="number" name="mark" class="form-control" placeholder="Enter Marks" min="0" max="100" required>
+                            <input id="mark" type="number" name="mark" class="form-control" placeholder="Enter Marks" value="{{ $current_mark->marks }}" min="0" max="100" required>
                         </div>
                     </div>
         
@@ -68,7 +68,9 @@
                             <select id="grade" name="grade" class="form-select" required>
                                 <option value="" disabled selected>Select Grade</option>
                                 @foreach($grades as $grade)
-                                    <option value="{{ $grade->grade }}">{{ $grade->grade }}</option>
+                                    <option value="{{ $grade->grade }}" {{ $grade->grade == $current_mark->grade ? 'selected' : '' }}>
+                                        {{ $grade->grade }}
+                                    </option>
                                 @endforeach
                             </select>
                         </div>
@@ -80,7 +82,9 @@
                             <select id="grade" name="grade_value" class="form-select" required>
                                 <option value="" disabled selected>Select Pointer</option>
                                 @foreach($grades as $grade)
-                                    <option value="{{ $grade->grade_value }}">{{ $grade->grade_value }}</option>
+                                    <option value="{{ $grade->grade_value }}" {{ $grade->grade_value == $current_mark->grade_value ? 'selected' : '' }}>
+                                        {{ $grade->grade_value }}
+                                    </option>
                                 @endforeach
                             </select>
                         </div>
@@ -89,7 +93,7 @@
                     <div class="mb-3 row">
                         <label for="feedback" class="col-md-4 col-form-label text-end fw-bold">{{ __('Feedback') }}</label>
                         <div class="col-md-8">
-                            <textarea id="feedback" name="feedback" class="form-control" placeholder="Enter Feedback" rows="3"></textarea>
+                            <textarea id="feedback" name="feedback" class="form-control" placeholder="Enter Feedback" value="" rows="3">{{ $current_mark->feedback }}</textarea>
                         </div>
                     </div>
         

@@ -9,6 +9,7 @@ use App\Http\Controllers\ProfileController;
 use App\Http\Controllers\ReportController;
 use App\Http\Controllers\StudentsController;
 use App\Http\Controllers\SubjectController;
+use App\Models\Examination;
 use Illuminate\Support\Facades\Route;
 
 Route::get('/', function () {
@@ -86,12 +87,14 @@ Route::middleware('auth')->group(function () {
     Route::get('/students_exam_mark/class={class_id}&subject={subject_id}&exam={exam_id}', [ExaminationController::class, 'viewClassroomExamMark'])->name('students_exam_mark');
     Route::get('/registered_exam_marks/class={class_id}&subject={subject_id}&exam={exam_id}', [ExaminationController::class, 'viewRegisteredExamMark'])->name('registered_exam_marks');
     Route::get('/elective_subject_mark/student={std_id}&subject={subject_id}&exam={exam_id}', [ExaminationController::class, 'viewElectiveSubjectStudenntMark'])->name('elective_subject_mark');
+    Route::get('/elective_subject_mark/edit/student={std_id}&subject={subject_id}&exam={exam_id}', [ExaminationController::class, 'viewEditElectiveSubjectStudenntMark'])->name('edit_elective_subject_mark');
     Route::post('/add_examination/create', [ExaminationController::class, 'addNewExamination'])->name('create.add_examination');
     Route::patch('/examination_details/update/{id}', [ExaminationController::class, 'updateExaminationDetails'])->name('update.view_examination');
     Route::delete('/examination_details/delete/{id}', [ExaminationController::class, 'deleteExamination'])->name('delete.view_examination');
     Route::put('/examination_details/release/{id}', [ExaminationController::class, 'releaseExamination'])->name('update_release.view_examination');
     Route::post('/add_student_exam_mark/create', [ExaminationController::class, 'addStudentExamMark'])->name('add_exam_mark.create');
     Route::patch('/update_student_exam_mark/update', [ExaminationController::class, 'updateStudentsExamMarks'])->name('update_exam_mark.update');
+    Route::post('/add_elective_mark/create', [ExaminationController::class, 'addStudentElectiveSubjectMark'])->name('create.elective_mark');
     
     Route::get('/exam_feedback/class={class_id}&subject={subject_id}&exam={exam_id}', [FeedbackController::class, 'viewClassroomFeedback'])->name('exam_mark_feedbacks');
     Route::get('/examination={id}/my-class-feed', [FeedbackController::class, 'viewMyClassFeed'])->name('myclass_exam-feed');
