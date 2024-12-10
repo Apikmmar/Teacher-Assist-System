@@ -46,6 +46,7 @@ class FeedbackController extends Controller
         ]);
     }
 
+    // class and form position not conclude yet
     public function viewStudentPerformanceFeedback($examID, $stdID) {
         $student = Student::findOrFail($stdID);
         $examination = Examination::findOrFail($examID);
@@ -60,6 +61,55 @@ class FeedbackController extends Controller
         $student->dob = Carbon::parse($student->dob)->format('j F Y');
         $examination->start_date = Carbon::parse($examination->start_date)->format('j F Y');
         $examination->end_date = Carbon::parse($examination->end_date)->format('j F Y');
+
+        $stdResult->each(function ($grade) {
+            $grade->subName = $grade->subject ? $grade->subject->name : 'N/A';
+        });
+
+        $stdResult->each(function ($grade) {
+            $grade->subName = $grade->subject ? $grade->subject->name : 'N/A';
+        });
+
+        $students = $class->students;
+        $placeInClass = NULL;
+
+        $classReports = Student_Examination_Report::where('examination_id', $examination->id)->whereIn('student_id', $students->pluck('id'))
+                                                ->orderBy('is_passed', 'asc')->orderBy('pointer', 'desc')->orderBy('average_mark', 'desc')
+                                                ->get();
+
+
+        $indexClass = $classReports->search(function ($classReport) use ($stdReport) {
+            return $classReport->id == $stdReport->id;
+        });
+
+        if ($indexClass !== false) {
+            $placeInClass = $indexClass + 1;
+        }
+
+        $form = $class->form;
+        $classForm = $form->classrooms;
+        $totalStudentInForm = NULL;
+        $placeInForms = NULL;
+
+        $classrooms = Classroom::whereIn('id', $classForm->pluck('id'))->with('students')->get();
+
+        foreach ($classrooms as $classroom) {
+            $students = $students->merge($classroom->students);
+            $totalStudentInForm += $classroom->students->count();
+        }
+
+        $studentIds = $students->pluck('id');
+        $formReports = Student_Examination_Report::where('examination_id', $examination->id)->whereIn('student_id', $studentIds)
+                        ->orderBy('is_passed', 'asc')->orderBy('pointer', 'desc')->orderBy('average_mark', 'desc')
+                        ->get();
+
+        $indexForm = $formReports->search(function ($classReport) use ($stdReport) {
+            return $classReport->id == $stdReport->id;
+        });
+
+        if ($indexForm !== false) {
+            $placeInForms = $indexForm + 1;
+        }
         
         return view('manageExamFeedback.student_performance_feedback', [
             'student' => $student,
@@ -67,6 +117,10 @@ class FeedbackController extends Controller
             'class' => $class,
             'stdResult' => $stdResult,
             'stdReport' => $stdReport,
+            'placeInClass' => $placeInClass,
+            'totalStudentInClass' => $class->students->count(),
+            'totalStudentInForm' => $totalStudentInForm,
+            'placeInForms' => $placeInForms,
         ]);
     }
 

@@ -62,6 +62,7 @@
                         <th scope="col">Result</th>
                         <th scope="col">Pointer</th>
                         <th scope="col">Status</th>
+                        <th scope="col">View</th>
                     </tr>
                 </thead>
                 <tbody>
@@ -76,6 +77,9 @@
                         <td>{{ $studentGrade->pointer }}</td>
                         <td class="text-uppercase {{ $studentGrade->is_passed === 'passed' ? 'text-success' : 'text-danger' }}">
                             {{ $studentGrade->is_passed }}
+                        </td>
+                        <td>
+                            <a href="{{ route('performance_report', ['examReport' => $examination->id,'stdID' => $studentGrade->student->id]) }}" class="btn btn-primary ">View</a>
                         </td>
                     </tr>
                 @endforeach

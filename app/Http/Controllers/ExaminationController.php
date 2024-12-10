@@ -12,6 +12,7 @@ use App\Models\Student;
 use App\Models\Student_Examination_Report;
 use App\Models\Student_Grade;
 use App\Models\Subject;
+use App\Models\Subject_Taken;
 use Carbon\Carbon;
 use Illuminate\Http\Request;
 use Illuminate\Contracts\View\View;
@@ -19,6 +20,7 @@ use Illuminate\Http\RedirectResponse;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Redirect;
 use Illuminate\Support\Facades\Validator;
+use Maatwebsite\Excel\Facades\Excel;
 use PhpParser\Node\Stmt\Return_;
 
 class ExaminationController extends Controller
@@ -69,13 +71,14 @@ class ExaminationController extends Controller
         $examination->release_date = Carbon::parse($examination->release_date)->format('j F Y');
     
         $subjectClass = [];
+        $subjectStudentElective = [];
     
         foreach ($user->subjects as $subs) {
             $subjectID = $subs->id;
             $subjectTeach = $subs->name;
             $subjectForm = $subs->form->name;
     
-            $teachesClass = $user->subjecttaken->where('subject_id', $subs->id);
+            $teachesClass = $user->subjecttaken->where('subject_id', $subs->id)->where('student_id', NULL);
             $classes = [];
     
             foreach ($teachesClass as $classT) {
@@ -99,16 +102,36 @@ class ExaminationController extends Controller
                 'subjectForm' => $subjectForm,
                 'classes' => $classes,
             ];
-        }
+
+            $teachesStudent = $user->subjecttaken->where('subject_id', $subs->id)->where('classroom_id', NULL);
+
+            if ($teachesStudent != NULL) {
+                foreach ($teachesStudent as $subElect) {
+                    $student = Student::findOrFail($subElect->student_id);
+                    $studentGrades = Student_Grade::where('examination_id', $examination->id)->where('subject_id', $subjectID)->where('student_id', $student->id)->get();
+
+                    if ($studentGrades) {
+                        $stdMarkAvailability = $studentGrades->isNotEmpty() ? 'Has Grade' : 'No Grade';
     
+                        $subjectStudentElective[] = [
+                            'studentName' => $student->name,
+                            'studentID' => $student->id,
+                            'subjectTeach' => $subjectTeach,
+                            'stdMarkAvailability' => $stdMarkAvailability,
+                        ];
+                    }
+                }
+            }
+        }
+
         usort($subjectClass, function ($a, $b) {
             return strcmp($a['subjectForm'], $b['subjectForm']);
         });
-    
-        return view('manageExamGrade.class_examination', compact('examination', 'subjectClass'));
+
+        return view('manageExamGrade.class_examination', compact('examination', 'subjectClass', 'subjectStudentElective'));
     }
 
-    public function viewClassroomExamMark($class_id, $subject_id, $exam_id): View {
+    public function viewClassroomExamMark(Request $request, $class_id, $subject_id, $exam_id): View {
         $class = Classroom::findOrFail($class_id);
         $subject = Subject::findOrFail($subject_id);
         $exam = Examination::findOrFail($exam_id);

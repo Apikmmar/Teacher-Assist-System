@@ -84,7 +84,7 @@
                 @foreach ($stdResult as $index => $result)
                     <tr>
                         <th scope="row">{{ 1 + $index }}</th>
-                        <td style="width: 75%">{{ $result->subject->name }}</td>
+                        <td style="width: 75%">{{ $result->subName }}</td>
                         <td>{{ $result->marks }}</td>
                         <td>{{ $result->grade }}</td>
                         <td class="text-uppercase {{ $result->is_passed === 'passed' ? 'text-success' : 'text-danger' }}">{{ $result->is_passed }}</td>
@@ -101,13 +101,13 @@
                     <div class="form-group row">
                         <label class="col-5 col-form-label">Position In Class:</label>
                         <div class="col-6">
-                            <div class="form-control-plaintext">9/10</div>
+                            <div class="form-control-plaintext">{{ $placeInClass }} / {{ $totalStudentInClass }}</div>
                         </div>
                     </div>
                     <div class="form-group row">
                         <label class="col-5 col-form-label">Position In Form:</label>
                         <div class="col-6">
-                            <div class="form-control-plaintext">18/20</div>
+                            <div class="form-control-plaintext">{{ $placeInForms }} / {{ $totalStudentInForm }}</div>
                         </div>
                     </div>
                 </div>

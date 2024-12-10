@@ -30,6 +30,8 @@ Route::middleware('auth')->group(function () {
     Route::get('/teacher_details/{id}', [AccountController::class, 'viewTeacherDetails'])->name('view_teacher');
     Route::post('/register', [RegisteredUserController::class, 'store'])->name('register.create');
     Route::delete('/delete_teacher/{id}', [AccountController::class, 'destroyTeacher'])->name('delete.teacher');
+    Route::post('/import-csv/teachers', [AccountController::class, 'importUser'])->name('import.teacher');
+    Route::post('/teacher_details/{id}/update_role', [AccountController::class, 'updateRoles'])->name('update.teacher_role');
 
     Route::get('/all_student', [StudentsController::class, 'viewAllStudent'])->name('all_student');
     Route::get('/all_student/search', [StudentsController::class, 'searchStudentName'])->name('search_student');
@@ -42,6 +44,7 @@ Route::middleware('auth')->group(function () {
     Route::delete('/delete_student/{id}', [StudentsController::class, 'deleteStudent'])->name('delete_student.delete');
     Route::post('/view_student/{id}/transition', [StudentsController::class, 'addStudentTranstion'])->name('transition_student.create');
     Route::put('/edit_student/{id}/update', [StudentsController::class, 'updateStudentInfo'])->name('edit_student.update');
+    Route::post('/import-csv/students', [StudentsController::class, 'importStudents'])->name('import.student');
     
     Route::get('/all_classroom', [ClassroomController::class, 'viewAllClassroom'])->name('all_classroom');
     Route::get('/all_classroom/search', [ClassroomController::class, 'searchClassroomName'])->name('search_classroom');
@@ -53,6 +56,8 @@ Route::middleware('auth')->group(function () {
     Route::patch('/update_info/{id}', [ClassroomController::class, 'updateClassroomInfo'])->name('update_classroom.update');
     Route::delete('/delete_classrooom/{id}', [ClassroomController::class, 'deleteClassroom'])->name('delete_classroom.delete');
     Route::patch('/edit_classroom/remove_student/{id}', [ClassroomController::class, 'removeStudentClass'])->name('decrease_student.update');
+    Route::post('/import-csv/classrooms', [ClassroomController::class, 'importClassroom'])->name('import.classroom');
+
     
     Route::get('/all_subject', [SubjectController::class, 'viewAllSubject'])->name('all_subjects');
     Route::get('/new_subject', [SubjectController::class, 'viewAddNewSubject'])->name('new_subject');

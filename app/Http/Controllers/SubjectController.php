@@ -48,12 +48,12 @@ class SubjectController extends Controller
 
     public function viewEditSubject($id): View {
         $subject = Subject::findOrFail($id);
-        $teachers = $subject->teachers;
+        $teachers = $subject->teachers->sortBy('name');
 
         $teachers = $this->convertTeacherNameFormat($subject->teachers);
 
         $assignedTeacherIds = $teachers->pluck('id')->toArray();
-        $newTeachers = User::whereNotIn('id', $assignedTeacherIds)->get();
+        $newTeachers = User::whereNotIn('id', $assignedTeacherIds)->orderBy('name', 'asc')->get();
 
         $newTeachers = $this->convertTeacherNameFormat($newTeachers);
 
@@ -103,7 +103,6 @@ class SubjectController extends Controller
             }
         }
     
-
         $subjectsTakenIds = $subjectsTaken->pluck('subject_id')->toArray();
         $subjectsNotTaken = $allSubjects->whereNotIn('id', $subjectsTakenIds)->where('form_id', $class->form_id);
 
@@ -257,6 +256,7 @@ class SubjectController extends Controller
         return redirect()->route('class_subject', ['id' => $id])->with('blue-message', 'Subject Successfuly Add To Class');
     }
 
+    // wefrg
     public function changeSubjectTeacher(Request $request): RedirectResponse {
 
         $request->validate([

@@ -86,7 +86,7 @@
                             <td>{{ $examResult->student->name }}</td>
                             <td>{{ $examResult->student->classroom->name }}</td>
                             <td>{{ $examResult->marks }} ({{ $examResult->grade }})</td>
-                            <td class="text-uppercase">{{ $examResult->is_passed }}</td>
+                            <td class="text-uppercase  {{ $examResult->is_passed === 'passed' ? 'text-success' : 'text-danger' }}">{{ $examResult->is_passed }}</td>
                         </tr>
                     @endforeach
                 </tbody>
