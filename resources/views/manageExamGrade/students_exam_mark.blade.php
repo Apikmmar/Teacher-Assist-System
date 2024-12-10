@@ -104,7 +104,7 @@
             <div class="text-center mt-2">
                 <button type="submit" class="btn btn-primary tr-button">Add Mark</button>
                 &nbsp;&nbsp;&nbsp;
-                <button type="reset" class="btn btn-danger tr-button">Reset</button>
+                <button type="reset" class="btn btn-outline-danger tr-button">Reset</button>
             </div>
         </form>
     </div>

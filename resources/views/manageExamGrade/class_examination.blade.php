@@ -119,7 +119,7 @@
                                 <td>
 
                                     @if ($subject['stdMarkAvailability'] == 'No Grade')
-                                        <a href="" class="btn btn-primary tr-button">Add Mark</a>
+                                        <a href="{{ route('elective_subject_mark', ['std_id' => $subject['studentID'], 'subject_id' => $subject['subjectID'], 'exam_id' => $examination->id]) }}" class="btn btn-primary tr-button">Add Mark</a>
                                     @elseif (($subject['stdMarkAvailability'] == 'No Grade'))
                                         <a href="" class="btn btn-warning tr-button">Update Mark</a>
                                     @endif

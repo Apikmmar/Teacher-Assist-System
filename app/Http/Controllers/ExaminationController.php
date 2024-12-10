@@ -117,6 +117,7 @@ class ExaminationController extends Controller
                             'studentName' => $student->name,
                             'studentID' => $student->id,
                             'subjectTeach' => $subjectTeach,
+                            'subjectID' => $subjectID,
                             'stdMarkAvailability' => $stdMarkAvailability,
                         ];
                     }
@@ -131,7 +132,7 @@ class ExaminationController extends Controller
         return view('manageExamGrade.class_examination', compact('examination', 'subjectClass', 'subjectStudentElective'));
     }
 
-    public function viewClassroomExamMark(Request $request, $class_id, $subject_id, $exam_id): View {
+    public function viewClassroomExamMark($class_id, $subject_id, $exam_id): View {
         $class = Classroom::findOrFail($class_id);
         $subject = Subject::findOrFail($subject_id);
         $exam = Examination::findOrFail($exam_id);
@@ -162,6 +163,20 @@ class ExaminationController extends Controller
             'students' => $students,
             'grades' => $grades,
             'studentGrades' => $studentGrades,
+        ]);
+    }
+
+    public function viewElectiveSubjectStudenntMark($std_id, $subject_id, $exam_id): View {
+        $student = Student::findOrFail($std_id);
+        $subject = Subject::findOrFail($subject_id);
+        $exam = Examination::findOrFail($exam_id);
+        $grades = Examination_Grade::where('form_id', $subject->form->id)->get();
+
+        return view('manageExamGrade.elective_subject_student_mark', [
+            'student' => $student,
+            'subject' => $subject,
+            'exam' => $exam,
+            'grades' => $grades,
         ]);
     }
 
@@ -390,6 +405,20 @@ class ExaminationController extends Controller
         
         $class = Classroom::findOrFail($request->class_id);
         return redirect()->route('registered_exam_marks', ['class_id' => $class->id, 'subject_id' => $subject->id, 'exam_id' => $exam->id])->with('blue-message', 'Class ' . $class->name . ' Examination Marks Is Updated!');
+    }
+
+    public function addStudentElectiveSubjectMark(Request $request): RedirectResponse {
+        $request->validate([
+            'exam_id' => ['required', 'exists:examinations,id'],
+            'subject_id' => ['required', 'exists:subjects,id'],
+            'student_id' => ['required', 'exists:students,id'],
+            'mark' => ['required', 'numeric', 'min:0', 'max:100'],
+            'grade' => ['required', 'string'],
+            'grade_value' => ['required', 'number'],
+            'feedback' => ['nullable', 'string:100'],
+        ]);
+
+        return redirect()->route('view_classexam', ['id' => $exam->id])->with('blue-message', 'Class ' . $class->name . ' Examination Marks Is Saved!');
     }
 
     private function convertExamDate($examinations) {
