@@ -3,12 +3,14 @@
 namespace App\Http\Controllers;
 
 use App\Models\Classroom;
+use App\Models\Role;
 use App\Models\User;
 use Illuminate\Contracts\View\View;
 use Illuminate\Http\RedirectResponse;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Hash;
+use Illuminate\Support\Facades\Redirect;
 use Illuminate\Support\Facades\Validator;
 use Illuminate\Support\Str;
 
@@ -49,6 +51,8 @@ class AccountController extends Controller
 
     public function viewTeacherDetails($id): View {
         $teacher = User::findOrFail($id);
+        $allRoles = Role::all();
+        $teacher_roles = $teacher->roles;
 
         $teacher->name = Str::title($teacher->name);
 
@@ -61,7 +65,7 @@ class AccountController extends Controller
 
         $subClassTeacher = $this->getTeachesSubjectClass($teacher);
 
-        return view('manageAccount.teacher_details', compact('teacher', 'age', 'subClassTeacher'));
+        return view('manageAccount.teacher_details', compact('teacher', 'age', 'subClassTeacher', 'teacher_roles', 'allRoles'));
     }
 
     public function destroyTeacher($id): RedirectResponse {        
@@ -78,6 +82,75 @@ class AccountController extends Controller
         $user->delete();
 
         return redirect()->route('all_teacher')->with('red-message', 'Successfully Delete Teacher');
+    }
+
+    public function updateRoles(Request $request, $id): RedirectResponse {
+        $request->validate([
+            'roles' => ['array', 'min:1'],
+        ]);
+
+        $newRoleIDs = $request->input('roles');
+
+        $user = User::findOrFail($id);
+
+        $user->roles()->sync($newRoleIDs);
+
+        return redirect()->route('view_teacher', ['id' => $user->id])->with('blue-message', 'Successfully Update Role');
+    }
+
+    public function importUser(Request $request): RedirectResponse {
+        $request->validate([
+            'import_csv' => 'required|mimes:csv',
+        ]);
+
+        $file = $request->file('import_csv');
+        $handle = fopen($file->path(), 'r');
+
+        fgetcsv($handle);
+
+        $chunksize = 25;
+
+        while(!feof($handle)) {
+            $chunkdata = [];
+
+            for ($i=0; $i < $chunksize; $i++) { 
+                $data = fgetcsv($handle);
+
+                if ($data === false) {
+                    break;
+                }
+                $chunkdata[] = $data;
+            }
+
+            foreach($chunkdata as $column) {
+                $teacher_id = $column[0];
+                $name = $column[1];
+                $ic = $column[2];
+                $gender = $column[3];
+                $contact = $column[4];
+                $email = $column[5];
+
+                if (strlen($ic) !== 12 || !ctype_digit($ic)) {
+                    return redirect()->route('all_student')->with('red-message', 'IC Number Must Be 12 Digit!');
+                }
+
+                $teacher = new User();
+                $teacher->teacher_id = $teacher_id;
+                $teacher->name = $name;
+                $teacher->ic = $ic;
+                $teacher->gender = $gender;
+                $teacher->contact = $contact;
+                $teacher->email = $email;
+                $teacher->password = Hash::make($ic);
+                $teacher->verification = NULL;
+                $teacher->photo = NULL;
+
+                $teacher->save();
+            }
+        }
+        fclose($handle);
+
+        return redirect()->route('all_teacher')->with('blue-message', 'Successfully Import New Teacher Data!');
     }
 
     private function getTeachesSubjectClass($user) {
@@ -112,55 +185,5 @@ class AccountController extends Controller
         });
 
         return $subClassTeacher;
-    }
-
-    public function importUser(Request $request) {
-        $request->validate([
-            'import_csv' => 'required|mimes:csv',
-        ]);
-
-        $file = $request->file('import_csv');
-        $handle = fopen($file->path(), 'r');
-
-        fgetcsv($handle);
-
-        $chunksize = 25;
-
-        while(!feof($handle)) {
-            $chunkdata = [];
-
-            for ($i=0; $i < $chunksize; $i++) { 
-                $data = fgetcsv($handle);
-
-                if ($data === false) {
-                    break;
-                }
-                $chunkdata[] = $data;
-            }
-
-            foreach($chunkdata as $column) {
-                $teacher_id = $column[0];
-                $name = $column[1];
-                $ic = $column[2];
-                $gender = $column[3];
-                $contact = $column[4];
-                $email = $column[5];
-
-                $teacher = new User();
-                $teacher->teacher_id = $teacher_id;
-                $teacher->name = $name;
-                $teacher->ic = $ic;
-                $teacher->gender = $gender;
-                $teacher->contact = $contact;
-                $teacher->email = $email;
-                $teacher->password = Hash::make($ic);
-                $teacher->verification = NULL;
-                $teacher->photo = NULL;
-
-                $teacher->save();
-            }
-        }
-
-        return redirect()->route('all_teacher')->with('blue-message', 'Successfully Import New Teacher Data!');
     }
 }

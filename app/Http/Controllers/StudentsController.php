@@ -10,6 +10,7 @@ use App\Models\Student;
 use App\Models\Subject_Taken;
 use App\Models\Transition;
 use Carbon\Carbon;
+use DateTime;
 use Illuminate\Http\RedirectResponse;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Validator;
@@ -262,6 +263,66 @@ class StudentsController extends Controller
         }
 
         return redirect()->route('view_student', ['id' => $id])->with('red-message', 'Student Drop From School');
+    }
+
+    public function importStudents(Request $request): RedirectResponse {
+        $request->validate([
+            'import_csv' => ['required' , 'mimes:csv'],
+        ]);
+
+        $file = $request->file('import_csv');
+        $handle = fopen($file->path(), 'r');
+
+        fgetcsv($handle);
+
+        $chunksize = 25;
+
+        while (!feof($handle)) {
+            $chunkdata = [];
+
+            for ($i=0; $i < $chunksize; $i++) { 
+                $data = fgetcsv($handle);
+
+                if ($data === false) {
+                    break;
+                }
+                $chunkdata[] = $data;
+            }
+
+            foreach ($chunkdata as $column) {
+                $name = $column[0];
+                $ic_number = $column[1];
+                $gender = $column[2];
+                $dob = $column[3];
+                $jsd = $column[4];
+
+                if (strlen($ic_number) !== 12 || !ctype_digit($ic_number)) {
+                    return redirect()->route('all_student')->with('red-message', 'IC Number Must Be 12 Digit!');
+                }
+                
+                $dob = DateTime::createFromFormat('d/m/Y', $dob)?->format('Y-m-d');
+                $jsd = DateTime::createFromFormat('d/m/Y', $jsd)?->format('Y-m-d');
+
+                if (!$dob || !$jsd) {
+                    continue;
+                }
+
+                $student = new Student();
+                $student->classroom_id = NULL;
+                $student->student_id = 'ST'.rand(1111, 9999);
+                $student->name = $name;
+                $student->ic = $ic_number;
+                $student->gender = $gender;
+                $student->dob = $dob;
+                $student->join_school_date = $jsd;
+                $student->status = 'Active';
+                $student->save();
+                
+            }
+        }
+        fclose($handle);
+
+        return redirect()->route('all_student')->with('blue-message', 'Successfully Import New Students Data!');
     }
 
     private function calculateAge($ic) {

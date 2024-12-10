@@ -64,7 +64,7 @@ class ProfileController extends Controller
             $subjectTeach = $subs->name;
             $subjectForm = $subs->form->name;
 
-            $takenSubjects = $user->subjecttaken->where('subject_id', $subs->id);
+            $takenSubjects = $user->subjecttaken->where('subject_id', $subs->id)->where('student_id', NULL);
 
             $classNames = [];
 

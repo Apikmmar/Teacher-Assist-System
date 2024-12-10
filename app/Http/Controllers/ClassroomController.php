@@ -13,6 +13,7 @@ use Illuminate\Http\RedirectResponse;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\DB;
+use Illuminate\Support\Facades\Redirect;
 use Illuminate\Support\Facades\Validator;
 use Illuminate\View\View;
 use Illuminate\Support\Str;
@@ -170,7 +171,6 @@ class ClassroomController extends Controller
         return redirect()->route('all_classroom')->with('red-message', 'Classroom Is Deleted');
     }
 
-    
     public function removeStudentClass($id): RedirectResponse {
         $std = Student::findOrFail($id);
 
@@ -187,6 +187,58 @@ class ClassroomController extends Controller
         }
 
         return redirect()->route('edit_classroom', ['id' => $class1])->with('red-message', 'Student '. $name . ' Is Removed From Class ' . $classroom->name);
+    }
+
+    public function importClassroom(Request $request): RedirectResponse {
+        $request->validate([
+            'import_csv' => 'required|mimes:csv',
+        ]);
+
+        $file = $request->file('import_csv');
+        $handle = fopen($file->path(), 'r');
+
+        fgetcsv($handle);
+
+        $chunksize = 25;
+
+        while(!feof($handle)) {
+            $chunkdata = [];
+
+            for ($i=0; $i < $chunksize; $i++) { 
+                $data = fgetcsv($handle);
+
+                if ($data === false) {
+                    break;
+                }
+                $chunkdata[] = $data;
+            }
+
+            foreach($chunkdata as $column) {
+                $name = $column[0];
+                $form = $column[1];
+                $teacher = $column[2];
+                $session = $column[3];
+
+                if(empty($teacher)) {
+                    $ct_id = NULL;
+                } else {
+                    $class_teacher = User::where('name', 'LIKE', '%' . $teacher . '%')->first();
+                    $ct_id = $class_teacher ? $class_teacher->id : null;
+                }
+
+                $class = new Classroom();
+                $class->form_id = $form;
+                $class->classteacher_id = $ct_id;
+                $class->name = $name;
+                $class->num_student = 0;
+                $class->session = $session;
+
+                $class->save();
+            }
+        }
+        fclose($handle);
+
+        return redirect()->route('all_classroom')->with('blue-message', 'Successfully Import New Classroom Data!');
     }
 
     private function getClassroomData($id) {
