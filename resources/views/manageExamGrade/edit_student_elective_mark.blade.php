@@ -34,8 +34,9 @@
         <hr>
         <div class="d-flex justify-content-center min-vh-100">
             <div class="card shadow p-4" style="max-width: 800px; width: 100%; max-height:480px">
-                <form action="" method="POST">
+                <form action="{{ route('update.elective_mark', ['current_markID' => $current_mark->id]) }}" method="POST">
                     @csrf
+                    @method('PATCH')
                     
                     <input type="hidden" name="exam_id" value="{{ $exam->id }}">
                     <input type="hidden" name="subject_id" value="{{ $subject->id }}">

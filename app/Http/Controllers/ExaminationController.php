@@ -461,6 +461,44 @@ class ExaminationController extends Controller
         return redirect()->route('view_classexam', ['id' => $exam->id])->with('blue-message', 'Elective Mark For ' . $student->name . ' Successfully Inserted!');
     }
 
+    public function updateStudentElectiveSubjectMark(Request $request, $current_markID): RedirectResponse {
+        $request->validate([
+            'exam_id' => ['required', 'exists:examinations,id'],
+            'subject_id' => ['required', 'exists:subjects,id'],
+            'student_id' => ['required', 'exists:students,id'],
+            'mark' => ['required', 'numeric', 'min:0', 'max:100'],
+            'grade' => ['required', 'string'],
+            'grade_value' => ['required', 'numeric'],
+            'feedback' => ['nullable', 'string:100'],
+        ]);
+
+        $exam = Examination::findOrFail($request->exam_id);
+        $student = Student::findOrFail($request->student_id);
+        $subject = Subject::findOrFail($request->subject_id);
+
+        if ($request->mark < 40) {
+            $is_passed = 'failed';
+        } else {
+            $is_passed = 'passed';
+        }
+
+        $newData = [
+            'examination_id' => $exam->id,
+            'subject_id' => $subject->id,
+            'student_id' => $student->id,
+            'grade' => $request->grade,
+            'marks' => $request->mark,
+            'grade_value' => $request->grade_value,
+            'is_passed' => $is_passed,
+            'feedback' => $request->feedback,
+        ];
+
+        $current_mark = Student_Grade::findOrFail($current_markID);
+        $current_mark->update($newData);
+
+        return redirect()->route('edit_elective_subject_mark', ['std_id' => $student->id, 'subject_id' => $subject->id, 'exam_id' => $exam->id])->with('blue-message', 'Successfully Update New Data');
+    }
+
     private function convertExamDate($examinations) {
         $duration = [];
 
