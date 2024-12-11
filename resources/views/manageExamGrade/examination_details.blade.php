@@ -4,8 +4,7 @@
     <div class="container fade-in-text">
         @include('layouts.message')
         
-        
-        <div class="container fade-in-text">
+        <div>
         @can('coordinator')
             <form action="{{ route('update.view_examination', ['id' => $exam->id]) }}" method="post" enctype="multipart/form-data">
                 @csrf
@@ -110,36 +109,90 @@
             </form>
         @endcan
                     
-                <hr>
-                <div class="row mb-3">
-                    <label for="status" class="col-md-4 col-form-label text-md-end fw-bold">{{ __('Examination Status') }} <label class="red-aestrist">*</label></label>
+            <hr>
+            <div class="row mb-3">
+                <label for="status" class="col-md-4 col-form-label text-md-end fw-bold">{{ __('Examination Status') }} <label class="red-aestrist">*</label></label>
+                
+                <div class="col-md-6">
+                    <input id="status" type="text" class="form-control @error('status') is-invalid @enderror" name="status" placeholder="Examination Status" required autocomplete="status" value="{{ $exam->status }}" disabled>
                     
-                    <div class="col-md-6">
-                        <input id="status" type="text" class="form-control @error('status') is-invalid @enderror" name="status" placeholder="Examination Status" required autocomplete="status" value="{{ $exam->status }}" disabled>
-                        
-                        @error('status')
-                        <span class="invalid-feedback" role="alert">
-                            <strong>{{ $message }}</strong>
-                        </span>
-                        @enderror
-                    </div>
-                @can('coordinator')
-                @if ($exam->status == 'Pending')
-                    <div class="col">
-                        <button data-bs-toggle="modal" data-bs-target="#confirmDelete{{ $exam->id }}" class="btn btn-danger tr-button">Release</button>
-
-                            @include('layouts.partials.modal', [
-                                'text' => 'Release Examination',
-                                'id' => $exam->id, 
-                                'name' => "Are you sure you want to release " . $exam->name . " marks?",
-                                'deleteRoute' => route('update_release.view_examination', ['id' => $exam->id]),
-                                'method' => 'PUT',
-                                'callItem' => 'Release'
-                            ])
-                    </div>
-                @endif
-                @endcan
+                    @error('status')
+                    <span class="invalid-feedback" role="alert">
+                        <strong>{{ $message }}</strong>
+                    </span>
+                    @enderror
                 </div>
+            @can('coordinator')
+            @if ($exam->status == 'Pending')
+                <div class="col">
+                    <button data-bs-toggle="modal" data-bs-target="#confirmDelete{{ $exam->id }}" class="btn btn-danger tr-button">Release</button>
+
+                        @include('layouts.partials.modal', [
+                            'text' => 'Release Examination',
+                            'id' => $exam->id, 
+                            'name' => "Are you sure you want to release " . $exam->name . " marks?",
+                            'deleteRoute' => route('update_release.view_examination', ['id' => $exam->id]),
+                            'method' => 'PUT',
+                            'callItem' => 'Release'
+                        ])
+                </div>
+            @endif
+            @endcan
+            </div>
         </div>
+
+    @can('coordinator')
+        <hr>
+        <div>
+            <header>
+                <h4 class="text-lg font-medium text-gray-900 dark:text-gray-100">
+                    {{ __('List of Class Finished Key In Marks') }}
+                </h4>
+            </header>
+            <div>
+                <table class="table table-hover">
+                    <thead>
+                        <tr>
+                            <th scope="col">No</th>
+                            <th scope="col">Class Name</th>
+                            <th scope="col">Form</th>
+                            <th scope="col">Subject Name</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+
+                        @foreach ($classMarkCollection as $index => $classMark)
+                            <tr class="align-middle teacher-list">
+                                <th scope="row">{{ 1 + $index }}</th>
+                                <td class="fw-bold">{{ $classMark['class_name'] }}</td>
+                                <td>{{ $classMark['class_form'] }}</td>
+                                <td>
+                                    <ul class="list-unstyled mb-0">
+
+                                        @foreach ($classMark['markCollection'] as $item)
+                                            <li>
+                                                <span>{{ $item['subject_name'] }}</span>
+                                                &nbsp;&nbsp;&nbsp;
+                                                <span class="badge 
+                                                @if($item['key_in_status'] === 'COMPLETE') bg-success 
+                                                @elseif($item['key_in_status'] === 'PENDING') bg-warning 
+                                                @else bg-secondary 
+                                                @endif">
+                                                    {{ $item['key_in_status'] }}
+                                                </span>
+                                            </li>
+                                        @endforeach
+
+                                    </ul>
+                                </td>
+                        @endforeach
+    
+                    </tbody>
+                </table>
+            </div>
+        </div>
+    @endcan
+
+    </div>
 
 @endsection

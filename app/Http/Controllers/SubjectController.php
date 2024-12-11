@@ -256,7 +256,6 @@ class SubjectController extends Controller
         return redirect()->route('class_subject', ['id' => $id])->with('blue-message', 'Subject Successfuly Add To Class');
     }
 
-    // wefrg
     public function changeSubjectTeacher(Request $request): RedirectResponse {
 
         $request->validate([

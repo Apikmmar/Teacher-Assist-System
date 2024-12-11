@@ -70,11 +70,25 @@ class ProfileController extends Controller
 
             foreach ($takenSubjects as $takenSubject) {
                 $class = Classroom::find($takenSubject->classroom_id);
-                $classNames[] = $class ? $class->name : 'No Class Teaches';
+                
+                if ($class) {
+                    $classNames[] = [
+                        'class_id' => $class->id,
+                        'class_name' => $class->name,
+                    ];
+                } else {
+                    $classNames[] = [
+                        'class_id' => null,
+                        'class_name' => 'No Class Teaches',
+                    ];
+                }
             }
 
             if (empty($classNames)) {
-                $classNames[] = 'No Class Teaches';
+                $classNames[] = [
+                    'class_id' => null,
+                    'class_name' => 'No Class Teaches',
+                ];
             }
 
             $subClassTeacher[] = [

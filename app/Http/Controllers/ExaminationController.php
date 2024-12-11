@@ -41,9 +41,40 @@ class ExaminationController extends Controller
     }
 
     public function viewExaminationDetails($id): View {
+        $exam = Examination::findOrFail($id);
+        $classrooms = Classroom::orderBy('form_id', 'asc')->get();
+
+        $classMarkCollection = [];
         
+        foreach ($classrooms as $classroom) {
+            $students = $classroom->students;
+            $totalStudent = $students->count();
+            $markCollection = [];
+
+            $subjects = Subject_Taken::where('classroom_id', $classroom->id)->get();
+
+            foreach ($subjects as $subject) {
+                $subs = Subject::findOrFail($subject->subject_id);
+                $totalRegisteredMarks = Student_Grade::where('examination_id', $exam->id)->where('subject_id', $subs->id)->whereIn('student_id', $students->pluck('id'))->count();
+
+                $keyInStatus = ($totalRegisteredMarks == $totalStudent) ? 'COMPLETE' : 'PENDING';
+
+                $markCollection[] = [
+                    'key_in_status' => $keyInStatus,
+                    'subject_name' => $subs->name,
+                ];
+            }
+            $classMarkCollection[] = [
+                'markCollection' => $markCollection,
+                'class_name' => $classroom->name,
+                'class_id' => $classroom->id,
+                'class_form' => $classroom->form_id
+            ];
+        }
+
         return view('manageExamGrade.examination_details', [
-            'exam' => Examination::findOrFail($id),
+            'exam' => $exam,
+            'classMarkCollection' => $classMarkCollection,
         ]);
     }
 

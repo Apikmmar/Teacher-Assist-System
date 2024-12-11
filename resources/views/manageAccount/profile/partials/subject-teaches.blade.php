@@ -26,7 +26,17 @@
                     <td>
                         <ul class="mt-2">
                         @foreach ($subject['classNames'] as $className)
-                            <li>{{ $className }}</li>
+                            <li>
+                                
+                            @if ($className['class_id'])
+                                <a href="{{ route('view_classroom', ['id' => $className['class_id']]) }}" style="text-decoration: none">
+                                    {{ $className['class_name'] }}
+                                </a>
+                            @else
+                                <span>{{ $className['class_name'] }}</span>
+                            @endif
+                            
+                            </li>
                         @endforeach
                         </ul>
                     </td>

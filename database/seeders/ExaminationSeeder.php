@@ -18,7 +18,7 @@ class ExaminationSeeder extends Seeder
         //
         $now = now();
 
-        for ($i=1; $i <= 6 ; $i++) {
+        for ($i=1; $i <= 4 ; $i++) {
             $strtDate = Carbon::today()->subDays(rand(0, 365));
             $endDate = $strtDate->copy()->addDays(rand(10, 31));
             $releaseDate = $endDate->copy()->addDays(30);
