@@ -231,8 +231,9 @@ class SubjectController extends Controller
 
     public function addSubjectClass(Request $request, $id): RedirectResponse {
         $request->validate([
-            'subject' => 'required|exists:subjects,id',
-            'assigned_teacher' => 'required|exists:subject__teachers,id',
+            'subjects' => 'nullable|array',
+            'subjects.*.subject_id' => 'required_with:subjects.*.selected|exists:subjects,id',
+            'subjects.*.assigned_teacher' => 'required_with:subjects.*.selected|exists:subject__teachers,id',
         ]);
 
         $class = Classroom::findOrFail($id);
@@ -241,19 +242,24 @@ class SubjectController extends Controller
             return redirect()->back()->withErrors(['message' => 'Classroom Not Found.']);
         }
 
-        $subjectClass = Subject_Taken::create([
-            'student_id' => NULL,
-            'classroom_id' => $class->id,
-            'subject_id' => $request->subject,
-            'subject_teacher_id' => $request->assigned_teacher,
-            'remarks' => NULL,
-            'created_at' => now(),
-            'updated_at' => now(),
-        ]);
+        if ($request->has('subjects')) {
+            foreach ($request->subjects as $subject) {
+                // Only process rows that were checked (selected)
+                if (isset($subject['selected']) && $subject['selected'] == 1) {
+                    Subject_Taken::create([
+                        'student_id' => null,
+                        'classroom_id' => $class->id,
+                        'subject_id' => $subject['subject_id'],
+                        'subject_teacher_id' => $subject['assigned_teacher'],
+                        'remarks' => null,
+                        'created_at' => now(),
+                        'updated_at' => now(),
+                    ]);
+                }
+            }
+        }
 
-        $subjectClass->save();
-
-        return redirect()->route('class_subject', ['id' => $id])->with('blue-message', 'Subject Successfuly Add To Class');
+        return redirect()->route('class_subject', ['id' => $id])->with('blue-message', 'Subjects Successfully Added To Class');
     }
 
     public function changeSubjectTeacher(Request $request): RedirectResponse {

@@ -93,14 +93,14 @@
                 @endif
             </div>
         </div>
+
+    @if ($subjectStudentElective)
         <hr>
         <div class="mt-2">
             <header>
                 <h4 class="text-lg font-medium text-gray-900">Elective Subject To Insert Marks</h4>
             </header>
             <div>
-                
-            @if ($subjectStudentElective)
                 <table class="table table-hover" style="max-width: 750px">
                     <thead>
                         <tr>
@@ -129,9 +129,9 @@
                         @endforeach
                     </tbody>
                 </table>
-            @endif
-
             </div>
         </div>
+    @endif
+        
     </div>
 @endsection
