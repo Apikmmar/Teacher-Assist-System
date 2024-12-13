@@ -87,6 +87,13 @@
                 </tbody>
             </table>
         </div>
+        <br>
+        <div class="form-container">
+            <p>Download Examination Result for {{ $formName }}:</p>
+            <div>
+                <a href="{{ route('download_report_zip', ['exam' => $examination->id, 'students' => implode(',', $students->pluck('id')->toArray())]) }}" class="btn btn-primary">Download All</a>
+            </div>
+        </div>
     @endif
     
     </div>

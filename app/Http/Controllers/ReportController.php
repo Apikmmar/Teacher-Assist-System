@@ -155,6 +155,7 @@ class ReportController extends Controller
             'totalStudent' => $totalStudent,
             'passedStudents' => $passedStudents,
             'failedStudents' => $failedStudents,
+            'students' => $students,
         ]);
     }
     
@@ -233,6 +234,7 @@ class ReportController extends Controller
             'totalStudent' => $totalStudent,
             'passedStudents' => $passedStudents,
             'failedStudents' => $failedStudents,
+            'students' => $students,
         ]);
     }
 
@@ -400,7 +402,7 @@ class ReportController extends Controller
 
         $pdf = Pdf::loadView('ManageExamReport.exam_result', compact('examination', 'student', 'class', 'stdResult', 'stdReport','placeInClass', 'totalStudentInClass', 'totalStudentInForm', 'placeInForms'));
 
-        return $pdf->download('Result ' . $examination->name . ' ' . $student->name . '.pdf');
+        return $pdf->download('Result ' . $examination->name . '_' . $student->ic . '_' . $student->name . '.pdf');
     }
 
     private function calculatePlace($examination, $students, $stdReport) {
@@ -417,6 +419,8 @@ class ReportController extends Controller
 
     public function downloadZipExamResult($exam, $students) {
         $examination = Examination::findOrFail($exam);
+        $studentIds = explode(',', $students);
+        $students = Student::whereIn('id', $studentIds)->get();
 
         $temppdfPaths = [];
         $storagePath = storage_path('storage/temp_pdfs/');
@@ -425,8 +429,7 @@ class ReportController extends Controller
             File::makeDirectory($storagePath, 0755, true);
         }
 
-        foreach ($students as $studentID) {
-            $student =  Student::findOrFail($studentID);
+        foreach ($students as $student) {
             $stdResult = Student_Grade::where('examination_id', $examination->id)->where('student_id', $student->id)->get();
             $stdReport = Student_Examination_Report::where('examination_id', $examination->id)->where('student_id', $student->id)->first();
 
@@ -460,14 +463,14 @@ class ReportController extends Controller
 
             $pdf = Pdf::loadView('ManageExamReport.exam_result', compact('examination', 'student', 'class', 'stdResult', 'stdReport', 'placeInClass', 'totalStudentInClass', 'totalStudentInForm', 'placeInForms'));
 
-            $fileName = 'Result_' . $examination->name . '_' . $student->name . '.pdf';
+            $fileName = 'Result_' . $examination->name . '_' . $student->ic . '_' . $student->name . '.pdf';
             $filePath = $storagePath . $fileName;
 
             $pdf->save($filePath);
             $temppdfPaths[] = $filePath;
         }
 
-        $zipFileName = 'ExamResults.zip';
+        $zipFileName = 'Exam Results '.$examination->name.'.zip';
         $zipFilePath = storage_path($zipFileName);
         $zip = new ZipArchive;
 

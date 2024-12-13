@@ -109,7 +109,7 @@
         <div class="form-container">
             <p>Download Examination Result for Class {{ $class_name }}:</p>
             <div>
-                <a href="" class="btn btn-primary">Download All</a>
+                <a href="{{ route('download_report_zip', ['exam' => $examination->id, 'students' => implode(',', $students->pluck('id')->toArray())]) }}" class="btn btn-primary">Download All</a>
             </div>
         </div>
     </div>
