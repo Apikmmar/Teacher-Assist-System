@@ -105,6 +105,13 @@
                 </tbody>
             </table>
         </div>
+        <br>
+        <div class="form-container">
+            <p>Download Examination Result for Class {{ $class_name }}:</p>
+            <div>
+                <a href="" class="btn btn-primary">Download All</a>
+            </div>
+        </div>
     </div>
     @endif
 

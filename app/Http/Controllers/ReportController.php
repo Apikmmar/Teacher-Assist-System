@@ -15,6 +15,8 @@ use Illuminate\Http\RedirectResponse;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
 use Barryvdh\DomPDF\Facade\Pdf;
+use Illuminate\Support\Facades\File;
+use ZipArchive;
 
 class ReportController extends Controller
 {
@@ -411,5 +413,78 @@ class ReportController extends Controller
         });
 
         return $index !== false ? $index + 1 : null;
+    }
+
+    public function downloadZipExamResult($exam, $students) {
+        $examination = Examination::findOrFail($exam);
+
+        $temppdfPaths = [];
+        $storagePath = storage_path('storage/temp_pdfs/');
+
+        if(!File::exists($storagePath)) {
+            File::makeDirectory($storagePath, 0755, true);
+        }
+
+        foreach ($students as $studentID) {
+            $student =  Student::findOrFail($studentID);
+            $stdResult = Student_Grade::where('examination_id', $examination->id)->where('student_id', $student->id)->get();
+            $stdReport = Student_Examination_Report::where('examination_id', $examination->id)->where('student_id', $student->id)->first();
+
+            if (!$stdReport) {
+                continue;
+            }
+
+            $class = $student->classroom;
+            $student->dob = Carbon::parse($student->dob)->format('j F Y');
+            $examination->start_date = Carbon::parse($examination->start_date)->format('j F Y');
+            $examination->end_date = Carbon::parse($examination->end_date)->format('j F Y');
+
+            $studentsInClass = $class->students;
+            $totalStudentInClass = $studentsInClass->count();
+
+            $placeInClass = $this->calculatePlace($examination, $studentsInClass, $stdReport);
+
+            $totalStudentInForm = 0;
+            $studentsInForm = $studentsInClass;
+            $form = $class->form;
+            $classForm = $form->classrooms;
+
+            $classrooms = Classroom::whereIn('id', $classForm->pluck('id'))->with('students')->get();
+
+            foreach ($classrooms as $classroom) {
+                $studentsInForm = $studentsInForm->merge($classroom->students);
+                $totalStudentInForm += $classroom->students->count();
+            }
+
+            $placeInForms = $this->calculatePlace($examination, $studentsInForm, $stdReport);
+
+            $pdf = Pdf::loadView('ManageExamReport.exam_result', compact('examination', 'student', 'class', 'stdResult', 'stdReport', 'placeInClass', 'totalStudentInClass', 'totalStudentInForm', 'placeInForms'));
+
+            $fileName = 'Result_' . $examination->name . '_' . $student->name . '.pdf';
+            $filePath = $storagePath . $fileName;
+
+            $pdf->save($filePath);
+            $temppdfPaths[] = $filePath;
+        }
+
+        $zipFileName = 'ExamResults.zip';
+        $zipFilePath = storage_path($zipFileName);
+        $zip = new ZipArchive;
+
+        if ($zip->open($zipFilePath, ZipArchive::CREATE) === TRUE) {
+            foreach ($temppdfPaths as $filePath) {
+                $zip->addFile($filePath, basename($filePath));
+            }
+            $zip->close();
+        } else {
+            return response()->json(['error' => 'Unable to create ZIP file'], 500);
+        }
+
+        foreach ($temppdfPaths as $filePath) {
+            File::delete($filePath);
+        }
+        File::deleteDirectory($storagePath);
+
+        return response()->download($zipFilePath)->deleteFileAfterSend(true);
     }
 }
