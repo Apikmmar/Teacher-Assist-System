@@ -10,7 +10,11 @@ use App\Http\Controllers\ReportController;
 use App\Http\Controllers\StudentsController;
 use App\Http\Controllers\SubjectController;
 use App\Models\Examination;
+use App\Models\Notification;
+use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Route;
+
+use function React\Promise\all;
 
 Route::get('/', function () {
     return view('auth.login');
@@ -111,6 +115,21 @@ Route::middleware('auth')->group(function () {
     Route::get('/all_report/student_report/examination={examReport}/student={stdID}', [ReportController::class, 'viewStudentReport'])->name('performance_report');
     Route::get('/download_student_report/examination={exam}/student={stdID}', [ReportController::class, 'downloadExamResult'])->name('download_report');
     Route::get('/download_student_report/zip/{exam}/{students}', [ReportController::class, 'downloadZipExamResult'])->name('download_report_zip');
+
+
+    Route::get('/notifications', function () {
+        $user = Auth::user();
+        $notifications = [];
+        $notificationAll = Notification::where('user_id', NULL)->where('publishment', 'all')->get(['id', 'text', 'created_at']);
+        $notificationSpecify = $user->notifications()->select('id', 'text', 'created_at')->get();
+
+        $notifications = $notificationAll->merge($notificationSpecify)->sortByDesc('created_at')->take(5);
+        $notifications = $notifications->values();
+
+        return response()->json([
+            'notifications' => $notifications,
+        ]);
+    })->name('notifications');
 });
 
 require __DIR__.'/auth.php';

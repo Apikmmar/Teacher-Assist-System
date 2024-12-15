@@ -82,4 +82,8 @@ class User extends Authenticatable
     public function examReports(): HasMany {
         return $this->hasMany(Student_Examination_Report::class, 'student_id');
     }
+
+    public function notifications(): HasMany {
+        return $this->hasMany(Notification::class);
+    }
 }

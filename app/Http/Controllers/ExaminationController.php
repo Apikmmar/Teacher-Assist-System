@@ -2,12 +2,14 @@
 
 namespace App\Http\Controllers;
 
+use App\Events\ExamNotificationCreate;
 use App\Http\Requests\AddExaminationRequest;
 use App\Http\Requests\AddExamMarkRequest;
 use App\Http\Requests\UpdateExamMarkRequest;
 use App\Models\Classroom;
 use App\Models\Examination;
 use App\Models\Examination_Grade;
+use App\Models\Notification;
 use App\Models\Student;
 use App\Models\Student_Examination_Report;
 use App\Models\Student_Grade;
@@ -18,10 +20,7 @@ use Illuminate\Http\Request;
 use Illuminate\Contracts\View\View;
 use Illuminate\Http\RedirectResponse;
 use Illuminate\Support\Facades\Auth;
-use Illuminate\Support\Facades\Redirect;
 use Illuminate\Support\Facades\Validator;
-use Maatwebsite\Excel\Facades\Excel;
-use PhpParser\Node\Stmt\Return_;
 
 class ExaminationController extends Controller
 {
@@ -241,6 +240,18 @@ class ExaminationController extends Controller
             'type' => $examinationType,
             'release_date' => $request->release_date,
         ]);
+
+        $exam->release_date = Carbon::parse($exam->release_date)->format('j F Y');
+
+        $notification = Notification::create([
+            'examination_id' => $exam->id,
+            'user_id' => NULL,
+            'title' => 'New Examination Created',
+            'text' => 'Please Finish Key In Examination Mark by ' . $exam->release_date,
+            'publishment' => 'all',
+        ]);
+
+        event(new ExamNotificationCreate($notification));
 
         return redirect()->route('view_examination', ['id' => $exam->id])->with('blue-message', 'Successfully Registered New Examination');
     }
@@ -528,6 +539,11 @@ class ExaminationController extends Controller
         $current_mark->update($newData);
 
         return redirect()->route('edit_elective_subject_mark', ['std_id' => $student->id, 'subject_id' => $subject->id, 'exam_id' => $exam->id])->with('blue-message', 'Successfully Update New Data');
+    }
+
+    // Notify Not Done
+    public function notifyKeyInMark(): RedirectResponse {
+        
     }
 
     private function convertExamDate($examinations) {
