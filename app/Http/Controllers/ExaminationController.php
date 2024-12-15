@@ -541,9 +541,20 @@ class ExaminationController extends Controller
         return redirect()->route('edit_elective_subject_mark', ['std_id' => $student->id, 'subject_id' => $subject->id, 'exam_id' => $exam->id])->with('blue-message', 'Successfully Update New Data');
     }
 
-    // Notify Not Done
-    public function notifyKeyInMark(): RedirectResponse {
-        
+    public function notifyKeyInMark(Request $request): RedirectResponse {
+        $exam = Examination::findOrFail($request->exam_id);
+
+        $notification = Notification::create([
+            'examination_id' => $exam->id,
+            'user_id' => NULL,
+            'title' => 'Reminder',
+            'text' => 'Please Finish Key In Examination Mark for ' . $exam->name . ' by ' . $exam->release_date,
+            'publishment' => 'all',
+        ]);
+
+        event(new ExamNotificationCreate($notification));
+
+        return redirect()->route('view_examination', ['id' => $exam->id])->with('blue-message', 'Notification Is Send');
     }
 
     private function convertExamDate($examinations) {

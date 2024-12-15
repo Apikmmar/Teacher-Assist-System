@@ -144,10 +144,17 @@
     @can('coordinator')
         <hr>
         <div>
-            <header>
+            <header class="d-flex">
                 <h4 class="text-lg font-medium text-gray-900 dark:text-gray-100">
                     {{ __('List of Class Finished Key In Marks') }}
                 </h4>
+                &nbsp;&nbsp;&nbsp;
+                <form action="{{ route('reminder.notification') }}" method="post">
+                    @csrf
+                    <input type="hidden" name="exam_id" value="{{ $exam->id }}">
+
+                    <button type="submit" class="btn btn-outline-warning">Remind</button>
+                </form>
             </header>
             <div>
                 <table class="table table-hover">

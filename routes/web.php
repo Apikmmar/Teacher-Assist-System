@@ -9,7 +9,6 @@ use App\Http\Controllers\ProfileController;
 use App\Http\Controllers\ReportController;
 use App\Http\Controllers\StudentsController;
 use App\Http\Controllers\SubjectController;
-use App\Models\Examination;
 use App\Models\Notification;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Route;
@@ -100,6 +99,8 @@ Route::middleware('auth')->group(function () {
     Route::patch('/update_student_exam_mark/update', [ExaminationController::class, 'updateStudentsExamMarks'])->name('update_exam_mark.update');
     Route::post('/add_elective_mark/create', [ExaminationController::class, 'addStudentElectiveSubjectMark'])->name('create.elective_mark');
     Route::patch('/update_elective_mark/update/{current_markID}', [ExaminationController::class, 'updateStudentElectiveSubjectMark'])->name('update.elective_mark');
+    Route::post('/remind-notification/create', [ExaminationController::class, 'notifyKeyInMark'])->name('reminder.notification');
+    
     
     Route::get('/exam_feedback/class={class_id}&subject={subject_id}&exam={exam_id}', [FeedbackController::class, 'viewClassroomFeedback'])->name('exam_mark_feedbacks');
     Route::get('/examination={id}/my-class-feed', [FeedbackController::class, 'viewMyClassFeed'])->name('myclass_exam-feed');
