@@ -18,9 +18,9 @@
                 <div class="d-flex justify-content-center align-items-center">
 
                 @if (!empty($user->photo))
-                    <img src="{{ asset('storage/asset/profile-photos/' . $user->photo) }}" style="max-width: 250px;" class="img-fluid" alt="SMK Baling.png">
+                    <img src="{{ asset('storage/asset/profile-photos/' . $user->photo) }}" style="width: 250px; height: 250px; object-fit: cover;" class="img-fluid rounded-circle" alt="SMK Baling.png">
                 @else    
-                    <img src="{{ asset('asset/default-image/profile.png') }}" style="max-width: 250px;" class="img-fluid" alt="SMK Baling.png">
+                    <img src="{{ asset('asset/default-image/profile.png') }}" style="width: 250px; height: 250px; object-fit: cover;" class="img-fluid rounded-circle" alt="SMK Baling.png">
                 @endif
 
                 </div>

@@ -4,8 +4,7 @@ namespace App\Http\Controllers;
 
 use App\Http\Requests\ProfileUpdateRequest;
 use App\Models\Classroom;
-use App\Models\Subject_Taken;
-use App\Models\Subject_Teacher;
+use Illuminate\Support\Facades\Storage;
 use Illuminate\Http\RedirectResponse;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Redirect;
@@ -31,31 +30,38 @@ class ProfileController extends Controller
     /**
      * Update the user's profile information.
      */
-    public function update(ProfileUpdateRequest $request): RedirectResponse
-    {
-        $user = $request->user();
-        
-        $user->fill($request->except(['verification', 'photo']));
+    public function update(ProfileUpdateRequest $request): RedirectResponse {
+    $user = $request->user();
 
-        // FILE AND IMAGE NOT DELETED
-        if ($request->hasFile('verification')) {
-            $user->verification = $request->file('verification')->getClientOriginalName();
-            $request->file('verification')->storeAs('asset/verification-files', $user->verification, 'public');
+    $user->fill($request->except(['verification', 'photo']));
+
+    if ($request->hasFile('verification')) {
+        if ($user->verification && Storage::disk('public')->exists('asset/verification-files/' . $user->verification)) {
+            Storage::disk('public')->delete('asset/verification-files/' . $user->verification);
         }
 
-        if ($request->hasFile('photo')) {
-            $user->photo = $request->file('photo')->getClientOriginalName();
-            $request->file('photo')->storeAs('asset/profile-photos', $user->photo, 'public');
-        }
-
-        if ($user->isDirty('email')) {
-            $user->email_verified_at = null;
-        }
-
-        $user->save();
-
-        return Redirect::route('profile.edit')->with('blue-message', 'Successfully Update Profile');
+        $user->verification = $request->file('verification')->getClientOriginalName();
+        $request->file('verification')->storeAs('asset/verification-files', $user->verification, 'public');
     }
+
+    if ($request->hasFile('photo')) {
+        if ($user->photo && Storage::disk('public')->exists('asset/profile-photos/' . $user->photo)) {
+            Storage::disk('public')->delete('asset/profile-photos/' . $user->photo);
+        }
+
+        $user->photo = $request->file('photo')->getClientOriginalName();
+        $request->file('photo')->storeAs('asset/profile-photos', $user->photo, 'public');
+    }
+
+    if ($user->isDirty('email')) {
+        $user->email_verified_at = null;
+    }
+
+    $user->save();
+
+    return Redirect::route('profile.edit')->with('blue-message', 'Successfully Updated Profile');
+}
+
     
     private function getTeachesSubjectClass($user) {
         $subClassTeacher = [];

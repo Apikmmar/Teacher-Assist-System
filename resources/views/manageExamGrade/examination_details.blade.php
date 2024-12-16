@@ -142,6 +142,7 @@
         </div>
 
     @can('coordinator')
+    @if ($exam->status == 'Pending')
         <hr>
         <div>
             <header class="d-flex">
@@ -198,6 +199,7 @@
                 </table>
             </div>
         </div>
+    @endif
     @endcan
 
     </div>

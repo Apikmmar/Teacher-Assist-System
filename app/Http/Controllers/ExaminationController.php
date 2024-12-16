@@ -302,6 +302,14 @@ class ExaminationController extends Controller
         }
 
         $exam->update(['status' => 'Release']);
+
+        $notifications = $exam->notifications;
+
+        if($notifications) {
+            foreach ($notifications as $noti) {
+                $noti->delete();
+            }
+        }
         
         return redirect()->route('view_examination', ['id' => $id])->with('blue-message', 'Examination Data Is Released');
     }

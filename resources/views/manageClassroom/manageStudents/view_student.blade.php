@@ -5,21 +5,23 @@
     <div class="container fade-in-text">
         @include('layouts.message')
 
+    @can('coordinator')
         <div class="d-flex justify-content-end mb-2">
             <div class="btn-group mb-2">
                 <button type="button" class="btn btn-info text-white dropdown-toggle" data-bs-toggle="dropdown" aria-expanded="false">
                     Edit Student
                 </button>
                 <ul class="dropdown-menu dropdown-menu-end">
-                  <li><a class="dropdown-item" href="{{ route('edit_student', ['id' => $std->id]) }}"><i class="bi bi-pencil"></i> Edit Student Info</a></li>
+                <li><a class="dropdown-item" href="{{ route('edit_student', ['id' => $std->id]) }}"><i class="bi bi-pencil"></i> Edit Student Info</a></li>
 
                 @if ($std->classroom_id && $std->status == 'Active')
-                  <li><a class="dropdown-item" href="{{ route('student_subject', ['id' => $std->id]) }}"><i class="bi bi-book"></i> Registered Subject</a></li>
+                <li><a class="dropdown-item" href="{{ route('student_subject', ['id' => $std->id]) }}"><i class="bi bi-book"></i> Registered Subject</a></li>
                 @endif
 
                 </ul>
             </div>
         </div>
+    @endcan
 
         @include('manageClassroom.partials.student_info') 
 

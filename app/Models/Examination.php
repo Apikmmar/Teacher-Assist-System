@@ -26,4 +26,8 @@ class Examination extends Model
     public function studentexamreports():HasMany {
         return $this->hasMany(Student_Examination_Report::class);
     }
+
+    public function notifications():HasMany {
+        return $this->hasMany(Notification::class);
+    }
 }

@@ -13,6 +13,8 @@
                     </div>
                 </a>
             </div>
+        
+        @can('coordinator-and-management')
             <div class="report-col">
                 <a href="{{ route('form_report', ['id' => $examination->id]) }}" style="text-decoration: none;">
                     <div class="report-card card">
@@ -23,6 +25,9 @@
                     </div>
                 </a>
             </div>
+        @endcan
+
+        @cannot('not-have-role')
             <div class="report-col">
                 <a href="{{ route('classroom_report', ['id' => $examination->id]) }}" style="text-decoration: none;">
                     <div class="report-card card">
@@ -33,8 +38,10 @@
                     </div>
                 </a>
             </div>
+
         </div>
         <br>
+    
         <div class="row justify-content-center">
             <div class="report-col col-md-6 col-lg-4" style="min-width: 500px">
                 <a href="{{ route('classrec_report', ['id' => $examination->id]) }}" style="text-decoration: none;">
@@ -47,5 +54,6 @@
                 </a>
             </div>
         </div>
+    @endcannot
     </div>
 @endsection

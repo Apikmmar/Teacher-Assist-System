@@ -30,7 +30,7 @@
                 <div class="me-4">
                     <a href="{{ route('profile.edit') }}">
                     @if (!empty($user->photo))
-                        <img src="{{ asset('storage/asset/profile-photos/' . $user->photo) }}" style="max-width: 60px; border-radius: 50%" class="img-fluid" alt="SMK Baling.png">
+                        <img src="{{ asset('storage/asset/profile-photos/' . $user->photo) }}" style="width: 63px; height: 63px; object-fit: cover;" class="img-fluid rounded-circle" alt="SMK Baling.png">
                     @else    
                         <img src="{{ asset('asset/default-image/profile.png') }}" style="max-width: 60px;" class="img-fluid" alt="SMK Baling.png">
                     @endif
