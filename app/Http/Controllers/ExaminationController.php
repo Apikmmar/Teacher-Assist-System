@@ -310,7 +310,17 @@ class ExaminationController extends Controller
                 $noti->delete();
             }
         }
-        
+
+        $notification = Notification::create([
+            'examination_id' => $exam->id,
+            'user_id' => NULL,
+            'title' => 'Examination Mark Release',
+            'text' => 'Examination Mark for ' . $exam->name . 'Is Released!',
+            'publishment' => 'all',
+        ]);
+
+        event(new ExamNotificationCreate($notification));
+
         return redirect()->route('view_examination', ['id' => $id])->with('blue-message', 'Examination Data Is Released');
     }
     

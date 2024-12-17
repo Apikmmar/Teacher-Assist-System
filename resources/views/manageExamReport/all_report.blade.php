@@ -47,7 +47,7 @@
                 <a href="{{ route('classrec_report', ['id' => $examination->id]) }}" style="text-decoration: none;">
                     <div class="report-card card">
                         <div class="card-body text-center">
-                            <h4 class="card-title">Class Recomendation</h4>
+                            <h4 class="card-title">Class Recommendation</h4>
                         </div>
                         <img src="{{ asset('asset/default-image/change-people.png') }}" class="report-img" alt="Subject Report">
                     </div>
