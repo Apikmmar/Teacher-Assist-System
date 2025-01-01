@@ -18,12 +18,12 @@ class ExamGradeSeeder extends Seeder
 
         for ($i=1; $i <= 3; $i++) { 
             DB::table('examination__grades')->insert([
-                ['form_id' => $i, 'grade' => 'A', 'mark_min' => 85, 'mark_max' => 100, 'grade_value' => 4.00, 'created_at' => $now, 'updated_at' => $now],
-                ['form_id' => $i, 'grade' => 'B', 'mark_min' => 70, 'mark_max' => 84, 'grade_value' => 3.00, 'created_at' => $now, 'updated_at' => $now],
-                ['form_id' => $i, 'grade' => 'C', 'mark_min' => 60, 'mark_max' => 69, 'grade_value' => 2.00, 'created_at' => $now, 'updated_at' => $now],
-                ['form_id' => $i, 'grade' => 'D', 'mark_min' => 50, 'mark_max' => 59, 'grade_value' => 1.50, 'created_at' => $now, 'updated_at' => $now],
-                ['form_id' => $i, 'grade' => 'E', 'mark_min' => 40, 'mark_max' => 49, 'grade_value' => 1.00, 'created_at' => $now, 'updated_at' => $now],
-                ['form_id' => $i, 'grade' => 'F', 'mark_min' => 0, 'mark_max' => 39, 'grade_value' => 0.00, 'created_at' => $now, 'updated_at' => $now],
+                ['form_id' => $i, 'grade' => 'A', 'mark_min' => 82, 'mark_max' => 100, 'grade_value' => 4.00, 'created_at' => $now, 'updated_at' => $now],
+                ['form_id' => $i, 'grade' => 'B', 'mark_min' => 66, 'mark_max' => 81, 'grade_value' => 3.00, 'created_at' => $now, 'updated_at' => $now],
+                ['form_id' => $i, 'grade' => 'C', 'mark_min' => 50, 'mark_max' => 65, 'grade_value' => 2.00, 'created_at' => $now, 'updated_at' => $now],
+                ['form_id' => $i, 'grade' => 'D', 'mark_min' => 35, 'mark_max' => 49, 'grade_value' => 1.50, 'created_at' => $now, 'updated_at' => $now],
+                ['form_id' => $i, 'grade' => 'E', 'mark_min' => 20, 'mark_max' => 34, 'grade_value' => 1.00, 'created_at' => $now, 'updated_at' => $now],
+                ['form_id' => $i, 'grade' => 'F', 'mark_min' => 0, 'mark_max' => 19, 'grade_value' => 0.00, 'created_at' => $now, 'updated_at' => $now],
             ]);
         }
 

@@ -399,6 +399,7 @@ class ExaminationController extends Controller
         ]);
     }
 
+    // here
     public function addStudentExamMark(AddExamMarkRequest $request): RedirectResponse {
         $request->validated();
 
@@ -411,12 +412,13 @@ class ExaminationController extends Controller
         $exam = Examination::findOrFail($request->exam_id);
         $subject = Subject::findOrFail($request->subject_id);
         $class = Classroom::findOrFail($request->class_id);
+        $formGrade = Examination_Grade::where('form_id', $subject->form_id)->where('grade', 'F')->first();
 
         $students = Student::whereIn('id', $std)->get();
 
         foreach($students as $index => $student) {
 
-            $is_pass = ($marks[$index] >= 40) ? 'passed' : 'failed';
+            $is_pass = ($marks[$index] > $formGrade->mark_max) ? 'passed' : 'failed';
 
             Student_Grade::create([
                 'examination_id' => $exam->id,
@@ -435,12 +437,14 @@ class ExaminationController extends Controller
         return redirect()->route('view_classexam', ['id' => $exam->id])->with('blue-message', 'Class ' . $class->name . ' Examination Marks Is Saved!');
     }
 
+    // here
     public function updateStudentsExamMarks(UpdateExamMarkRequest $request): RedirectResponse {
         $request->validated();
 
         $exam = Examination::findOrFail($request->input('examination_id'));
         $subject = Subject::findOrFail($request->input('subject_id'));
         $students = Student::whereIn('id', $request->input('students_id'))->get();
+        $formGrade = Examination_Grade::where('form_id', $subject->form_id)->where('grade', 'F')->first();
 
         $studentMarks = $request->input('student_marks');
         $studentGrades = $request->input('student_grades');
@@ -454,7 +458,7 @@ class ExaminationController extends Controller
             $grade_value = $gradeValues[$index];
             $feedback = $feedbackValues[$index] ?? '-';
 
-            $is_passed = ($marks >= 40) ? 'passed' : 'failed';
+            $is_passed = ($marks > $formGrade->mark_max) ? 'passed' : 'failed';
 
             $newData[$student->id] = [
                 'examination_id' => $exam->id,
@@ -484,6 +488,7 @@ class ExaminationController extends Controller
         return redirect()->route('registered_exam_marks', ['class_id' => $class->id, 'subject_id' => $subject->id, 'exam_id' => $exam->id])->with('blue-message', 'Class ' . $class->name . ' Examination Marks Is Updated!');
     }
 
+    // here
     public function addStudentElectiveSubjectMark(Request $request): RedirectResponse {
         $request->validate([
             'exam_id' => ['required', 'exists:examinations,id'],
@@ -498,8 +503,9 @@ class ExaminationController extends Controller
         $exam = Examination::findOrFail($request->exam_id);
         $student = Student::findOrFail($request->student_id);
         $subject = Subject::findOrFail($request->subject_id);
+        $formGrade = Examination_Grade::where('form_id', $subject->form_id)->where('grade', 'F')->first();
 
-        if ($request->mark < 40) {
+        if ($request->mark <= $formGrade->mark_max) {
             $is_passed = 'failed';
         } else {
             $is_passed = 'passed';
@@ -521,6 +527,7 @@ class ExaminationController extends Controller
         return redirect()->route('view_classexam', ['id' => $exam->id])->with('blue-message', 'Elective Mark For ' . $student->name . ' Successfully Inserted!');
     }
 
+    // here
     public function updateStudentElectiveSubjectMark(Request $request, $current_markID): RedirectResponse {
         $request->validate([
             'exam_id' => ['required', 'exists:examinations,id'],
@@ -535,8 +542,9 @@ class ExaminationController extends Controller
         $exam = Examination::findOrFail($request->exam_id);
         $student = Student::findOrFail($request->student_id);
         $subject = Subject::findOrFail($request->subject_id);
+        $formGrade = Examination_Grade::where('form_id', $subject->form_id)->where('grade', 'F')->first();
 
-        if ($request->mark < 40) {
+        if ($request->mark <= $formGrade->mark_max) {
             $is_passed = 'failed';
         } else {
             $is_passed = 'passed';
