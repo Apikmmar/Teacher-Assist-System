@@ -5,6 +5,7 @@ use App\Http\Controllers\AccountController;
 use App\Http\Controllers\ClassroomController;
 use App\Http\Controllers\ExaminationController;
 use App\Http\Controllers\FeedbackController;
+use App\Http\Controllers\GradeSettingsController;
 use App\Http\Controllers\ProfileController;
 use App\Http\Controllers\ReportController;
 use App\Http\Controllers\StudentsController;
@@ -116,7 +117,8 @@ Route::middleware('auth')->group(function () {
     Route::get('/all_report/student_report/examination={examReport}/student={stdID}', [ReportController::class, 'viewStudentReport'])->name('performance_report');
     Route::get('/download_student_report/examination={exam}/student={stdID}', [ReportController::class, 'downloadExamResult'])->name('download_report');
     Route::get('/download_student_report/zip/{exam}/{students}', [ReportController::class, 'downloadZipExamResult'])->name('download_report_zip');
-
+    
+    Route::get('/all_grade', [GradeSettingsController::class, 'viewAllGrade'])->name('view.gradesettings');
 
     Route::get('/notifications', function () {
         $user = Auth::user();

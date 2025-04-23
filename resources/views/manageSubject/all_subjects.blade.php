@@ -7,6 +7,9 @@
         
     <div class="row d-flex justify-content-end">
         <div class="col-auto">
+            <a href="{{ route('view.gradesettings') }}" class="btn btn-warning text-white tr-button">Grade Settings</a>
+        </div>
+        <div class="col-auto">
             <a href="{{ route('new_subject') }}" class="btn text-white user-save-button">Register Subject</a>
         </div>
         <div class="col-auto">
