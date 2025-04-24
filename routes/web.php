@@ -119,6 +119,7 @@ Route::middleware('auth')->group(function () {
     Route::get('/download_student_report/zip/{exam}/{students}', [ReportController::class, 'downloadZipExamResult'])->name('download_report_zip');
     
     Route::get('/all_grade', [GradeSettingsController::class, 'viewAllGrade'])->name('view.gradesettings');
+    Route::post('/all_grade/create', [GradeSettingsController::class, 'createNewGrade'])->name('add.new_grade');
 
     Route::get('/notifications', function () {
         $user = Auth::user();
