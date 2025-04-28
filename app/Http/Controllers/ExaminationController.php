@@ -200,13 +200,16 @@ class ExaminationController extends Controller
         $student = Student::findOrFail($std_id);
         $subject = Subject::findOrFail($subject_id);
         $exam = Examination::findOrFail($exam_id);
-        $grades = Examination_Grade::where('form_id', $subject->form->id)->get();
+        $grades = Examination_Grade::where('form_id', $subject->form->id)->orderBy('mark_min', 'desc')->get();
+
+        $existingMark = null;
 
         return view('manageExamGrade.elective_subject_student_mark', [
             'student' => $student,
             'subject' => $subject,
             'exam' => $exam,
             'grades' => $grades,
+            'existingMark' => $existingMark,
         ]);
     }
 
