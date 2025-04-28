@@ -38,6 +38,29 @@ class GradeSettingsController extends Controller
 
         $grade->save();
 
-        return redirect()->route('view.gradesettings')->with('blue-message', 'Student Successfully Registered');
+        return redirect()->route('view.gradesettings')->with('blue-message', 'Grade Successfully Introduced');
+    }
+    
+    public function updateExamGrade(Request $request, $id) {
+        $validatedRequest = $request->validate([
+            'grade' => ['string', 'max:1'],
+            'mark_min' => ['numeric', 'min:0', 'max:100'],
+            'mark_max' => ['numeric', 'min:0', 'max:100', 'gt:mark_min'],
+            'grade_value' => ['numeric'],
+        ]);
+
+        $grade = Examination_Grade::findOrFail($id);
+
+        $grade->update($validatedRequest);
+        
+        return redirect()->route('view.gradesettings')->with('blue-message', 'Grade Successfully Updated');
+    }
+    
+    public function deleteExamGrade($id) {
+        $grade = Examination_Grade::findOrFail($id);
+
+        $grade->delete();
+        
+        return redirect()->route('view.gradesettings')->with('red-message', 'Grade Successfully Removed');
     }
 }

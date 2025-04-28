@@ -24,20 +24,18 @@
                             </div>
                         </td>
                         <td>
-                            <!-- Existing Grades -->
-                            @foreach ($form->examgrade as $formGrade)
-                            <form action="" method="post" class="mb-3">
-                                @csrf
-                                @method('PUT')
-                                <div class="grade-container mb-3 p-3 border rounded d-flex justify-content-between align-items-center bg-light-hover transition-all">
+                            
+                        @foreach ($form->examgrade->sortByDesc('mark_min') as $formGrade)
+                            <div class="grade-container mb-3 p-3 border rounded d-flex justify-content-between align-items-center bg-light-hover transition-all">
+                                <form action="{{ route('update.current_grade', ['id' => $formGrade->id]) }}" method="post" class="w-100 d-flex justify-content-between align-items-center">
+                                    @csrf
+                                    @method('PATCH')
+                        
                                     <div class="d-flex flex-wrap align-items-center gap-3">
-                                        <!-- Grade -->
                                         <div class="d-flex align-items-center">
                                             <span class="me-2 text-muted"><strong>Grade:</strong></span>
                                             <input type="text" name="grade" class="form-control-sm border-0 py-1 text-center" value="{{ $formGrade->grade }}" style="max-width: 50px;">
                                         </div>
-
-                                        <!-- Range (Min/Max) -->
                                         <div class="d-flex align-items-center">
                                             <span class="me-2 text-muted"><strong>Grade Range:</strong></span>
                                             <div class="d-flex align-items-center bg-white rounded px-2 border">
@@ -47,31 +45,35 @@
                                                 <span class="ms-1 text-muted">%</span>
                                             </div>
                                         </div>
-                            
-                                        <!-- Value -->
                                         <div class="d-flex align-items-center">
                                             <span class="me-2 text-muted"><strong>Value:</strong></span>
                                             <input type="number" name="grade_value" class="form-control-sm border-0 py-1 px-2 bg-white rounded text-center" value="{{ $formGrade->grade_value }}" style="width: 60px;">
                                         </div>
                                     </div>
-                            
-                                    <!-- Save Button -->
                                     <div class="d-flex gap-2">
                                         <button type="reset" class="btn btn-sm btn-danger rounded-pill px-3 shadow-sm">
                                             <i class="fas fa-undo me-1"></i> Reset
                                         </button>
-                                        <a href="" class="btn btn-sm btn-primary rounded-pill px-3 shadow-sm">
+                                        <button type="submit" class="btn btn-sm btn-primary rounded-pill px-3 shadow-sm">
                                             <i class="fas fa-check me-1"></i> Update
-                                        </a>
-                                        <a href="" class="btn btn-sm btn-danger rounded-pill px-3 shadow-sm">
+                                        </button>
+                                        
+                                        <button data-bs-toggle="modal" data-bs-target="#confirmDelete{{ $formGrade->id }}" 
+                                                class="btn btn-sm btn-danger rounded-pill px-3 shadow-sm" type="button">
                                             <i class="fas fa-trash me-1"></i> Delete
-                                        </a>
+                                        </button>
                                     </div>
-                                </div>
-                            </form>
-                            @endforeach
+                                </form>
+                            </div>
+                        
+                            @include('layouts.partials.modal', [
+                                'id' => $formGrade->id, 
+                                'name' => "Are you sure you want to remove this grade?",
+                                'deleteRoute' => route('delete.current_grade', ['id' => $formGrade->id]),
+                                'method' => 'DELETE'
+                            ])
+                        @endforeach
                             
-                            <!-- Add New Grade Form (Initially Hidden) -->
                             <div id="add-grade-form-{{ $form->id }}" class="mb-3" style="display: none;">
                                 <form action="{{ route('add.new_grade') }}" method="post">
                                     @csrf
@@ -79,13 +81,10 @@
                                     <input type="hidden" name="form_id" value="{{ $form->id }}">
                                     <div class="grade-container mb-3 p-3 border rounded d-flex justify-content-between align-items-center bg-light-hover transition-all">
                                         <div class="d-flex flex-wrap align-items-center gap-3">
-                                            <!-- Grade -->
                                             <div class="d-flex align-items-center">
                                                 <span class="me-2 text-muted"><strong>Grade:</strong></span>
                                                 <input type="text" name="grade" class="form-control-sm border py-1 text-center" placeholder="A" style="max-width: 50px;" required>
                                             </div>
-
-                                            <!-- Range (Min/Max) -->
                                             <div class="d-flex align-items-center">
                                                 <span class="me-2 text-muted"><strong>Grade Range:</strong></span>
                                                 <div class="d-flex align-items-center bg-white rounded px-2 border">
@@ -95,15 +94,11 @@
                                                     <span class="ms-1 text-muted">%</span>
                                                 </div>
                                             </div>
-                                
-                                            <!-- Value -->
                                             <div class="d-flex align-items-center">
                                                 <span class="me-2 text-muted"><strong>Value:</strong></span>
                                                 <input type="number" name="grade_value" class="form-control-sm border py-1 px-2 bg-white rounded text-center" placeholder="12" style="width: 60px;" required step="0.01">
                                             </div>
                                         </div>
-                                
-                                        <!-- Add Button -->
                                         <div class="d-flex gap-2">
                                             <button type="submit" class="btn btn-sm btn-success rounded-pill px-3 shadow-sm">
                                                 <i class="fas fa-check me-1"></i> Save

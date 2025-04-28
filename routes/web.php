@@ -120,6 +120,8 @@ Route::middleware('auth')->group(function () {
     
     Route::get('/all_grade', [GradeSettingsController::class, 'viewAllGrade'])->name('view.gradesettings');
     Route::post('/all_grade/create', [GradeSettingsController::class, 'createNewGrade'])->name('add.new_grade');
+    Route::patch('/all_grade/patch/{id}', [GradeSettingsController::class, 'updateExamGrade'])->name('update.current_grade');
+    Route::delete('/all_grade/delete/{id}', [GradeSettingsController::class, 'deleteExamGrade'])->name('delete.current_grade');
 
     Route::get('/notifications', function () {
         $user = Auth::user();
