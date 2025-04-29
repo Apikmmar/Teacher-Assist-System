@@ -1,7 +1,7 @@
 @extends('layouts.app', ['title' => 'Student Examination Mark'])
 
 @section('content')
-<div class="container py-4">
+<div class="container py-4 fade-in-text">
     @include('layouts.message')
 
     <div class="card shadow-sm rounded" style="max-width: 600px; margin: 0 auto;">
@@ -71,9 +71,13 @@
                     <textarea id="feedback" name="feedback" class="form-control" rows="2"></textarea>
                 </div>
 
-                <div class="d-grid gap-2">
-                    <button type="submit" class="btn btn-primary">Save Mark</button>
-                    <button type="reset" class="btn btn-danger">Reset</button>
+                <div class="d-grid gap-3">
+                    <button type="submit" class="btn btn-primary rounded-pill px-4 py-2 shadow-sm fw-bold">
+                        <i class="bi bi-save me-2"></i>Save Mark
+                    </button>
+                    <button type="reset" class="btn btn-outline-danger rounded-pill px-4 py-2 fw-bold">
+                        <i class="bi bi-arrow-counterclockwise me-2"></i>Reset
+                    </button>
                 </div>
             </form>
         </div>
