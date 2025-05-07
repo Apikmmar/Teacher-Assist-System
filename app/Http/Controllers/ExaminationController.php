@@ -415,7 +415,7 @@ class ExaminationController extends Controller
         $exam = Examination::findOrFail($request->exam_id);
         $subject = Subject::findOrFail($request->subject_id);
         $class = Classroom::findOrFail($request->class_id);
-        $formGrade = Examination_Grade::where('form_id', $subject->form_id)->where('grade', 'F')->first();
+        $formGrade = Examination_Grade::where('form_id', $subject->form_id)->where('is_passed', 'failed')->orderByDesc('mark_max')->first(); // got issue here when customize
 
         $students = Student::whereIn('id', $std)->get();
 
@@ -447,7 +447,7 @@ class ExaminationController extends Controller
         $exam = Examination::findOrFail($request->input('examination_id'));
         $subject = Subject::findOrFail($request->input('subject_id'));
         $students = Student::whereIn('id', $request->input('students_id'))->get();
-        $formGrade = Examination_Grade::where('form_id', $subject->form_id)->where('grade', 'F')->first();
+        $formGrade = Examination_Grade::where('form_id', $subject->form_id)->where('is_passed', 'failed')->first();
 
         $studentMarks = $request->input('student_marks');
         $studentGrades = $request->input('student_grades');
@@ -506,7 +506,7 @@ class ExaminationController extends Controller
         $exam = Examination::findOrFail($request->exam_id);
         $student = Student::findOrFail($request->student_id);
         $subject = Subject::findOrFail($request->subject_id);
-        $formGrade = Examination_Grade::where('form_id', $subject->form_id)->where('grade', 'F')->first();
+        $formGrade = Examination_Grade::where('form_id', $subject->form_id)->where('is_passed', 'failed')->first();
 
         if ($request->mark <= $formGrade->mark_max) {
             $is_passed = 'failed';
@@ -545,7 +545,7 @@ class ExaminationController extends Controller
         $exam = Examination::findOrFail($request->exam_id);
         $student = Student::findOrFail($request->student_id);
         $subject = Subject::findOrFail($request->subject_id);
-        $formGrade = Examination_Grade::where('form_id', $subject->form_id)->where('grade', 'F')->first();
+        $formGrade = Examination_Grade::where('form_id', $subject->form_id)->where('is_passed', 'failed')->first();
 
         if ($request->mark <= $formGrade->mark_max) {
             $is_passed = 'failed';

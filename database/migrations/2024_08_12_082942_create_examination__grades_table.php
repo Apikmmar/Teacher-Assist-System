@@ -18,6 +18,7 @@ return new class extends Migration
             $table->double('mark_min');
             $table->double('mark_max');
             $table->double('grade_value');
+            $table->enum('is_passed', ['passed', 'failed']);
             $table->timestamps();
         });
     }

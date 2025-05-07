@@ -16,6 +16,7 @@ class Examination_Grade extends Model
         'mark_min',
         'mark_max',
         'grade_value',
+        'is_passed'
     ];
 
     public function form(): BelongsTo {
