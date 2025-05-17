@@ -13,137 +13,148 @@
                     </tr>
                 </thead>
                 <tbody>
-                    @foreach ($forms as $form)
-                        <tr>
-                            <td>
-                                <div>
-                                    <strong>Name:</strong> {{ $form->name }}
-                                    <hr>
-                                    <button class="btn btn-sm btn-outline-primary edit-btn toggle-grade-form" data-form-id="{{ $form->id }}">
-                                        <i class="fas fa-plus me-1"></i> Add New Grade
-                                    </button>
-                                </div>
-                            </td>
-                            <td>
-                                @foreach ($form->examgrade->sortByDesc('mark_min') as $formGrade)
-                                    <div class="grade-container mb-3 p-2 border rounded bg-light-hover transition-all">
-                                        <form action="{{ route('update.current_grade', ['id' => $formGrade->id]) }}" method="post">
-                                            @csrf
-                                            @method('PATCH')
-                                
-                                            <div class="row g-2 align-items-center">
-                                                <div class="col-12 col-sm-6 col-md-4 col-lg-3">
-                                                    <div class="d-flex align-items-center">
-                                                        <span class="me-2 text-muted"><strong>Grade:</strong></span>
-                                                        <input type="text" name="grade" class="form-control form-control-sm border-0 py-1 text-center" value="{{ $formGrade->grade }}" style="max-width: 60px;">
-                                                    </div>
-                                                </div>
-                                                <div class="col-12 col-sm-6 col-md-4 col-lg-3">
-                                                    <div class="d-flex align-items-center">
-                                                        <span class="me-2 text-muted"><strong>Range:</strong></span>
-                                                        <div class="d-flex align-items-center bg-white rounded px-2 border">
-                                                            <input type="number" name="mark_min" class="form-control form-control-sm border-0 py-1 text-center" value="{{ $formGrade->mark_min }}" style="max-width: 55px;">
-                                                            <span class="mx-1">–</span>
-                                                            <input type="number" name="mark_max" class="form-control form-control-sm border-0 py-1 text-center" value="{{ $formGrade->mark_max }}" style="max-width: 55px;">
-                                                            <span class="ms-1 text-muted">%</span>
-                                                        </div>
-                                                    </div>
-                                                </div>
-                                                <div class="col-12 col-sm-6 col-md-4 col-lg-2">
-                                                    <div class="d-flex align-items-center">
-                                                        <span class="me-2 text-muted"><strong>Value:</strong></span>
-                                                        <input type="number" step="0.01" name="grade_value" class="form-control form-control-sm border-0 py-1 px-2 bg-white rounded text-center" value="{{ $formGrade->grade_value }}" style="width: 60px;">
-                                                    </div>
-                                                </div>
-                                                <div class="col-12 col-sm-6 col-md-4 col-lg-2">
-                                                    <div class="d-flex align-items-center">
-                                                        <select name="is_passed" class="form-select form-select-sm border-0 py-1 px-2 bg-white rounded text-center" style="min-width: 100px;">
-                                                            <option value="passed" {{ $formGrade->is_passed == 'passed' ? 'selected' : '' }}>Status: Pass</option>
-                                                            <option value="failed" {{ $formGrade->is_passed == 'failed' ? 'selected' : '' }}>Status: Fail</option>
-                                                        </select>
-                                                    </div>
-                                                </div>
-                                                <div class="col-12 col-md-4 col-lg-2">
-                                                    <div class="d-flex gap-1 justify-content-end">
-                                                        <button type="reset" class="btn btn-sm btn-danger rounded-pill px-3 shadow-sm" title="Reset">
-                                                            <i class="fas fa-undo"></i>
-                                                        </button>
-                                                        <button type="submit" class="btn btn-sm btn-warning rounded-pill px-3 shadow-sm" title="Update">
-                                                            <i class="fas fa-check text-white"></i>
-                                                        </button>
-                                                        <button data-bs-toggle="modal" data-bs-target="#confirmDelete{{ $formGrade->id }}" 
-                                                                class="btn btn-sm btn-danger rounded-pill px-3 shadow-sm" type="button" title="Delete">
-                                                            <i class="fas fa-trash"></i>
-                                                        </button>
-                                                    </div>
-                                                </div>
+
+                @foreach ($forms as $form)
+                    <tr>
+                        <td>
+                            <div>
+                                <strong>Name:</strong> {{ $form->name }}
+                                <hr>
+                                <button class="btn btn-sm btn-outline-primary edit-btn toggle-grade-form" data-form-id="{{ $form->id }}">
+                                    <i class="fas fa-plus me-1"></i> Add New Grade
+                                </button>
+                            </div>
+                        </td>
+                        <td>
+
+                        @foreach ($form->examgrade->sortByDesc('mark_min') as $formGrade)
+                            <div class="grade-container mb-3 p-2 border rounded bg-light-hover transition-all">
+                                <form action="{{ route('update.current_grade', ['id' => $formGrade->id]) }}" method="post">
+                                    @csrf
+                                    @method('PATCH')
+                        
+                                    <div class="row g-2 align-items-center">
+                                        <div class="col-12 col-sm-6 col-md-4 col-lg-3">
+                                            <div class="d-flex align-items-center">
+                                                <span class="me-2 text-muted"><strong>Grade:</strong></span>
+                                                <input type="text" name="grade" class="form-control form-control-sm border-0 py-1 text-center" value="{{ $formGrade->grade }}" style="max-width: 60px;">
                                             </div>
-                                        </form>
-                                    </div>
-                                
-                                    @include('layouts.partials.modal', [
-                                        'id' => $formGrade->id, 
-                                        'name' => "Are you sure you want to remove this grade?",
-                                        'deleteRoute' => route('delete.current_grade', ['id' => $formGrade->id]),
-                                        'method' => 'DELETE'
-                                    ])
-                                @endforeach
-                                
-                                <div id="add-grade-form-{{ $form->id }}" class="mb-3" style="display: none;">
-                                    <form action="{{ route('add.new_grade') }}" method="post">
-                                        @csrf
-                                        <input type="hidden" name="form_id" value="{{ $form->id }}">
-                                        <div class="grade-container mb-3 p-2 border rounded bg-light-hover transition-all">
-                                            <div class="row g-2 align-items-center">
-                                                <div class="col-12 col-sm-6 col-md-3">
-                                                    <div class="d-flex align-items-center">
-                                                        <span class="me-2 text-muted"><strong>Grade:</strong></span>
-                                                        <input type="text" name="grade" class="form-control form-control-sm border py-1 text-center" placeholder="A" style="max-width: 50px;" required>
-                                                    </div>
-                                                </div>
-                                                <div class="col-12 col-sm-6 col-md-3">
-                                                    <div class="d-flex align-items-center">
-                                                        <span class="me-2 text-muted"><strong>Range:</strong></span>
-                                                        <div class="d-flex align-items-center bg-white rounded px-2 border">
-                                                            <input type="number" name="mark_min" class="form-control form-control-sm border-0 py-1 text-center" style="max-width: 55px;" placeholder="0">
-                                                            <span class="mx-1">–</span>
-                                                            <input type="number" name="mark_max" class="form-control form-control-sm border-0 py-1 text-center" style="max-width: 55px;" placeholder="0">
-                                                            <span class="ms-1 text-muted">%</span>
-                                                        </div>
-                                                    </div>
-                                                </div>
-                                                <div class="col-12 col-sm-6 col-md-2">
-                                                    <div class="d-flex align-items-center">
-                                                        <span class="me-2 text-muted"><strong>Value:</strong></span>
-                                                        <input type="number" name="grade_value" class="form-control form-control-sm border py-1 px-2 bg-white rounded text-center" placeholder="12" style="width: 60px;" required step="0.01">
-                                                    </div>
-                                                </div>
-                                                <div class="col-12 col-sm-6 col-md-2">
-                                                    <div class="d-flex align-items-center">
-                                                        <span class="me-2 text-muted"><strong>Status:</strong></span>
-                                                        <select name="is_passed" class="form-select form-select-sm border py-1 bg-white rounded" required>
-                                                            <option value="passed">Pass</option>
-                                                            <option value="failed">Fail</option>
-                                                        </select>
-                                                    </div>
-                                                </div>
-                                                <div class="col-12 col-md-2">
-                                                    <div class="d-flex gap-1 justify-content-end">
-                                                        <button type="submit" class="btn btn-sm btn-success rounded-pill px-3 shadow-sm">
-                                                            <i class="fas fa-check me-1"></i>
-                                                        </button>
-                                                        <button type="button" class="btn btn-sm btn-outline-secondary rounded-pill px-3 shadow-sm cancel-add-grade" data-form-id="{{ $form->id }}">
-                                                            <i class="fas fa-times me-1"></i>
-                                                        </button>
-                                                    </div>
+                                        </div>
+
+                                        <div class="col-12 col-sm-6 col-md-4 col-lg-3">
+                                            <div class="d-flex align-items-center">
+                                                <span class="me-2 text-muted"><strong>Range:</strong></span>
+                                                <div class="d-flex align-items-center bg-white rounded px-2 border">
+                                                    <input type="number" name="mark_min" class="form-control form-control-sm border-0 py-1 text-center" value="{{ $formGrade->mark_min }}" style="max-width: 55px;">
+                                                    <span class="mx-1">–</span>
+                                                    <input type="number" name="mark_max" class="form-control form-control-sm border-0 py-1 text-center" value="{{ $formGrade->mark_max }}" style="max-width: 55px;">
+                                                    <span class="ms-1 text-muted">%</span>
                                                 </div>
                                             </div>
                                         </div>
-                                    </form>
-                                </div>
-                            </td>
-                        </tr>
-                    @endforeach
+
+                                        <div class="col-12 col-sm-6 col-md-4 col-lg-2">
+                                            <div class="d-flex align-items-center">
+                                                <span class="me-2 text-muted"><strong>Value:</strong></span>
+                                                <input type="number" step="0.01" name="grade_value" class="form-control form-control-sm border-0 py-1 px-2 bg-white rounded text-center" value="{{ $formGrade->grade_value }}" style="width: 60px;">
+                                            </div>
+                                        </div>
+
+                                        <div class="col-12 col-sm-6 col-md-4 col-lg-2">
+                                            <div class="d-flex align-items-center">
+                                                <select name="is_passed" class="form-select form-select-sm border-0 py-1 px-2 bg-white rounded text-center" style="min-width: 100px;">
+                                                    <option value="passed" {{ $formGrade->is_passed == 'passed' ? 'selected' : '' }}>Status: Pass</option>
+                                                    <option value="failed" {{ $formGrade->is_passed == 'failed' ? 'selected' : '' }}>Status: Fail</option>
+                                                </select>
+                                            </div>
+                                        </div>
+
+                                        <div class="col-12 col-md-4 col-lg-2">
+                                            <div class="d-flex gap-1 justify-content-end">
+                                                <button type="reset" class="btn btn-sm btn-danger rounded-pill px-3 shadow-sm" title="Reset">
+                                                    <i class="fas fa-undo"></i>
+                                                </button>
+                                                <button type="submit" class="btn btn-sm btn-warning rounded-pill px-3 shadow-sm" title="Update">
+                                                    <i class="fas fa-check text-white"></i>
+                                                </button>
+                                                <button data-bs-toggle="modal" data-bs-target="#confirmDelete{{ $formGrade->id }}" 
+                                                        class="btn btn-sm btn-danger rounded-pill px-3 shadow-sm" type="button" title="Delete">
+                                                    <i class="fas fa-trash"></i>
+                                                </button>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </form>
+                            </div>
+                        
+                            @include('layouts.partials.modal', [
+                                'id' => $formGrade->id, 
+                                'name' => "Are you sure you want to remove this grade?",
+                                'deleteRoute' => route('delete.current_grade', ['id' => $formGrade->id]),
+                                'method' => 'DELETE'
+                            ])
+                        @endforeach
+                            
+                            <div id="add-grade-form-{{ $form->id }}" class="mb-3" style="display: none;">
+                                <form action="{{ route('add.new_grade') }}" method="post">
+                                    @csrf
+                                    <input type="hidden" name="form_id" value="{{ $form->id }}">
+                                    <div class="grade-container mb-3 p-2 border rounded bg-light-hover transition-all">
+                                        <div class="row g-2 align-items-center">
+                                            <div class="col-12 col-sm-6 col-md-3">
+                                                <div class="d-flex align-items-center">
+                                                    <span class="me-2 text-muted"><strong>Grade:</strong></span>
+                                                    <input type="text" name="grade" class="form-control form-control-sm border py-1 text-center" placeholder="A" style="max-width: 50px;" required>
+                                                </div>
+                                            </div>
+
+                                            <div class="col-12 col-sm-6 col-md-3">
+                                                <div class="d-flex align-items-center">
+                                                    <span class="me-2 text-muted"><strong>Range:</strong></span>
+                                                    <div class="d-flex align-items-center bg-white rounded px-2 border">
+                                                        <input type="number" name="mark_min" class="form-control form-control-sm border-0 py-1 text-center" style="max-width: 55px;" placeholder="0">
+                                                        <span class="mx-1">–</span>
+                                                        <input type="number" name="mark_max" class="form-control form-control-sm border-0 py-1 text-center" style="max-width: 55px;" placeholder="0">
+                                                        <span class="ms-1 text-muted">%</span>
+                                                    </div>
+                                                </div>
+                                            </div>
+
+                                            <div class="col-12 col-sm-6 col-md-2">
+                                                <div class="d-flex align-items-center">
+                                                    <span class="me-2 text-muted"><strong>Value:</strong></span>
+                                                    <input type="number" name="grade_value" class="form-control form-control-sm border py-1 px-2 bg-white rounded text-center" placeholder="12" style="width: 60px;" required step="0.01">
+                                                </div>
+                                            </div>
+
+                                            <div class="col-12 col-sm-6 col-md-2">
+                                                <div class="d-flex align-items-center">
+                                                    <span class="me-2 text-muted"><strong>Status:</strong></span>
+                                                    <select name="is_passed" class="form-select form-select-sm border py-1 bg-white rounded" required>
+                                                        <option value="passed">Pass</option>
+                                                        <option value="failed">Fail</option>
+                                                    </select>
+                                                </div>
+                                            </div>
+                                            
+                                            <div class="col-12 col-md-2">
+                                                <div class="d-flex gap-1 justify-content-end">
+                                                    <button type="submit" class="btn btn-sm btn-success rounded-pill px-3 shadow-sm">
+                                                        <i class="fas fa-check me-1"></i>
+                                                    </button>
+                                                    <button type="button" class="btn btn-sm btn-outline-secondary rounded-pill px-3 shadow-sm cancel-add-grade" data-form-id="{{ $form->id }}">
+                                                        <i class="fas fa-times me-1"></i>
+                                                    </button>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </form>
+                            </div>
+                        </td>
+                    </tr>
+                @endforeach
+
                 </tbody>
             </table>
         </div>
