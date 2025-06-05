@@ -2,107 +2,111 @@
 
 @section('content')
     <div class="container fade-in-text">
-    @include('layouts.message')
+        @include('layouts.message')
         
         <form action="{{ route('create.add_examination') }}" method="post" enctype="multipart/form-data">
             @csrf
             
-            <div class="container fade-in-text">
-                <header>
-                    <h4 class="text-lg font-medium text-gray-900 dark:text-gray-100">
-                        {{ __('Examinaion Details') }}
-                    </h4>
-                </header>
+            <div class="mb-4">
+                <h4 class="mb-3"><i class="bi bi-clipboard2-plus me-2"></i>Examination Details</h4>
                 
-                <div class="row mb-3">
-                    <label for="name" class="col-md-4 col-form-label text-md-end fw-bold">{{ __('Examination Name') }} <label class="red-aestrist">*</label></label>
-                    
+                <div class="row g-3">
+                    <!-- Examination Name -->
                     <div class="col-md-6">
-                        <input id="name" type="text" class="form-control @error('name') is-invalid @enderror" name="name" placeholder="Examination Name" autocomplete="name" autofocus>
-                        
+                        <label class="form-label fw-bold text-muted small mb-1">Examination Name <span class="text-danger">*</span></label>
+                        <input id="name" type="text" class="form-control @error('name') is-invalid @enderror" 
+                               name="name" placeholder="Examination Name" autocomplete="name" autofocus>
                         @error('name')
-                        <span class="invalid-feedback" role="alert">
-                            <strong>{{ $message }}</strong>
-                        </span>
+                            <div class="invalid-feedback">
+                                {{ $message }}
+                            </div>
                         @enderror
                     </div>
-                </div>
-        
-                <div class="row mb-3">
-                    <label for="start_date" class="col-md-4 col-form-label text-md-end fw-bold">{{ __('Start Date') }} <label class="red-aestrist">*</label></label>
                     
+                    <!-- Empty column for alignment -->
+                    <div class="col-md-6"></div>
+                    
+                    <!-- Start Date -->
                     <div class="col-md-6">
-                        <input id="start_date" type="date" class="form-control @error('start_date') is-invalid @enderror" name="start_date" placeholder="Start Date" required autocomplete="start_date" autofocus>
-                        
+                        <label class="form-label fw-bold text-muted small mb-1">Start Date <span class="text-danger">*</span></label>
+                        <input id="start_date" type="date" class="form-control @error('start_date') is-invalid @enderror" 
+                               name="start_date" required>
                         @error('start_date')
-                        <span class="invalid-feedback" role="alert">
-                            <strong>{{ $message }}</strong>
-                        </span>
+                            <div class="invalid-feedback">
+                                {{ $message }}
+                            </div>
                         @enderror
                     </div>
-                </div>
-        
-                <div class="row mb-3">
-                    <label for="end_date" class="col-md-4 col-form-label text-md-end fw-bold">{{ __('End Date') }} <label class="red-aestrist">*</label></label>
                     
+                    <!-- End Date -->
                     <div class="col-md-6">
-                        <input id="end_date" type="date" class="form-control @error('end_date') is-invalid @enderror" name="end_date" placeholder="End Date" required autocomplete="end_date" autofocus>
-                        
+                        <label class="form-label fw-bold text-muted small mb-1">End Date <span class="text-danger">*</span></label>
+                        <input id="end_date" type="date" class="form-control @error('end_date') is-invalid @enderror" 
+                               name="end_date" required>
                         @error('end_date')
-                        <span class="invalid-feedback" role="alert">
-                            <strong>{{ $message }}</strong>
-                        </span>
+                            <div class="invalid-feedback">
+                                {{ $message }}
+                            </div>
                         @enderror
                     </div>
-                </div>
-
-                <div class="row mb-3">
-                    <label for="release_date" class="col-md-4 col-form-label text-md-end fw-bold">{{ __('Mark Release Date') }} <label class="red-aestrist">*</label></label>
                     
+                    <!-- Mark Release Date -->
                     <div class="col-md-6">
-                        <input id="release_date" type="date" class="form-control @error('release_date') is-invalid @enderror" name="release_date" placeholder="Release Date" required autocomplete="release_date" autofocus>
-                        
+                        <label class="form-label fw-bold text-muted small mb-1">Mark Release Date <span class="text-danger">*</span></label>
+                        <input id="release_date" type="date" class="form-control @error('release_date') is-invalid @enderror" 
+                               name="release_date" required>
                         @error('release_date')
-                        <span class="invalid-feedback" role="alert">
-                            <strong>{{ $message }}</strong>
-                        </span>
+                            <div class="invalid-feedback">
+                                {{ $message }}
+                            </div>
                         @enderror
-                    </div>                   
-                </div>
-        
-                <div class="row mb-3">
-                    <label for="type" class="col-md-4 col-form-label text-md-end fw-bold">
-                        {{ __('Examination Type') }} <label class="red-aestrist">*</label>
-                    </label>
+                    </div>
                     
+                    <!-- Empty column for alignment -->
+                    <div class="col-md-6"></div>
+                    
+                    <!-- Examination Type -->
                     <div class="col-md-6">
-                        <select id="exam_type" name="type" class="form-select" aria-label="Examination Type">
-                            <option selected disabled value="NULL">Select Examination</option>
+                        <label class="form-label fw-bold text-muted small mb-1">Examination Type <span class="text-danger">*</span></label>
+                        <select id="exam_type" name="type" class="form-select @error('type') is-invalid @enderror">
+                            <option selected disabled value="NULL">Select Examination Type</option>
                             <option value="Early Term Examination">Early Term Examination</option>
                             <option value="Mid Term Examination">Mid Term Examination</option>
                             <option value="Final Term Examination">Final Term Examination</option>
                             <option value="Other">Other</option>
                         </select>
+                        @error('type')
+                            <div class="invalid-feedback">
+                                {{ $message }}
+                            </div>
+                        @enderror
                     </div>
-                </div>
-                
-                <div class="row mb-3" id="otherExam" style="display: none;">
-                    <label for="otherExaminationType" class="col-md-4 col-form-label text-md-end fw-bold">
-                        {{ __('Specify Examination Type') }}
-                    </label>
                     
-                    <div class="col-md-6">
-                        <input type="text" id="otherExam" name="otherExam" class="form-control" placeholder="Please specify">
+                    <!-- Other Examination Type (conditional) -->
+                    <div class="col-md-6" id="otherExam" style="display: none;">
+                        <label class="form-label fw-bold text-muted small mb-1">Specify Examination Type</label>
+                        <input type="text" name="otherExam" class="form-control" placeholder="Please specify">
                     </div>
-                </div>
-
-                <div class="d-flex justify-content-center pt-2">
-                    <button type="submit" class="btn text-white user-save-button">Register</button>
-                    &nbsp;&nbsp;&nbsp;
-                    <button type="reset" class="btn text-white user-reset-button">Reset</button>
+                    
+                    <!-- Form Actions -->
+                    <div class="col-12 text-end pt-3">
+                        <button type="reset" class="btn btn-outline-secondary me-2">
+                            <i class="bi bi-arrow-counterclockwise me-1"></i>Reset
+                        </button>
+                        <button type="submit" class="btn btn-primary">
+                            <i class="bi bi-save me-1"></i>Register
+                        </button>
+                    </div>
                 </div>
             </div>
         </form>
     </div>
 
+    <script>
+        // Show/hide other exam type field based on selection
+        document.getElementById('exam_type').addEventListener('change', function() {
+            const otherExamField = document.getElementById('otherExam');
+            otherExamField.style.display = this.value === 'Other' ? 'block' : 'none';
+        });
+    </script>
 @endsection

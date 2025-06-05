@@ -1,110 +1,114 @@
 @extends('layouts.app', ['title' => 'Register New Subject'])
 
 @section('content')
-    
     <div class="container fade-in-text">
         @include('layouts.message')
-        <header>
-            <h4 class="text-lg font-medium text-gray-900 dark:text-gray-100">
-                {{ __('Subject Information') }}
-            </h4>
-        </header>
 
-        <form action="{{ route('new_subject.create') }}" method="post">
-            @csrf
-
-            <div class="mb-3">
-                <div class="row">
+        <!-- Subject Information Section -->
+        <div class="mb-4">
+            <h4 class="mb-3"><i class="bi bi-book me-2"></i>Subject Information</h4>
+            
+            <form action="{{ route('new_subject.create') }}" method="post">
+                @csrf
+                
+                <div class="row g-3">
+                    <!-- Subject Name -->
                     <div class="col-md-6">
-                        <div class="row mb-3">
-                            <label for="name" class="col-md-4 col-form-label text-md-end fw-bold">
-                                {{ __('Subject Name') }} <label class="red-aestrist">*</label>
-                            </label>
-                            <div class="col-md-8">
-                                <input id="name" type="text" class="form-control @error('name') is-invalid @enderror" name="name" autocomplete="name" autofocus>
+                        <label class="form-label fw-bold text-muted small mb-1">Subject Name <span class="text-danger">*</span></label>
+                        <input id="name" type="text" class="form-control @error('name') is-invalid @enderror" 
+                               name="name" autocomplete="name" autofocus>
+                        @error('name')
+                            <div class="invalid-feedback">
+                                {{ $message }}
                             </div>
-                        </div>
-            
-                        <div class="row mb-3">
-                            <label for="form" class="col-md-4 col-form-label text-md-end fw-bold">
-                                {{ __('Form') }} <label class="red-aestrist">*</label>
-                            </label>
-                            <div class="col-md-8">
-                                <select id="form" name="form" class="form-select">
-                                    <option selected disabled>Select Form</option>
-
-                                @foreach ($forms as $form)
-                                    <option value="{{ $form->id }}">{{ $form->name }}</option>
-                                @endforeach
-
-                                </select>
-                            </div>
-                        </div>
+                        @enderror
                     </div>
-            
+                    
+                    <!-- Form -->
                     <div class="col-md-6">
-                        <div class="row mb-3">
-                            <label for="description" class="col-md-4 col-form-label text-md-end fw-bold">
-                                {{ __('Subject Description') }} <label class="red-aestrist">*</label>
-                            </label>
-                            <div class="col-md-8">
-                                <textarea id="description" class="form-control @error('description') is-invalid @enderror" name="description" autocomplete="description" autofocus></textarea>
-                            </div>
-                        </div>
-                    </div>
-                </div>
-            </div>
-            <hr>
-            <header>
-                <h4 class="text-lg font-medium text-gray-900 dark:text-gray-100">
-                    {{ __('Assign Teacher to Teach Subject') }}
-                </h4>
-            </header>
-            <div class="pt-3">
-            
-            @if ($teachers->isNotEmpty())
-                <div class="d-flex justify-content-center">
-                    <table class="table table-hover" style="max-width: 900px">
-                        <thead>
-                            <tr>
-                                <th scope="col">No</th>
-                                <th scope="col">Teacher IC Number</th>
-                                <th scope="col">Teacher Name</th>
-                                <th scope="col" class="text-center">Assign Teacher</th>
-                            </tr>
-                        </thead>
-                        <tbody id="teacherTableBody">
-
-                            @php $startNumber = 1; @endphp
-                            @foreach ($teachers as $index => $teacher)
-                            <tr class="align-middle teacher-list" data-age="{{ $teacher->age ?? 0 }}">
-                                <th scope="row">{{ $startNumber + $index }}</th>
-                                <td>{{ $teacher->ic }}</td>
-                                <td>{{ $teacher->name }}</td>
-                                <td class="text-center">
-                                    <input class="form-check-input mt-0" type="checkbox" value="{{ $teacher->id }}" name="teachers[]" 
-                                    {{ in_array($teacher->id, $teacherSelected) ? 'checked' : '' }}>
-                                </td>
-                            </tr>
+                        <label class="form-label fw-bold text-muted small mb-1">Form <span class="text-danger">*</span></label>
+                        <select id="form" name="form" class="form-select @error('form') is-invalid @enderror">
+                            <option selected disabled>Select Form</option>
+                            @foreach ($forms as $form)
+                                <option value="{{ $form->id }}">{{ $form->name }}</option>
                             @endforeach
-
-                        </tbody>
-                    </table>
+                        </select>
+                        @error('form')
+                            <div class="invalid-feedback">
+                                {{ $message }}
+                            </div>
+                        @enderror
+                    </div>
+                    
+                    <!-- Subject Description -->
+                    <div class="col-12">
+                        <label class="form-label fw-bold text-muted small mb-1">Subject Description <span class="text-danger">*</span></label>
+                        <textarea id="description" class="form-control @error('description') is-invalid @enderror" 
+                                  name="description" rows="3"></textarea>
+                        @error('description')
+                            <div class="invalid-feedback">
+                                {{ $message }}
+                            </div>
+                        @enderror
+                    </div>
                 </div>
-            @else
-                <div class="d-flex justify-content-center mt-2">
-                    <h4 class="fw-bold">teachers Not Registered</h4>
-                </div>
-            @endif
-            
-            </div>
 
-            <div class="d-flex justify-content-center pt-2">
-                <button type="submit" class="btn text-white user-save-button">Add Subject</button>
-                &nbsp;&nbsp;&nbsp;
-                <button type="reset" class="btn text-white user-reset-button">Reset</button>
-            </div>
-        </form>
+                <!-- Assign Teacher Section -->
+                <div class="mt-5">
+                    <h4 class="mb-3"><i class="bi bi-person-plus me-2"></i>Assign Teacher to Teach Subject</h4>
+                    
+                    @if ($teachers->isNotEmpty())
+                        <div class="table-responsive">
+                            <table class="table table-hover align-middle">
+                                <thead class="table-light">
+                                    <tr>
+                                        <th scope="col" style="width: 50px">#</th>
+                                        <th scope="col"><i class="bi bi-person-vcard me-1"></i>Teacher IC Number</th>
+                                        <th scope="col"><i class="bi bi-person me-1"></i>Teacher Name</th>
+                                        <th scope="col" class="text-center"><i class="bi bi-check-circle me-1"></i>Assign</th>
+                                    </tr>
+                                </thead>
+                                <tbody id="teacherTableBody">
+                                    @foreach ($teachers as $index => $teacher)
+                                    <tr class="align-middle teacher-list" data-age="{{ $teacher->age ?? 0 }}">
+                                        <th scope="row">{{ $index + 1 }}</th>
+                                        <td>{{ $teacher->ic }}</td>
+                                        <td>{{ $teacher->name }}</td>
+                                        <td class="text-center">
+                                            <div class="form-check d-flex justify-content-center">
+                                                <input class="form-check-input" type="checkbox" value="{{ $teacher->id }}" 
+                                                       name="teachers[]" id="teacher-{{ $teacher->id }}"
+                                                       {{ in_array($teacher->id, $teacherSelected) ? 'checked' : '' }}>
+                                            </div>
+                                        </td>
+                                    </tr>
+                                    @endforeach
+                                </tbody>
+                            </table>
+                        </div>
+                    @else
+                        <div class="text-center py-4">
+                            <div class="mb-3">
+                                <i class="bi bi-person-x" style="font-size: 3rem; opacity: 0.2"></i>
+                            </div>
+                            <h5 class="text-muted">No Teachers Registered</h5>
+                            <p class="text-muted">There are currently no teachers available to assign</p>
+                        </div>
+                    @endif
+                    
+                    <!-- Form Actions -->
+                    <div class="row mt-4">
+                        <div class="col-12 text-end">
+                            <button type="reset" class="btn btn-outline-secondary me-2">
+                                <i class="bi bi-arrow-counterclockwise me-1"></i>Reset
+                            </button>
+                            <button type="submit" class="btn btn-primary">
+                                <i class="bi bi-save me-1"></i>Add Subject
+                            </button>
+                        </div>
+                    </div>
+                </div>
+            </form>
+        </div>
     </div>
-
 @endsection

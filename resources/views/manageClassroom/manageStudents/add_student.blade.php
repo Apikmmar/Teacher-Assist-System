@@ -1,137 +1,141 @@
 @extends('layouts.app', ['title' => 'Register New Student'])
 
 @section('content')
-
     <div class="container fade-in-text">
-        <div>
+        @include('layouts.message')
+
+        <!-- Student Registration Form -->
+        <div class="card-header bg-white border-bottom-0 py-3">
+            <h5 class="mb-0"><i class="bi bi-person-plus me-2"></i>Student Registration</h5>
+        </div>
+
+        <div class="card-body">
             <form action="{{ route('add_student.create') }}" method="post" enctype="multipart/form-data">
                 @csrf
-                
-                <header>
-                    <h4 class="text-lg font-medium text-gray-900 dark:text-gray-100">
-                        {{ __('Student Profile') }}
-                    </h4>
-                </header>
-                
-                <div class="row mb-3">
-                    <label for="ic" class="col-md-4 col-form-label text-md-end fw-bold">{{ __('Identity Card Number') }} <label class="red-aestrist">*</label></label>
-                    
+                <div class="row g-3">
+                    <!-- Identity Card Number -->
                     <div class="col-md-6">
-                        <input id="ic" type="text" class="form-control @error('ic') is-invalid @enderror" name="ic" placeholder="Identity Card Number" autocomplete="ic" autofocus>
-                        
+                        <label class="form-label fw-bold text-muted small mb-1">Identity Card Number <span class="text-danger">*</span></label>
+                        <input id="ic" type="text" class="form-control @error('ic') is-invalid @enderror" 
+                               name="ic" placeholder="Identity Card Number" autocomplete="ic" autofocus>
                         @error('ic')
-                        <span class="invalid-feedback" role="alert">
-                            <strong>{{ $message }}</strong>
-                        </span>
+                            <div class="invalid-feedback">
+                                {{ $message }}
+                            </div>
                         @enderror
                     </div>
-                </div>
-        
-                <div class="row mb-3">
-                    <label for="name" class="col-md-4 col-form-label text-md-end fw-bold">{{ __('Name') }} <label class="red-aestrist">*</label></label>
                     
+                    <!-- Name -->
                     <div class="col-md-6">
-                        <input id="name" type="text" class="form-control @error('name') is-invalid @enderror" name="name" placeholder="Name" required autocomplete="name" autofocus>
-                        
+                        <label class="form-label fw-bold text-muted small mb-1">Name <span class="text-danger">*</span></label>
+                        <input id="name" type="text" class="form-control @error('name') is-invalid @enderror" 
+                               name="name" placeholder="Name" required autocomplete="name">
                         @error('name')
-                        <span class="invalid-feedback" role="alert">
-                            <strong>{{ $message }}</strong>
-                        </span>
+                            <div class="invalid-feedback">
+                                {{ $message }}
+                            </div>
                         @enderror
                     </div>
-                </div>
-        
-                <div class="row mb-3">
-                    <label for="ic" class="col-md-4 col-form-label text-md-end fw-bold">{{ __('Gender') }} <label class="red-aestrist">*</label></label>
-        
+                    
+                    <!-- Gender -->
                     <div class="col-md-6">
-                        <select id="user_gender" name="gender" class="form-select" aria-label="Gender">
+                        <label class="form-label fw-bold text-muted small mb-1">Gender <span class="text-danger">*</span></label>
+                        <select id="user_gender" name="gender" class="form-select @error('gender') is-invalid @enderror">
                             <option selected disabled>Select Gender</option>
                             <option value="Men">Men</option>
                             <option value="Women">Women</option>
                         </select>
-                    </div>                        
-                </div>
-        
-                <div class="row mb-3">
-                    <label for="ic" class="col-md-4 col-form-label text-md-end fw-bold">{{ __('Date Of Birth') }} <label class="red-aestrist">*</label></label>
+                        @error('gender')
+                            <div class="invalid-feedback">
+                                {{ $message }}
+                            </div>
+                        @enderror
+                    </div>
                     
+                    <!-- Date of Birth -->
                     <div class="col-md-6">
-                        <input id="dob" type="date" class="form-control @error('dob') is-invalid @enderror" name="dob" value="{{ old('dob') }}" required autocomplete="dob">
-                
+                        <label class="form-label fw-bold text-muted small mb-1">Date of Birth <span class="text-danger">*</span></label>
+                        <input id="dob" type="date" class="form-control @error('dob') is-invalid @enderror" 
+                               name="dob" value="{{ old('dob') }}" required>
                         @error('dob')
-                            <span class="invalid-feedback" role="alert">
-                                <strong>{{ $message }}</strong>
-                            </span>
+                            <div class="invalid-feedback">
+                                {{ $message }}
+                            </div>
                         @enderror
                     </div>
-                </div>
-    
-                <div class="row mb-3">
-                    <label for="ic" class="col-md-4 col-form-label text-md-end fw-bold">{{ __('Date Of Joining School') }} <label class="red-aestrist">*</label></label>
                     
+                    <!-- Date of Joining School -->
                     <div class="col-md-6">
-                        <input id="jsd" type="date" class="form-control @error('jsd') is-invalid @enderror" name="jsd" value="{{ old('jsd') }}" required autocomplete="jsd">
-                
+                        <label class="form-label fw-bold text-muted small mb-1">Date of Joining School <span class="text-danger">*</span></label>
+                        <input id="jsd" type="date" class="form-control @error('jsd') is-invalid @enderror" 
+                               name="jsd" value="{{ old('jsd') }}" required>
                         @error('jsd')
-                            <span class="invalid-feedback" role="alert">
-                                <strong>{{ $message }}</strong>
-                            </span>
+                            <div class="invalid-feedback">
+                                {{ $message }}
+                            </div>
                         @enderror
                     </div>
-                </div>
-    
-                <div class="row mb-3">
-                    <label for="ic" class="col-md-4 col-form-label text-md-end fw-bold">{{ __('Status') }} <label class="red-aestrist">*</label></label>
                     
+                    <!-- Status -->
                     <div class="col-md-6">
-                        <select id="status" name="status" class="form-select" aria-label="Gender">
+                        <label class="form-label fw-bold text-muted small mb-1">Status <span class="text-danger">*</span></label>
+                        <select id="status" name="status" class="form-select">
                             <option selected value="Active">Active</option>
                             <option value="Inactive">Inactive</option>
                         </select>
-                    </div> 
-                </div>
-
-                <div class="row mb-3">
-                    <label for="ic" class="col-md-4 col-form-label text-md-end fw-bold">{{ __('Classroom') }}</label>
+                    </div>
                     
-                    <div class="col-md-6">
-                        <select id="status" name="classroom" class="form-select" aria-label="Gender">
+                    <!-- Classroom -->
+                    <div class="col-md-12">
+                        <label class="form-label fw-bold text-muted small mb-1">Classroom</label>
+                        <select id="classroom" name="classroom" class="form-select">
                             <option selected value="">Not Applicable</option>
-    
-                        @foreach ($classes as $class)
-                            <option value={{ $class->id }}>{{ $class->name }}</option>
-                        @endforeach
-                        
+                            @foreach ($classes as $class)
+                                <option value="{{ $class->id }}">{{ $class->name }}</option>
+                            @endforeach
                         </select>
-                    </div> 
-                </div>
-    
-                <div class="d-flex justify-content-center pt-2">
-                    <button type="submit" class="btn text-white user-save-button">Add Student</button>
-                    &nbsp;&nbsp;&nbsp;
-                    <button type="reset" class="btn text-white user-reset-button">Reset</button>
+                    </div>
+                    
+                    <!-- Form Actions -->
+                    <div class="col-12 text-end pt-3">
+                        <button type="reset" class="btn btn-outline-secondary me-2">
+                            <i class="bi bi-arrow-counterclockwise me-1"></i>Reset
+                        </button>
+                        <button type="submit" class="btn btn-primary">
+                            <i class="bi bi-save me-1"></i>Add Student
+                        </button>
+                    </div>
                 </div>
             </form>
         </div>
         <hr>
-        <div>
-            <header>
-                <h4 class="text-lg font-medium text-gray-900 dark:text-gray-100">
-                    {{ __('Upload Students') }}
-                </h4>
-            </header>
-            <form action="{{ route('import.student') }}" method="POST" enctype="multipart/form-data" class="mt-4">
-                @csrf
         
-                <div class="mb-4">
-                    <label for="import_csv" class="block text-sm font-medium text-gray-700 dark:text-gray-300">Choose a file(.csv):</label>
-                    <div class="input-group">
-                        <input type="file" class="form-control" id="import_csv" name="import_csv" accept=".csv">
-                        <label class="input-group-text" for="import_csv">Upload</label>
+        <!-- Bulk Upload Section -->
+        <div class="card-header bg-white border-bottom-0 py-3">
+            <h5 class="mb-0"><i class="bi bi-upload me-2"></i>Upload Students</h5>
+        </div>
+        
+        <div class="card-body">
+            <form action="{{ route('import.student') }}" method="POST" enctype="multipart/form-data">
+                @csrf
+                <div class="row g-3">
+                    <div class="col-md-8">
+                        <label class="form-label fw-bold text-muted small mb-1">CSV File</label>
+                        <input type="file" class="form-control @error('import_csv') is-invalid @enderror" 
+                               id="import_csv" name="import_csv" accept=".csv">
+                        @error('import_csv')
+                            <div class="invalid-feedback">
+                                {{ $message }}
+                            </div>
+                        @enderror
+                        <div class="form-text">Upload a CSV file containing student data</div>
+                    </div>
+                    <div class="col-md-4 d-flex align-items-end">
+                        <button type="submit" class="btn btn-success w-100">
+                            <i class="bi bi-upload me-1"></i>Import Students
+                        </button>
                     </div>
                 </div>
-                <button type="submit" class="btn btn-success tr-button w-full mt-2 py-2">Import Students</button>
             </form>
         </div>
     </div>

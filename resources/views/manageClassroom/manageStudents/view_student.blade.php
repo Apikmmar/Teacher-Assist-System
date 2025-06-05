@@ -1,124 +1,125 @@
 @extends('layouts.app', ['title' => 'Student Details'])
 
 @section('content')
-
     <div class="container fade-in-text">
         @include('layouts.message')
 
-    @can('coordinator')
-        <div class="d-flex justify-content-end mb-2">
-            <div class="btn-group mb-2">
+        <!-- Student Actions (Coordinator Only) -->
+        @can('coordinator')
+        <div class="card-header bg-white border-bottom-0 py-3 d-flex justify-content-end">
+            <div class="btn-group">
                 <button type="button" class="btn btn-info text-white dropdown-toggle" data-bs-toggle="dropdown" aria-expanded="false">
-                    Edit Student
+                    <i class="bi bi-gear me-1"></i>Manage Student
                 </button>
                 <ul class="dropdown-menu dropdown-menu-end">
-                <li><a class="dropdown-item" href="{{ route('edit_student', ['id' => $std->id]) }}"><i class="bi bi-pencil"></i> Edit Student Info</a></li>
-
-                @if ($std->classroom_id && $std->status == 'Active')
-                <li><a class="dropdown-item" href="{{ route('student_subject', ['id' => $std->id]) }}"><i class="bi bi-book"></i> Registered Subject</a></li>
-                @endif
-
+                    <li><a class="dropdown-item" href="{{ route('edit_student', ['id' => $std->id]) }}"><i class="bi bi-pencil me-2"></i>Edit Student Info</a></li>
+                    @if ($std->classroom_id && $std->status == 'Active')
+                    <li><a class="dropdown-item" href="{{ route('student_subject', ['id' => $std->id]) }}"><i class="bi bi-book me-2"></i>Registered Subjects</a></li>
+                    @endif
                 </ul>
             </div>
         </div>
-    @endcan
+        @endcan
 
-        @include('manageClassroom.partials.student_info') 
+        <!-- Student Information Section -->
+        @include('manageClassroom.partials.student_info')
 
-    @if ($std->classroom_id && $std->status == 'Active')
+        <!-- Subjects Taken Section -->
+        @if ($std->classroom_id && $std->status == 'Active')
         <hr>
-        <header>
-            <h4 class="text-lg font-medium text-gray-900 dark:text-gray-100">
-                {{ __('Subject Taken by The Student') }}
-            </h4>
-        </header>
-
-    @if ($subsTaken->isNotEmpty())
-        <div class="d-flex justify-content-start align-items-center">
-            <table class="table table-hover" style="max-width: 400px;">
-                <tbody id="teacherTableBody">
-                    @php $startNumber = 1; @endphp
-                    @foreach ($subsTaken as $index => $subs)
-                        <tr class="align-middle teacher-list">
-                            <th scope="row">{{ $startNumber + $index }}</th>
-                            <td>{{ $subs }}</td>
-                        </tr>
-                    @endforeach
-                </tbody>
-            </table>
+        <div class="card-header bg-white border-bottom-0 py-3">
+            <h5 class="mb-0"><i class="bi bi-book me-2"></i>Subjects Taken</h5>
         </div>
-    @else
-        <div class="d-flex justify-content-center mt-2">
-            <h4 class="fw-bold">No Subject Registered</h4>
+        
+        <div class="card-body">
+            @if ($subsTaken->isNotEmpty())
+                <div class="table-responsive">
+                    <table class="table table-hover align-middle" style="max-width: 400px;">
+                        <thead class="table-light">
+                            <tr>
+                                <th scope="col" style="width: 50px">#</th>
+                                <th scope="col"><i class="bi bi-book me-1"></i>Subject</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            @foreach ($subsTaken as $index => $subs)
+                                <tr>
+                                    <th scope="row">{{ $index + 1 }}</th>
+                                    <td>{{ $subs }}</td>
+                                </tr>
+                            @endforeach
+                        </tbody>
+                    </table>
+                </div>
+            @else
+                <div class="text-center py-4">
+                    <div class="mb-3">
+                        <i class="bi bi-journal-x" style="font-size: 3rem; opacity: 0.2"></i>
+                    </div>
+                    <h5 class="text-muted">No Subjects Registered</h5>
+                    <p class="text-muted">This student is not currently registered for any subjects</p>
+                </div>
+            @endif
         </div>
-    @endif
+        @endif
 
-    @endif
-
-    @if ($transition)
+        <!-- Transition Data Section -->
+        @if ($transition)
         <hr>
-        <header>
-            <h4 class="text-lg font-medium text-gray-900 dark:text-gray-100">
-                {{ __('Transition Data') }}
-            </h4>
-        </header>
-
-        <div>
-            <div class="row mb-3">
+        <div class="card-header bg-white border-bottom-0 py-3">
+            <h5 class="mb-0"><i class="bi bi-arrow-left-right me-2"></i>Transition Data</h5>
+        </div>
+        
+        <div class="card-body">
+            <div class="row g-3">
+                <!-- Left Column -->
                 <div class="col-md-6">
-                    <div class="row mb-3">
-                        <label for="ic" class="col-md-4 col-form-label text-md-end fw-bold">{{ __('Transition Date') }}</label>
-                        <div class="col-md-8">
-                            <input id="ic" type="date" class="form-control @error('ic') is-invalid @enderror" value="{{ $transition->transition_date }}" readonly autocomplete="ic" autofocus>
-                        </div>
+                    <div class="mb-3">
+                        <label class="form-label fw-bold text-muted small mb-1">Transition Date</label>
+                        <div class="form-control bg-light">{{ $transition->transition_date }}</div>
                     </div>
-        
-                    <div class="row mb-3">
-                        <label for="age" class="col-md-4 col-form-label text-md-end fw-bold">{{ __('Reason of Changing School') }}</label>
-                        <div class="col-md-8">
-                            <input id="age" type="text" class="form-control @error('age') is-invalid @enderror" value="{{ $transition->change_school_reason }}" readonly autocomplete="age">
-                        </div>
+                    
+                    <div class="mb-3">
+                        <label class="form-label fw-bold text-muted small mb-1">Reason of Changing School</label>
+                        <div class="form-control bg-light">{{ $transition->change_school_reason }}</div>
                     </div>
-        
-                    <div class="row mb-3">
-                        <label for="status" class="col-md-4 col-form-label text-md-end fw-bold">{{ __('Reason of Dropping School') }}</label>
-                        <div class="col-md-8">
-                            <input id="status" type="text" class="form-control @error('status') is-invalid @enderror" value="{{ $transition->reason_drop }}" readonly autocomplete="status">
-                        </div>
+                    
+                    <div class="mb-3">
+                        <label class="form-label fw-bold text-muted small mb-1">Reason of Dropping School</label>
+                        <div class="form-control bg-light">{{ $transition->reason_drop }}</div>
                     </div>
                 </div>
-        
+                
+                <!-- Right Column -->
                 <div class="col-md-6">
-                    <div class="row mb-3">
-                        <label for="name" class="col-md-4 col-form-label text-md-end fw-bold">{{ __('Last Classroom') }}</label>
-                        <div class="col-md-8">
-                            <input id="name" type="text" class="form-control @error('name') is-invalid @enderror" value="{{ $transition->classID->name ?? 'N/A' }}" readonly autocomplete="name">
-                        </div>
+                    <div class="mb-3">
+                        <label class="form-label fw-bold text-muted small mb-1">Last Classroom</label>
+                        <div class="form-control bg-light">{{ $transition->classID->name ?? 'N/A' }}</div>
                     </div>
-        
-                    <div class="row mb-3">
-                        <label for="student_id" class="col-md-4 col-form-label text-md-end fw-bold">{{ __('New School Name') }}</label>
-                        <div class="col-md-8">
-                            <input id="student_id" type="text" class="form-control @error('student_id') is-invalid @enderror" value="{{ $transition->new_school_name }}" readonly autocomplete="student_id">
-                        </div>
+                    
+                    <div class="mb-3">
+                        <label class="form-label fw-bold text-muted small mb-1">New School Name</label>
+                        <div class="form-control bg-light">{{ $transition->new_school_name }}</div>
                     </div>
                 </div>
             </div>
-        </div>  
-    @endif
-    
-        <div class="d-flex justify-content-end">
-            @can('coordinator')
-                <button data-bs-toggle="modal" data-bs-target="#confirmDelete{{ $std->id }}" class="btn btn-danger tr-button">Delete Student</button>
-            @endcan
+        </div>
+        @endif
 
-            @include('layouts.partials.modal', [
-                    'id' => $std->id, 
-                    'name' => "Are you sure you want to remove " . $std->name . " from from the database?",
-                    'deleteRoute' => route('delete_student.delete', ['id' => $std->id]),
-                    'method' => 'DELETE'
-            ])
+        <!-- Delete Button -->
+        @can('coordinator')
+        <div class="d-flex justify-content-end pt-3">
+            <button data-bs-toggle="modal" data-bs-target="#confirmDelete{{ $std->id }}" class="btn btn-danger">
+                <i class="bi bi-trash me-1"></i>Delete Student
+            </button>
         </div>
 
+        @include('layouts.partials.modal', [
+            'id' => $std->id, 
+            'name' => "Are you sure you want to remove " . $std->name . " from the database?",
+            'deleteRoute' => route('delete_student.delete', ['id' => $std->id]),
+            'method' => 'DELETE'
+        ])
+        @endcan
     </div>
 @endsection

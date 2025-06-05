@@ -4,164 +4,177 @@
     <div class="container fade-in-text">
         @include('layouts.message')
 
-        <div class="row mt-2">
-            <div class="col-4 d-flex justify-content-center align-items-center">
-                <img src="{{ asset('storage/asset/profile-photos/' . $teacher->photo) }}" style="max-width: 250px;" class="img-fluid" alt="SMK Baling Teacher.png">
-            </div>
-            
-            <div class="col-8">
-                <div class="row mb-3">
-                    <label for="ic" class="col-md-4 col-form-label text-md-end fw-bold">{{ __('Identity Card Number') }}</label>
-                    
-                    <div class="col-md-8">
-                        <input id="ic" type="text" class="form-control @error('ic') is-invalid @enderror" name="ic" value="{{ $teacher->ic }}" placeholder="Identity Card Number" readonly autocomplete="ic" autofocus>
-                    </div>
-                </div>
-    
-                <div class="row mb-3">
-                    <label for="name" class="col-md-4 col-form-label text-md-end fw-bold">{{ __('Name') }}</label>
-                    
-                    <div class="col-md-8">
-                        <input id="name" type="text" class="form-control @error('name') is-invalid @enderror" name="name" value="{{ $teacher->name }}" placeholder="Name" readonly autocomplete="name" autofocus>
-                    </div>
-                </div>
-    
-                <div class="row mb-3">
-                    <label for="ic" class="col-md-4 col-form-label text-md-end fw-bold">{{ __('Age') }}</label>
-                    
-                    <div class="col-md-8">
-                        <input id="ic" type="text" class="form-control @error('ic') is-invalid @enderror" name="ic" value="{{ $age }} years old" placeholder="Teacher ID" readonly autocomplete="ic" autofocus>
-                    </div>
-                </div>
-    
-                <div class="row mb-3">
-                    <label for="ic" class="col-md-4 col-form-label text-md-end fw-bold">{{ __('Teacher ID') }}</label>
-                    
-                    <div class="col-md-8">
-                        <input id="ic" type="text" class="form-control @error('ic') is-invalid @enderror" name="ic" value="{{ $teacher->teacher_id }}" placeholder="Teacher ID" readonly autocomplete="ic" autofocus>
-                    </div>
-                </div>
-    
-                <div class="row mb-3">
-                    <label for="ic" class="col-md-4 col-form-label text-md-end fw-bold">{{ __('Gender') }}</label>
-                    
-                    <div class="col-md-8">
-                        <input id="ic" type="text" class="form-control @error('ic') is-invalid @enderror" name="ic" value="{{ $teacher->gender }}" placeholder="Teacher ID" readonly autocomplete="ic" autofocus>
-                    </div>
-                </div>
-    
-                <div class="row mb-3">
-                    <label for="ic" class="col-md-4 col-form-label text-md-end fw-bold">{{ __('Contact') }}</label>
-                    
-                    <div class="col-md-8">
-                        <input id="ic" type="text" class="form-control @error('ic') is-invalid @enderror" name="ic" value="{{ $teacher->contact }}" placeholder="Contact" readonly autocomplete="ic" autofocus>
-                    </div>
-                </div>
-    
-                <div class="row mb-3">
-                    <label for="ic" class="col-md-4 col-form-label text-md-end fw-bold">{{ __('Email') }}</label>
-                    
-                    <div class="col-md-8">
-                        <input id="ic" type="text" class="form-control @error('ic') is-invalid @enderror" name="ic" value="{{ $teacher->email }}" placeholder="Email" readonly autocomplete="ic" autofocus>
+        <!-- Teacher Profile Section -->
+        <div class="card-body">
+            <div class="row">
+                <!-- Teacher Photo -->
+                <div class="col-md-4 text-center mb-4 mb-md-0">
+                    <div class="border rounded-3 p-2 bg-light" style="max-width: 250px; margin: 0 auto;">
+                        <img src="{{ asset('storage/asset/profile-photos/' . $teacher->photo) }}" 
+                                class="img-fluid rounded-2" 
+                                alt="{{ $teacher->name }} profile photo">
                     </div>
                 </div>
                 
-            @if ($teacher_roles->isNotEmpty())
-                <div class="row mb-3">
-                    <label for="ic" class="col-md-4 col-form-label text-md-end fw-bold">{{ __('Roles') }}</label>
-                    
-                    <div class="col-md-8 mt-2">
-                    @foreach ($teacher_roles as $roles)
-                        <input class="form-check-input" type="checkbox" value="" id="flexCheckChecked" checked disabled>
-                        <label class="form-check-label" for="flexCheckChecked">{{ $roles->name }}</label>
-                    @endforeach
+                <!-- Teacher Details -->
+                <div class="col-md-8">
+                    <div class="row g-3">
+                        <!-- Identity Card Number -->
+                        <div class="col-md-6">
+                            <label class="form-label fw-bold text-muted small mb-1">Identity Card Number</label>
+                            <div class="form-control bg-light">{{ $teacher->ic }}</div>
+                        </div>
+                        
+                        <!-- Name -->
+                        <div class="col-md-6">
+                            <label class="form-label fw-bold text-muted small mb-1">Name</label>
+                            <div class="form-control bg-light">{{ $teacher->name }}</div>
+                        </div>
+                        
+                        <!-- Age -->
+                        <div class="col-md-6">
+                            <label class="form-label fw-bold text-muted small mb-1">Age</label>
+                            <div class="form-control bg-light">{{ $age }} years old</div>
+                        </div>
+                        
+                        <!-- Teacher ID -->
+                        <div class="col-md-6">
+                            <label class="form-label fw-bold text-muted small mb-1">Teacher ID</label>
+                            <div class="form-control bg-light">{{ $teacher->teacher_id }}</div>
+                        </div>
+                        
+                        <!-- Gender -->
+                        <div class="col-md-6">
+                            <label class="form-label fw-bold text-muted small mb-1">Gender</label>
+                            <div class="form-control bg-light">{{ $teacher->gender }}</div>
+                        </div>
+                        
+                        <!-- Contact -->
+                        <div class="col-md-6">
+                            <label class="form-label fw-bold text-muted small mb-1">Contact</label>
+                            <div class="form-control bg-light">{{ $teacher->contact }}</div>
+                        </div>
+                        
+                        <!-- Email -->
+                        <div class="col-md-12">
+                            <label class="form-label fw-bold text-muted small mb-1">Email</label>
+                            <div class="form-control bg-light">{{ $teacher->email }}</div>
+                        </div>
+                        
+                        <!-- Roles -->
+                        @if ($teacher_roles->isNotEmpty())
+                            <div class="col-md-12">
+                                <label class="form-label fw-bold text-muted small mb-1">Roles</label>
+                                <div class="d-flex flex-wrap gap-3">
+                                    @foreach ($teacher_roles as $roles)
+                                        <span class="badge bg-primary bg-opacity-10 text-primary">
+                                            <i class="bi bi-check-circle-fill me-1"></i>{{ $roles->name }}
+                                        </span>
+                                    @endforeach
+                                </div>
+                            </div>
+                        @endif
                     </div>
                 </div>
-            @endif
-
             </div>
+        </div>
+        <hr>
 
+        <!-- Update Roles Section (Coordinator Only) -->
         @can('coordinator')
-            <div class="row">
-                <div class="col d-flex justify-content-end">
-                    <button class="btn btn-success tr-button" id="updateRoleSwitch">Set Teacher's Roles</button>
-                </div>
+            <div class="card-header bg-white border-bottom-0 py-3 d-flex justify-content-between align-items-center">
+                <h5 class="mb-0"><i class="bi bi-person-gear me-2"></i>Update Teacher Roles</h5>
+                <button class="btn btn-sm btn-outline-primary" id="updateRoleSwitch">
+                    <i class="bi bi-pencil-square me-1"></i>Edit Roles
+                </button>
             </div>
-            <div id="updateRoleForm">
-                <hr>
-                <header>
-                    <h4 class="text-lg font-medium text-gray-900 dark:text-gray-100">
-                        {{ __('Update Teacher Role') }}
-                    </h4>
-                </header>
+            
+            <div class="card-body" id="updateRoleForm" style="display: none;">
                 <form action="{{ route('update.teacher_role', ['id' => $teacher->id]) }}" method="post">
                     @csrf
-
-                    <div class="row">
-                        <div class="col-8">
-                            <div class="row">
-                            @foreach ($allRoles as $role)
-                                <div class="col-md-3 mb-2 d-flex align-items-center">
-                                    <input class="form-check-input" type="checkbox" name="roles[]" value="{{ $role->id }}" id="role-{{ $role->id }}" 
-                                        @if(in_array($role->id, $teacher_roles->pluck('id')->toArray())) checked @endif>
-                                    <label class="form-check-label ms-2" for="role-{{ $role->id }}">{{ $role->name }}</label>
-                                </div>
-                            @endforeach
-
+                    <div class="row g-3">
+                        <div class="col-md-9">
+                            <div class="row g-3">
+                                @foreach ($allRoles as $role)
+                                    <div class="col-md-4">
+                                        <div class="form-check">
+                                            <input class="form-check-input" type="checkbox" 
+                                                    name="roles[]" value="{{ $role->id }}" 
+                                                    id="role-{{ $role->id }}"
+                                                    @if(in_array($role->id, $teacher_roles->pluck('id')->toArray())) checked @endif>
+                                            <label class="form-check-label" for="role-{{ $role->id }}">
+                                                {{ $role->name }}
+                                            </label>
+                                        </div>
+                                    </div>
+                                @endforeach
                             </div>
                         </div>
-                        <div class="col">
-                            <button type="submit" class="btn btn-warning text-white tr-button">Update Role</button>                    
+                        <div class="col-md-3 text-end">
+                            <button type="submit" class="btn btn-warning text-white w-100">
+                                <i class="bi bi-save me-1"></i>Update Roles
+                            </button>
                         </div>
                     </div>
                 </form>
             </div>
         @endcan
-        </div>
         <hr>
-        <div>
-            <section>
-                <header>
-                    <h4 class="text-lg font-medium text-gray-900 dark:text-gray-100">
-                        {{ __('Teaches Subject') }}
-                    </h4>
-                </header>
-            
-                <div>
-            @if ($subClassTeacher)
-            <table class="table table-hover">
-                <thead>
-                    <tr>
-                        <th scope="col">No</th>
-                        <th scope="col">Subject Name</th>
-                        <th scope="col">Form</th>
-                        <th scope="col">Subject Descrption</th>
-                    </tr>
-                </thead>
-                <tbody>
-                    @foreach ($subClassTeacher as $index => $subject)
-                    <tr class="align-middle teacher-list">
-                        <th scope="row">{{ 1 + $index }}</th>
-                        <td>{{ $subject['subjectTeach'] }}</td>
-                        <td>{{ $subject['subjectForm'] }}</td>
-                        <td>
-                            <ul class="mt-2">
-                                @foreach ($subject['classNames'] as $className)
-                                    <li>{{ $className }}</li>
-                                @endforeach
-                            </ul>
-                        </td>
-                    </tr>
-                @endforeach
-            </table>
-        @else
-        
-            <div class="d-flex justify-content-center mt-2">
-                <h4 class="fw-bold">No Subject Assiged</h4>
-            </div>
-        @endif
+
+        <!-- Teaches Subjects Section -->
+        <div class="card-header bg-white border-bottom-0 py-3">
+            <h5 class="mb-0"><i class="bi bi-book me-2"></i>Teaches Subjects</h5>
         </div>
-            </section>
+        
+        <div class="card-body">
+            @if ($subClassTeacher)
+                <div class="table-responsive">
+                    <table class="table table-hover align-middle">
+                        <thead class="table-light">
+                            <tr>
+                                <th scope="col" style="width: 50px">#</th>
+                                <th scope="col"><i class="bi bi-book me-1"></i>Subject</th>
+                                <th scope="col"><i class="bi bi-layers me-1"></i>Form</th>
+                                <th scope="col"><i class="bi bi-people me-1"></i>Classes</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            @foreach ($subClassTeacher as $index => $subject)
+                                <tr>
+                                    <th scope="row">{{ $index + 1 }}</th>
+                                    <td class="fw-medium">{{ $subject['subjectTeach'] }}</td>
+                                    <td>{{ $subject['subjectForm'] }}</td>
+                                    <td>
+                                        <ul class="list-unstyled mb-0">
+                                            @foreach ($subject['classNames'] as $className)
+                                                <li><span class="badge bg-secondary bg-opacity-10 text-dark">{{ $className }}</span></li>
+                                            @endforeach
+                                        </ul>
+                                    </td>
+                                </tr>
+                            @endforeach
+                        </tbody>
+                    </table>
+                </div>
+            @else
+                <div class="text-center py-4">
+                    <div class="mb-3">
+                        <i class="bi bi-journal-x" style="font-size: 3rem; opacity: 0.2"></i>
+                    </div>
+                    <h5 class="text-muted">No Subjects Assigned</h5>
+                    <p class="text-muted">This teacher is not currently assigned to any subjects</p>
+                </div>
+            @endif
         </div>
     </div>
+
+    <script>
+        document.getElementById('updateRoleSwitch').addEventListener('click', function() {
+            const form = document.getElementById('updateRoleForm');
+            form.style.display = form.style.display === 'none' ? 'block' : 'none';
+            this.innerHTML = form.style.display === 'none' 
+                ? '<i class="bi bi-pencil-square me-1"></i>Edit Roles' 
+                : '<i class="bi bi-x-circle me-1"></i>Cancel';
+        });
+    </script>
 @endsection

@@ -9,7 +9,7 @@
     <div class="container-fluid h-100">
         <div class="d-flex justify-content-between align-items-center w-100">
             <div class="d-flex flex-grow-1">
-                <p class="navbar-text fw-bold text-dark m-0">Sekolah Menengah Kebangsaan Baling</p>
+                <p class="navbar-text fw-bold text-dark m-0">EduLyte: Teacher Assist System</p>
             </div>
             <div class="d-flex align-items-center">
                 <div class="dropdown me-4">
