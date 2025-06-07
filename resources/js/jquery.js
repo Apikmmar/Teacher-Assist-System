@@ -149,61 +149,89 @@ $(document).ready(function() {
     })
 
     $("#uploadButton").click(function () {
-        const fileInput = $("#marksFile")[0];
-        if (fileInput.files.length === 0) {
-            alert("Please select a file.");
-            return;
-        }
-
-        const file = fileInput.files[0];
-        const reader = new FileReader();
-
-        reader.onload = function (e) {
-            const csvData = e.target.result;
-            const rows = csvData.split("\n").filter(row => row.trim() !== "");
-
-            const data = rows.map(row => {
-                const [ic, mark] = row.split(",").map(item => item.trim());
-                return { ic, mark };
-            });
-
-            updateMarks(data);
-        };
-
-        reader.readAsText(file);
-    });
-
-    function updateMarks(data) {
-        data.forEach(item => {
-            const { ic, mark } = item;
-
-            $("tbody tr").each(function () {
-                const rowIC = $(this).find("td:nth-child(2)").text().trim();
-                if (rowIC === ic) {
-                    $(this).find(".mark-input").val(mark);
-
-                    calculateGrade($(this), mark);
-                }
-            });
-        });
+    const fileInput = $("#marksFile")[0];
+    if (fileInput.files.length === 0) {
+        alert("Please select a file.");
+        return;
     }
 
-    function calculateGrade(row, mark) {
-        const grades = window.gradeRanges;
-        let grade = "N/A";
-        let pointer = 0.00;
+    const file = fileInput.files[0];
+    const reader = new FileReader();
 
-        for (const range of grades) {
-            if (mark >= range.mark_min && mark <= range.mark_max) {
-                grade = range.grade;
-                pointer = range.grade_value;
-                break;
+    reader.onload = function (e) {
+        const csvData = e.target.result;
+        // Skip header row if exists and filter empty rows
+        const rows = csvData.split("\n")
+            .filter(row => row.trim() !== "")
+            .slice(1); // Remove this line if your CSV doesn't have headers
+
+        const data = rows.map(row => {
+            const [ic, mark] = row.split(",").map(item => item.trim());
+            return { 
+                ic, 
+                mark: parseFloat(mark) // Convert mark to number
+            };
+        });
+
+        updateMarks(data);
+    };
+
+    reader.readAsText(file);
+});
+
+function updateMarks(data) {
+    data.forEach(item => {
+        const { ic, mark } = item;
+
+        $("tbody tr").each(function () {
+            const rowIC = $(this).find("td:nth-child(2)").text().trim();
+            if (rowIC === ic) {
+                const markInput = $(this).find(".mark-input");
+                markInput.val(mark);
+                
+                // Trigger both change and input events to ensure grade calculation
+                markInput.trigger('input').trigger('change');
             }
-        }
+        });
+    });
+}
 
+// Make sure this is bound to your mark inputs
+$(document).on('input change', '.mark-input', function() {
+    const inputValue = $(this).val().trim();
+    let mark = null;
+    
+    // Check if input is a valid number
+    if (inputValue !== "" && !isNaN(inputValue)) {
+        mark = parseFloat(inputValue);
+    }
+    
+    calculateGrade($(this).closest('tr'), mark);
+});
+
+function calculateGrade(row, mark) {
+    const grades = window.gradeRanges;
+    let grade = "N/A";
+    let pointer = 0.00;
+
+    if (mark === null || isNaN(mark)) {
+        // Show N/A for invalid inputs
         row.find(".grade-output").val(grade);
         row.find(".grade-val-output").val(pointer);
+        return;
     }
+
+    for (const range of grades) {
+        if (mark >= range.mark_min && mark <= range.mark_max) {
+            grade = range.grade;
+            pointer = range.grade_value;
+            break;
+        }
+    }
+
+    row.find(".grade-output").val(grade);
+    row.find(".grade-val-output").val(pointer);
+}
 
     $('#updateRoleForm').hide();
 

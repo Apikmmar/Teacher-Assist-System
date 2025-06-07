@@ -2,7 +2,7 @@
     <div class="d-flex position-sticky justify-content-center">
         <div class="text-center">
             <a href="{{ route('dashboard') }}">
-                <img src="{{ asset('asset/default-image/smkb_logo.jpg') }}" style="max-width: 57px;" class="img-fluid" alt="SMK Baling.png">
+                <img src="{{ asset('asset/default-image/edulyte_logo.png') }}" style="max-width: 89px;" class="img-fluid" alt="EduLyte.png">
             </a>
         </div>
     </div>

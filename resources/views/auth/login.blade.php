@@ -7,7 +7,7 @@
 
             {{-- SMB Photo --}}
             <div class="row mb-4 justify-content-center">
-                <img src="{{ asset('asset/default-image/smkb_logo.jpg') }}" style="max-width: 180px" class="img-fluid" alt="SMK Baling.png">
+                <img src="{{ asset('asset/default-image/edulyte_logo.png') }}" style="max-width: 180px" class="img-fluid" alt="edulyte_logo.png">
             </div>
             
             <!-- IC Number -->
