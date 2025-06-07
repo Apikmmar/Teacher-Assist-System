@@ -201,11 +201,22 @@ $(document).on('input change', '.mark-input', function() {
     const inputValue = $(this).val().trim();
     let mark = null;
     
-    // Check if input is a valid number
-    if (inputValue !== "" && !isNaN(inputValue)) {
-        mark = parseFloat(inputValue);
+    // Handle empty input
+    if (inputValue === "") {
+        $(this).closest('tr').find(".grade-output").val("");
+        $(this).closest('tr').find(".grade-val-output").val("");
+        return;
     }
     
+    // Handle invalid number
+    if (isNaN(inputValue)) {
+        $(this).closest('tr').find(".grade-output").val("N/A");
+        $(this).closest('tr').find(".grade-val-output").val("0.00");
+        return;
+    }
+    
+    // Handle valid number
+    mark = parseFloat(inputValue);
     calculateGrade($(this).closest('tr'), mark);
 });
 
@@ -213,13 +224,6 @@ function calculateGrade(row, mark) {
     const grades = window.gradeRanges;
     let grade = "N/A";
     let pointer = 0.00;
-
-    if (mark === null || isNaN(mark)) {
-        // Show N/A for invalid inputs
-        row.find(".grade-output").val(grade);
-        row.find(".grade-val-output").val(pointer);
-        return;
-    }
 
     for (const range of grades) {
         if (mark >= range.mark_min && mark <= range.mark_max) {

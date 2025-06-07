@@ -13,7 +13,7 @@ return [
     |
     */
 
-    'name' => env('APP_NAME', 'Teacher Assist System'),
+    'name' => env('APP_NAME', 'EduLyte: Teacher Assist System'),
 
     /*
     |--------------------------------------------------------------------------

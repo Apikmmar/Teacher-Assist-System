@@ -28,9 +28,9 @@
                         <i class="bi bi-funnel"></i>
                     </span>
                     <select class="form-select border-start-0 ps-0" name="subject_form" onchange="document.getElementById('filterForm').submit();">
-                        <option value="" {{ request('subject_form') == '' ? 'selected' : '' }}>All Forms</option>
+                        <option value="" {{ request('subject_form') == '' ? 'selected' : '' }}>&nbsp;All Forms</option>
                         @foreach ($forms as $form)
-                            <option value="{{ $form->id }}" {{ request('subject_form') == $form->id ? 'selected' : '' }}>Form {{ $form->name }}</option>
+                            <option value="{{ $form->id }}" {{ request('subject_form') == $form->id ? 'selected' : '' }}>&nbsp;{{ $form->name }}</option>
                         @endforeach
                     </select>
                 </div>
