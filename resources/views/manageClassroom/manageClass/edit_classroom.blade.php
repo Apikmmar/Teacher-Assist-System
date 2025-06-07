@@ -104,8 +104,8 @@
                 </div>
             </form>
         </div>
-
-        <div class="card-body p-5">
+        <hr>
+        <div class="card-body">
             <div class="d-flex flex-column flex-md-row justify-content-between align-items-start align-items-md-center mb-4 gap-3">
                 <div>
                     <h4 class="mb-1"><i class="bi bi-people-fill me-2"></i>Class Students</h4>

@@ -52,14 +52,14 @@
         </div>
         <div class="card-body">
             @if ($subjectClass)
-                <div class="table-responsive rounded-3 border overflow-hidden">
-                    <table class="table table-hover align-middle mb-0">
+                <div class="table-responsive rounded-3 border overflow-hidden" style="max-width: 700px;">
+                    <table class="table table-hover align-middle mb-0" >
                         <thead class="table-light">
                             <tr>
                                 <th scope="col" class="ps-4 fw-medium text-muted" style="width: 50px">#</th>
                                 <th scope="col" class="fw-medium"><i class="bi bi-book me-2"></i>Subject Name</th>
                                 <th scope="col" class="fw-medium"><i class="bi bi-sort-numeric-up me-2"></i>Form</th>
-                                <th scope="col" class="fw-medium text-end pe-4"><i class="bi bi-people me-2"></i>Classes</th>
+                                <th scope="col" class="fw-medium"><i class="bi bi-people me-2"></i>Classes</th>
                             </tr>
                         </thead>
                         <tbody>
@@ -72,22 +72,24 @@
                                     <td>
                                         <span class="badge bg-secondary bg-opacity-10 text-dark">{{ $subject['subjectForm'] }}</span>
                                     </td>
-                                    <td class="text-end pe-4">
+                                    <td>
                                         @foreach ($subject['classes'] as $class)
-                                            <div class="d-flex justify-content-end align-items-center mb-2 gap-2">
-                                                <span class="me-auto">{{ $class['className'] }}</span>
-                                                @if ($class['markAvailability'] == 'No Grade')
-                                                    <a href="{{ route('students_exam_mark', ['class_id' => $class['classID'], 'subject_id' => $subject['subjectID'], 'exam_id' => $examination->id]) }}" class="btn btn-sm btn-primary rounded-pill px-3 shadow-sm">
-                                                        <i class="bi bi-plus-lg me-1"></i>Add Marks
-                                                    </a>
-                                                @elseif($class['markAvailability'] == 'Has Grade')
-                                                    <a href="{{ route('registered_exam_marks', ['class_id' => $class['classID'], 'subject_id' => $subject['subjectID'], 'exam_id' => $examination->id]) }}" class="btn btn-sm btn-warning rounded-pill px-3 shadow-sm text-white">
-                                                        <i class="bi bi-pencil me-1"></i>Update
-                                                    </a>
-                                                    <a href="{{ route('exam_mark_feedbacks', ['class_id' => $class['classID'], 'subject_id' => $subject['subjectID'], 'exam_id' => $examination->id]) }}" class="btn btn-sm btn-primary rounded-pill px-3 shadow-sm">
-                                                        <i class="bi bi-chat-left-text me-1"></i>Feedback
-                                                    </a>
-                                                @endif
+                                            <div class="d-flex justify-content-between align-items-center mb-2 gap-2">
+                                                <span>{{ $class['className'] }}</span>
+                                                <div class="d-flex gap-2">
+                                                    @if ($class['markAvailability'] == 'No Grade')
+                                                        <a href="{{ route('students_exam_mark', ['class_id' => $class['classID'], 'subject_id' => $subject['subjectID'], 'exam_id' => $examination->id]) }}" class="btn btn-sm btn-primary rounded-pill px-3 shadow-sm">
+                                                            <i class="bi bi-plus-lg me-1"></i>Add Marks
+                                                        </a>
+                                                    @elseif($class['markAvailability'] == 'Has Grade')
+                                                        <a href="{{ route('registered_exam_marks', ['class_id' => $class['classID'], 'subject_id' => $subject['subjectID'], 'exam_id' => $examination->id]) }}" class="btn btn-sm btn-warning rounded-pill px-3 shadow-sm text-white">
+                                                            <i class="bi bi-pencil me-1"></i>Update
+                                                        </a>
+                                                        <a href="{{ route('exam_mark_feedbacks', ['class_id' => $class['classID'], 'subject_id' => $subject['subjectID'], 'exam_id' => $examination->id]) }}" class="btn btn-sm btn-primary rounded-pill px-3 shadow-sm">
+                                                            <i class="bi bi-chat-left-text me-1"></i>Feedback
+                                                        </a>
+                                                    @endif
+                                                </div>
                                             </div>
                                         @endforeach
                                     </td>
