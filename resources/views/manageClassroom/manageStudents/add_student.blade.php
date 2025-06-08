@@ -130,8 +130,8 @@
                         @enderror
                         <div class="form-text">Upload a CSV file containing student data</div>
                     </div>
-                    <div class="col-md-4 d-flex align-items-end">
-                        <button type="submit" class="btn btn-success w-100">
+                    <div class="col-md-4 d-flex align-items-center">
+                        <button type="submit" class="btn btn-success px-4 py-2 rounded-pill shadow-sm w-100">
                             <i class="bi bi-upload me-1"></i>Import Students
                         </button>
                     </div>

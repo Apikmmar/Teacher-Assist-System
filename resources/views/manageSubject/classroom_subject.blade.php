@@ -12,8 +12,8 @@
         
         <div class="card-body">
         @if ($subjectsTaken->isNotEmpty())
-            <div class="table-responsive">
-                <table class="table table-hover align-middle">
+            <div class="table-responsive rounded-3 border overflow-hidden shadow-sm">
+                <table class="table table-hover align-middle mb-0">
                     <thead class="table-light">
                         <tr>
                             <th scope="col" style="width: 50px">#</th>
@@ -87,8 +87,8 @@
         <div class="card-body">
             <form action="{{ route('add.class_subject', ['id' => $class->id]) }}" method="post">
                 @csrf
-                <div class="table-responsive">
-                    <table class="table table-hover align-middle">
+                <div class="table-responsive rounded-3 border overflow-hidden shadow-sm">
+                    <table class="table table-hover align-middle mb-0">
                         <thead class="table-light">
                             <tr>
                                 <th scope="col" style="width: 50px">Select</th>

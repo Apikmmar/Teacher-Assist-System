@@ -4,8 +4,8 @@
     <div class="container mt-1 fade-in-text">
         @include('layouts.message')
         
-        <div class="table-responsive">
-            <table class="table table-striped mb-0">
+        <div class="table-responsive rounded-3 border overflow-hidden shadow-sm">
+            <table class="table table-hover table-striped mb-0 align-middle mb-0">
                 <thead>
                     <tr>
                         <th>Form</th>

@@ -44,105 +44,103 @@
                 @method('PATCH')
         @endcan
 
-        <div class="card border-0 shadow-sm mb-4">
-            <div class="card-body">
-                <div class="row mb-3">
-                    <label for="name" class="col-md-4 col-form-label text-md-end fw-bold">{{ __('Examination Name') }} <span class="text-danger">*</span></label>
-                    
-                    <div class="col-md-6">
-                        <input id="name" type="text" class="form-control @error('name') is-invalid @enderror" name="name" placeholder="Examination Name" autocomplete="name" value="{{ $exam->name }}" @cannot('coordinator') readonly @endcannot>
-                        
-                        @error('name')
-                            <span class="invalid-feedback" role="alert">
-                                <strong>{{ $message }}</strong>
-                            </span>
-                        @enderror
-                    </div>
-                </div>
-
-                <div class="row mb-3">
-                    <label for="start_date" class="col-md-4 col-form-label text-md-end fw-bold">{{ __('Start Date') }} <span class="text-danger">*</span></label>
-                    
-                    <div class="col-md-6">
-                        <input id="start_date" type="date" class="form-control @error('start_date') is-invalid @enderror" name="start_date" autocomplete="start_date" value="{{ $exam->start_date }}" @cannot('coordinator') readonly @endcannot>
-                        
-                        @error('start_date')
-                            <span class="invalid-feedback" role="alert">
-                                <strong>{{ $message }}</strong>
-                            </span>
-                        @enderror
-                    </div>
-                </div>
-
-                <div class="row mb-3">
-                    <label for="end_date" class="col-md-4 col-form-label text-md-end fw-bold">{{ __('End Date') }} <span class="text-danger">*</span></label>
-                    
-                    <div class="col-md-6">
-                        <input id="end_date" type="date" class="form-control @error('end_date') is-invalid @enderror" name="end_date" autocomplete="end_date" value="{{ $exam->end_date }}" @cannot('coordinator') readonly @endcannot>
-                        
-                        @error('end_date')
-                            <span class="invalid-feedback" role="alert">
-                                <strong>{{ $message }}</strong>
-                            </span>
-                        @enderror
-                    </div>                   
-                </div>
-
-                <div class="row mb-3">
-                    <label for="release_date" class="col-md-4 col-form-label text-md-end fw-bold">{{ __('Mark Release Date') }} <span class="text-danger">*</span></label>
-                    
-                    <div class="col-md-6">
-                        <input id="release_date" type="date" class="form-control @error('release_date') is-invalid @enderror" name="release_date" autocomplete="release_date" value="{{ $exam->release_date }}" @cannot('coordinator') readonly @endcannot>
-                        
-                        @error('release_date')
-                            <span class="invalid-feedback" role="alert">
-                                <strong>{{ $message }}</strong>
-                            </span>
-                        @enderror
-                    </div>                   
-                </div>
-
-                <div class="row mb-3">
-                    <label for="type" class="col-md-4 col-form-label text-md-end fw-bold">
-                        {{ __('Examination Type') }} <span class="text-danger">*</span>
-                    </label>
+        <div class="card-body">
+            <div class="row mb-3">
+                <label for="name" class="col-md-4 col-form-label text-md-end fw-bold">{{ __('Examination Name') }} <span class="text-danger">*</span></label>
                 
-                    <div class="col-md-6">
-                        @cannot('coordinator')
-                            <input type="text" class="form-control" value="{{ old('type', $exam->type) }}" readonly>
-                        @else
-                            @if (($exam->type == 'Early Term Examination') || ($exam->type == 'Mid Term Examination') || ($exam->type == 'Final Term Examination'))
-                                <select id="type" name="type" class="form-select">
-                                    <option disabled {{ old('type') ? '' : 'selected' }} value="">Select Examination</option>
-                                    <option value="Early Term Examination" @selected(old('type', $exam->type) == 'Early Term Examination')>Early Term Examination</option>
-                                    <option value="Mid Term Examination" @selected(old('type', $exam->type) == 'Mid Term Examination')>Mid Term Examination</option>
-                                    <option value="Final Term Examination" @selected(old('type', $exam->type) == 'Final Term Examination')>Final Term Examination</option>
-                                </select>
-                            @else
-                                <input type="text" class="form-control" name="type" value="{{ old('type', $exam->type) }}">
-                            @endif
-                        @endcannot
-                
-                        @error('type')
-                            <span class="text-danger">{{ $message }}</span>
-                        @enderror
-                    </div>
-                </div>
-
-                <div class="row mb-3">
-                    <label for="status" class="col-md-4 col-form-label text-md-end fw-bold">{{ __('Status') }} <span class="text-danger">*</span></label>
+                <div class="col-md-6">
+                    <input id="name" type="text" class="form-control @error('name') is-invalid @enderror" name="name" placeholder="Examination Name" autocomplete="name" value="{{ $exam->name }}" @cannot('coordinator') readonly @endcannot>
                     
-                    <div class="col-md-6">
-                        @php
-                            $statusColor = $exam->status == 'Release' ? 'bg-success bg-opacity-10 text-success' : 
-                                         ($exam->status == 'Pending' ? 'bg-warning bg-opacity-10 text-warning' : 'bg-secondary bg-opacity-10 text-secondary');
-                        @endphp
-                        
-                        <span class="badge {{ $statusColor }}">
-                            <i class="bi {{ $exam->status == 'Release' ? 'bi-check-circle' : ($exam->status == 'Pending' ? 'bi-hourglass' : 'bi-x-circle') }} me-1"></i>
-                            {{ $exam->status }}
+                    @error('name')
+                        <span class="invalid-feedback" role="alert">
+                            <strong>{{ $message }}</strong>
                         </span>
-                    </div>
+                    @enderror
+                </div>
+            </div>
+
+            <div class="row mb-3">
+                <label for="start_date" class="col-md-4 col-form-label text-md-end fw-bold">{{ __('Start Date') }} <span class="text-danger">*</span></label>
+                
+                <div class="col-md-6">
+                    <input id="start_date" type="date" class="form-control @error('start_date') is-invalid @enderror" name="start_date" autocomplete="start_date" value="{{ $exam->start_date }}" @cannot('coordinator') readonly @endcannot>
+                    
+                    @error('start_date')
+                        <span class="invalid-feedback" role="alert">
+                            <strong>{{ $message }}</strong>
+                        </span>
+                    @enderror
+                </div>
+            </div>
+
+            <div class="row mb-3">
+                <label for="end_date" class="col-md-4 col-form-label text-md-end fw-bold">{{ __('End Date') }} <span class="text-danger">*</span></label>
+                
+                <div class="col-md-6">
+                    <input id="end_date" type="date" class="form-control @error('end_date') is-invalid @enderror" name="end_date" autocomplete="end_date" value="{{ $exam->end_date }}" @cannot('coordinator') readonly @endcannot>
+                    
+                    @error('end_date')
+                        <span class="invalid-feedback" role="alert">
+                            <strong>{{ $message }}</strong>
+                        </span>
+                    @enderror
+                </div>                   
+            </div>
+
+            <div class="row mb-3">
+                <label for="release_date" class="col-md-4 col-form-label text-md-end fw-bold">{{ __('Mark Release Date') }} <span class="text-danger">*</span></label>
+                
+                <div class="col-md-6">
+                    <input id="release_date" type="date" class="form-control @error('release_date') is-invalid @enderror" name="release_date" autocomplete="release_date" value="{{ $exam->release_date }}" @cannot('coordinator') readonly @endcannot>
+                    
+                    @error('release_date')
+                        <span class="invalid-feedback" role="alert">
+                            <strong>{{ $message }}</strong>
+                        </span>
+                    @enderror
+                </div>                   
+            </div>
+
+            <div class="row mb-3">
+                <label for="type" class="col-md-4 col-form-label text-md-end fw-bold">
+                    {{ __('Examination Type') }} <span class="text-danger">*</span>
+                </label>
+            
+                <div class="col-md-6">
+                    @cannot('coordinator')
+                        <input type="text" class="form-control" value="{{ old('type', $exam->type) }}" readonly>
+                    @else
+                        @if (($exam->type == 'Early Term Examination') || ($exam->type == 'Mid Term Examination') || ($exam->type == 'Final Term Examination'))
+                            <select id="type" name="type" class="form-select">
+                                <option disabled {{ old('type') ? '' : 'selected' }} value="">Select Examination</option>
+                                <option value="Early Term Examination" @selected(old('type', $exam->type) == 'Early Term Examination')>Early Term Examination</option>
+                                <option value="Mid Term Examination" @selected(old('type', $exam->type) == 'Mid Term Examination')>Mid Term Examination</option>
+                                <option value="Final Term Examination" @selected(old('type', $exam->type) == 'Final Term Examination')>Final Term Examination</option>
+                            </select>
+                        @else
+                            <input type="text" class="form-control" name="type" value="{{ old('type', $exam->type) }}">
+                        @endif
+                    @endcannot
+            
+                    @error('type')
+                        <span class="text-danger">{{ $message }}</span>
+                    @enderror
+                </div>
+            </div>
+
+            <div class="row mb-3">
+                <label for="status" class="col-md-4 col-form-label text-md-end fw-bold">{{ __('Status') }} <span class="text-danger">*</span></label>
+                
+                <div class="col-md-6 pt-2">
+                    @php
+                        $statusColor = $exam->status == 'Release' ? 'bg-success bg-opacity-10 text-success' : 
+                                        ($exam->status == 'Pending' ? 'bg-warning bg-opacity-10 text-warning' : 'bg-secondary bg-opacity-10 text-secondary');
+                    @endphp
+                    
+                    <span class="badge {{ $statusColor }}">
+                        <i class="bi {{ $exam->status == 'Release' ? 'bi-check-circle' : ($exam->status == 'Pending' ? 'bi-hourglass' : 'bi-x-circle') }} me-1"></i>
+                        {{ $exam->status }}
+                    </span>
                 </div>
             </div>
         </div>
@@ -158,62 +156,61 @@
             </div>
             </form>
         @endcan
-
+        
         @can('coordinator')
         @if ($exam->status == 'Pending')
-            <div class="card border-0 shadow-sm">
-                <div class="card-body">
-                    <h5 class="card-title d-flex align-items-center">
-                        <i class="bi bi-clipboard-check me-2"></i> Mark Entry Status
-                    </h5>
-                    
-                    <div class="table-responsive">
-                        <table class="table table-hover align-middle">
-                            <thead class="table-light">
+            <hr>
+            <div class="card-body">
+                <h5 class="card-title d-flex align-items-center pb-2">
+                    <i class="bi bi-clipboard-check me-2"></i> Mark Entry Status
+                </h5>
+                
+                <div class="table-responsive rounded-3 border overflow-hidden shadow-sm">
+                    <table class="table table-hover align-middle mb-0">
+                        <thead class="table-light">
+                            <tr>
+                                <th scope="col" class="ps-4" style="width: 50px">#</th>
+                                <th scope="col"><i class="bi bi-people me-2"></i>Class</th>
+                                <th scope="col"><i class="bi bi-book me-2"></i>Subjects</th>
+                                <th scope="col"><i class="bi bi-check-circle me-2"></i>Status</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            @foreach ($classMarkCollection as $index => $classMark)
                                 <tr>
-                                    <th scope="col" class="ps-4" style="width: 50px">#</th>
-                                    <th scope="col"><i class="bi bi-people me-2"></i>Class</th>
-                                    <th scope="col"><i class="bi bi-book me-2"></i>Subjects</th>
-                                    <th scope="col"><i class="bi bi-check-circle me-2"></i>Status</th>
+                                    <th scope="row" class="ps-4">{{ 1 + $index }}</th>
+                                    <td>
+                                        <div class="fw-medium">{{ $classMark['class_name'] }}</div>
+                                        <small class="text-muted">Form {{ $classMark['class_form'] }}</small>
+                                    </td>
+                                    <td>
+                                        <ul class="list-unstyled mb-0">
+                                            @foreach ($classMark['markCollection'] as $item)
+                                                <li class="mb-1">
+                                                    <span>{{ $item['subject_name'] }}</span>
+                                                </li>
+                                            @endforeach
+                                        </ul>
+                                    </td>
+                                    <td>
+                                        <ul class="list-unstyled mb-0">
+                                            @foreach ($classMark['markCollection'] as $item)
+                                                <li class="mb-1">
+                                                    <span class="badge 
+                                                        @if($item['key_in_status'] === 'COMPLETE') bg-success bg-opacity-10 text-success
+                                                        @elseif($item['key_in_status'] === 'PENDING') bg-warning bg-opacity-10 text-warning
+                                                        @else bg-secondary bg-opacity-10 text-secondary
+                                                        @endif">
+                                                        {{ $item['key_in_status'] }}
+                                                    </span>
+                                                </li>
+                                            @endforeach
+                                        </ul>
+                                    </td>
                                 </tr>
-                            </thead>
-                            <tbody>
-                                @foreach ($classMarkCollection as $index => $classMark)
-                                    <tr>
-                                        <th scope="row" class="ps-4">{{ 1 + $index }}</th>
-                                        <td>
-                                            <div class="fw-medium">{{ $classMark['class_name'] }}</div>
-                                            <small class="text-muted">Form {{ $classMark['class_form'] }}</small>
-                                        </td>
-                                        <td>
-                                            <ul class="list-unstyled mb-0">
-                                                @foreach ($classMark['markCollection'] as $item)
-                                                    <li class="mb-1">
-                                                        <span>{{ $item['subject_name'] }}</span>
-                                                    </li>
-                                                @endforeach
-                                            </ul>
-                                        </td>
-                                        <td>
-                                            <ul class="list-unstyled mb-0">
-                                                @foreach ($classMark['markCollection'] as $item)
-                                                    <li class="mb-1">
-                                                        <span class="badge 
-                                                            @if($item['key_in_status'] === 'COMPLETE') bg-success bg-opacity-10 text-success
-                                                            @elseif($item['key_in_status'] === 'PENDING') bg-warning bg-opacity-10 text-warning
-                                                            @else bg-secondary bg-opacity-10 text-secondary
-                                                            @endif">
-                                                            {{ $item['key_in_status'] }}
-                                                        </span>
-                                                    </li>
-                                                @endforeach
-                                            </ul>
-                                        </td>
-                                    </tr>
-                                @endforeach
-                            </tbody>
-                        </table>
-                    </div>
+                            @endforeach
+                        </tbody>
+                    </table>
                 </div>
             </div>
         @endif

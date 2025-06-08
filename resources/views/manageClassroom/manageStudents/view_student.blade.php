@@ -32,34 +32,34 @@
         </div>
         
         <div class="card-body">
-            @if ($subsTaken->isNotEmpty())
-                <div class="table-responsive">
-                    <table class="table table-hover align-middle" style="max-width: 400px;">
-                        <thead class="table-light">
+        @if ($subsTaken->isNotEmpty())
+            <div class="table-responsive rounded-3 border overflow-hidden shadow-sm" style="max-width: 400px">
+                <table class="table table-hover align-middle mb-0 w-100">
+                    <thead class="table-light">
+                        <tr>
+                            <th scope="col" style="width: 50px">#</th>
+                            <th scope="col"><i class="bi bi-book me-1"></i>Subject</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        @foreach ($subsTaken as $index => $subs)
                             <tr>
-                                <th scope="col" style="width: 50px">#</th>
-                                <th scope="col"><i class="bi bi-book me-1"></i>Subject</th>
+                                <th scope="row">{{ $index + 1 }}</th>
+                                <td>{{ $subs }}</td>
                             </tr>
-                        </thead>
-                        <tbody>
-                            @foreach ($subsTaken as $index => $subs)
-                                <tr>
-                                    <th scope="row">{{ $index + 1 }}</th>
-                                    <td>{{ $subs }}</td>
-                                </tr>
-                            @endforeach
-                        </tbody>
-                    </table>
+                        @endforeach
+                    </tbody>
+                </table>
+            </div>
+        @else
+            <div class="text-center py-4">
+                <div class="mb-3">
+                    <i class="bi bi-journal-x" style="font-size: 3rem; opacity: 0.2"></i>
                 </div>
-            @else
-                <div class="text-center py-4">
-                    <div class="mb-3">
-                        <i class="bi bi-journal-x" style="font-size: 3rem; opacity: 0.2"></i>
-                    </div>
-                    <h5 class="text-muted">No Subjects Registered</h5>
-                    <p class="text-muted">This student is not currently registered for any subjects</p>
-                </div>
-            @endif
+                <h5 class="text-muted">No Subjects Registered</h5>
+                <p class="text-muted">This student is not currently registered for any subjects</p>
+            </div>
+        @endif
         </div>
         @endif
 

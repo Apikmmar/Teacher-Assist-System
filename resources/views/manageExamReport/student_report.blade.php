@@ -94,8 +94,8 @@
 
         <div class="card-body">
             <h4 class="card-title mb-4"><i class="bi bi-list-check me-2"></i>Subject Results</h4>
-            <div class="table-responsive">
-                <table class="table table-hover">
+            <div class="table-responsive rounded-3 border overflow-hidden shadow-sm">
+                <table class="table table-hover align-middle mb-0">
                     <thead class="table-light">
                         <tr>
                             <th scope="col" class="text-center">#</th>
@@ -122,7 +122,7 @@
             </div>
         </div>
 
-        <div class="card-body">
+        <div class="card-body pt-2">
             <h4 class="card-title mb-4"><i class="bi bi-graph-up me-2"></i>Performance Summary</h4>
             <div class="row">
                 <div class="col-md-4">
@@ -168,7 +168,7 @@
             </div>
         </div>
 
-        <div class="card-body">
+        <div class="card-body pt-2">
             <h4 class="card-title mb-3"><i class="bi bi-chat-left-text me-2"></i>Teacher's Feedback</h4>
             <div class="p-3 bg-light rounded">
                 <p class="mb-0">{{ $stdReport->feedback ?: 'No feedback provided yet.' }}</p>

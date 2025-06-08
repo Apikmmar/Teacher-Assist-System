@@ -52,14 +52,14 @@
                         @enderror
                     </div>
                 </div>
-
+                <hr>
                 <!-- Assign Teacher Section -->
-                <div class="mt-5">
+                <div>
                     <h4 class="mb-3"><i class="bi bi-person-plus me-2"></i>Assign Teacher to Teach Subject</h4>
                     
                     @if ($teachers->isNotEmpty())
-                        <div class="table-responsive">
-                            <table class="table table-hover align-middle">
+                        <div class="table-responsive rounded-3 border overflow-hidden shadow-sm">
+                            <table class="table table-hover align-middle mb-0">
                                 <thead class="table-light">
                                     <tr>
                                         <th scope="col" style="width: 50px">#</th>

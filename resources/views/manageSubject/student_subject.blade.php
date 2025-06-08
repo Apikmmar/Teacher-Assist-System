@@ -51,8 +51,8 @@
         </header>
 
     @if (!empty($subsTaken))
-        <div class="d-flex justify-content-center">
-            <table class="table table-hover" style="max-width: 600px">
+        <div class="table-responsive rounded-3 border overflow-hidden shadow-sm" style="max-width: 800px">
+            <table class="table table-hover align-middle mb-0">
                 <thead>
                     <tr>
                         <th scope="col">No</th>
@@ -101,8 +101,8 @@
             </h4>
 
         @if ($subsNotRegistered->isNotEmpty())
-            <div class="d-flex justify-content-center">
-                <table class="table table-hover" style="max-width: 800px">
+            <div class="table-responsive rounded-3 border overflow-hidden shadow-sm" style="max-width: 800px">
+                <table class="table table-hover align-middle mb-0">
                     <thead>
                         <tr>
                             <th scope="col">No</th>

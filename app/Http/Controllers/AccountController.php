@@ -100,57 +100,140 @@ class AccountController extends Controller
 
     public function importUser(Request $request): RedirectResponse {
         $request->validate([
-            'import_csv' => 'required|mimes:csv',
+            'import_csv' => 'required|mimes:csv,txt'
         ]);
 
         $file = $request->file('import_csv');
-        $handle = fopen($file->path(), 'r');
-
-        fgetcsv($handle);
-
-        $chunksize = 25;
-
-        while(!feof($handle)) {
-            $chunkdata = [];
-
-            for ($i=0; $i < $chunksize; $i++) { 
-                $data = fgetcsv($handle);
-
-                if ($data === false) {
-                    break;
-                }
-                $chunkdata[] = $data;
+        
+        try {
+            $handle = fopen($file->path(), 'r');
+            if ($handle === false) {
+                throw new \Exception('Failed to open the CSV file.');
             }
 
-            foreach($chunkdata as $column) {
-                $teacher_id = $column[0];
-                $name = $column[1];
-                $ic = $column[2];
-                $gender = $column[3];
-                $contact = $column[4];
-                $email = $column[5];
+            // Read and process header row to determine column positions
+            $headers = fgetcsv($handle);
+            if ($headers === false) {
+                throw new \Exception('Empty CSV file or unable to read headers.');
+            }
 
-                if (strlen($ic) !== 12 || !ctype_digit($ic)) {
-                    return redirect()->route('all_student')->with('red-message', 'IC Number Must Be 12 Digit!');
+            // Normalize headers (trim, lowercase, etc.)
+            $headers = array_map(function($header) {
+                return strtolower(trim($header));
+            }, $headers);
+
+            // Define expected columns and their mappings
+            $expectedColumns = [
+                'teacher_id' => ['teacher_id', 'teacher id', 'id'],
+                'name' => ['name', 'fullname', 'teacher name', 'full name'],
+                'ic' => ['ic', 'ic number', 'nric', 'identification number'],
+                'gender' => ['gender', 'sex'],
+                'contact' => ['contact', 'phone', 'contact number', 'mobile'],
+                'email' => ['email', 'email address']
+            ];
+
+            // Map headers to our expected columns
+            $columnMap = [];
+            foreach ($expectedColumns as $dbField => $possibleHeaders) {
+                foreach ($possibleHeaders as $possibleHeader) {
+                    $foundKey = array_search($possibleHeader, $headers);
+                    if ($foundKey !== false) {
+                        $columnMap[$dbField] = $foundKey;
+                        break;
+                    }
                 }
 
-                $teacher = new User();
-                $teacher->teacher_id = $teacher_id;
-                $teacher->name = $name;
-                $teacher->ic = $ic;
-                $teacher->gender = $gender;
-                $teacher->contact = $contact;
-                $teacher->email = $email;
-                $teacher->password = Hash::make($ic);
-                $teacher->verification = NULL;
-                $teacher->photo = NULL;
-
-                $teacher->save();
+                if (!isset($columnMap[$dbField])) {
+                    throw new \Exception("Required column not found: " . implode('/', $possibleHeaders));
+                }
             }
+
+            $chunkSize = 25;
+            $errors = [];
+            $successCount = 0;
+            $batchData = [];
+
+            while (!feof($handle)) {
+                $rowData = fgetcsv($handle);
+                
+                if ($rowData === false || empty(array_filter($rowData))) {
+                    continue;
+                }
+
+                try {
+                    // Map data using our column mapping
+                    $teacher_id = $rowData[$columnMap['teacher_id']] ?? null;
+                    $name = $rowData[$columnMap['name']] ?? null;
+                    $ic = $rowData[$columnMap['ic']] ?? null;
+                    $gender = $rowData[$columnMap['gender']] ?? null;
+                    $contact = $rowData[$columnMap['contact']] ?? null;
+                    $email = $rowData[$columnMap['email']] ?? null;
+
+                    // Validate required fields
+                    if (empty($teacher_id) || empty($name) || empty($ic) || empty($email)) {
+                        throw new \Exception("Missing required fields");
+                    }
+
+                    // Validate IC number
+                    if (strlen($ic) !== 12 || !ctype_digit($ic)) {
+                        throw new \Exception("Invalid IC number (must be 12 digits)");
+                    }
+
+                    // Validate email format
+                    if (!filter_var($email, FILTER_VALIDATE_EMAIL)) {
+                        throw new \Exception("Invalid email format");
+                    }
+
+                    $batchData[] = [
+                        'teacher_id' => $teacher_id,
+                        'name' => $name,
+                        'ic' => $ic,
+                        'gender' => $gender,
+                        'contact' => $contact,
+                        'email' => $email,
+                        'password' => Hash::make($ic),
+                        'verification' => null,
+                        'photo' => null,
+                        'created_at' => now(),
+                        'updated_at' => now(),
+                    ];
+
+                    // Insert in chunks for better performance
+                    if (count($batchData) >= $chunkSize) {
+                        User::insert($batchData);
+                        $successCount += count($batchData);
+                        $batchData = [];
+                    }
+
+                } catch (\Exception $e) {
+                    $errors[] = "Row " . ($successCount + count($batchData) + count($errors) + 1) . ": " . $e->getMessage();
+                    continue;
+                }
+            }
+
+            // Insert any remaining records
+            if (!empty($batchData)) {
+                User::insert($batchData);
+                $successCount += count($batchData);
+            }
+
+            fclose($handle);
+
+            $message = "Successfully imported {$successCount} teacher records.";
+            if (!empty($errors)) {
+                $message .= " " . count($errors) . " records had errors.";
+                return redirect()->route('all_teacher')->with('blue-message', $message)->with('red-message', implode('<br>', array_slice($errors, 0, 5))); // Show first 5 errors
+            }
+
+            return redirect()->route('all_teacher')->with('blue-message', $message);
+
+        } catch (\Exception $e) {
+            if (isset($handle) && is_resource($handle)) {
+                fclose($handle);
+            }
+            
+            return redirect()->route('all_teacher')->with('red-message', 'Import failed: ' . $e->getMessage());
         }
-        fclose($handle);
-
-        return redirect()->route('all_teacher')->with('blue-message', 'Successfully Import New Teacher Data!');
     }
 
     private function getTeachesSubjectClass($user) {

@@ -191,54 +191,132 @@ class ClassroomController extends Controller
 
     public function importClassroom(Request $request): RedirectResponse {
         $request->validate([
-            'import_csv' => 'required|mimes:csv',
+            'import_csv' => 'required|mimes:csv,txt'
         ]);
 
         $file = $request->file('import_csv');
-        $handle = fopen($file->path(), 'r');
-
-        fgetcsv($handle);
-
-        $chunksize = 25;
-
-        while(!feof($handle)) {
-            $chunkdata = [];
-
-            for ($i=0; $i < $chunksize; $i++) { 
-                $data = fgetcsv($handle);
-
-                if ($data === false) {
-                    break;
-                }
-                $chunkdata[] = $data;
+        
+        try {
+            $handle = fopen($file->path(), 'r');
+            if ($handle === false) {
+                throw new \Exception('Failed to open the CSV file.');
             }
 
-            foreach($chunkdata as $column) {
-                $name = $column[0];
-                $form = $column[1];
-                $teacher = $column[2];
-                $session = $column[3];
+            // Read and process header row to determine column positions
+            $headers = fgetcsv($handle);
+            if ($headers === false) {
+                throw new \Exception('Empty CSV file or unable to read headers.');
+            }
 
-                if(empty($teacher)) {
-                    $ct_id = NULL;
-                } else {
-                    $class_teacher = User::where('name', 'LIKE', '%' . $teacher . '%')->first();
-                    $ct_id = $class_teacher ? $class_teacher->id : null;
+            // Normalize headers
+            $headers = array_map(function($header) {
+                return strtolower(trim($header));
+            }, $headers);
+
+            // Define expected columns and their mappings
+            $expectedColumns = [
+                'name' => ['name', 'class name', 'class'],
+                'form' => ['form', 'form_id', 'form id', 'year'],
+                'teacher' => ['teacher', 'class teacher', 'teacher name', 'classteacher'],
+                'session' => ['session', 'year session', 'academic session']
+            ];
+
+            // Map headers to our expected columns
+            $columnMap = [];
+            foreach ($expectedColumns as $dbField => $possibleHeaders) {
+                foreach ($possibleHeaders as $possibleHeader) {
+                    $foundKey = array_search($possibleHeader, $headers);
+                    if ($foundKey !== false) {
+                        $columnMap[$dbField] = $foundKey;
+                        break;
+                    }
                 }
 
-                $class = new Classroom();
-                $class->form_id = $form;
-                $class->classteacher_id = $ct_id;
-                $class->name = $name;
-                $class->num_student = 0;
-                $class->session = $session;
-
-                $class->save();
+                if (!isset($columnMap[$dbField])) {
+                    throw new \Exception("Required column not found: " . implode('/', $possibleHeaders));
+                }
             }
+
+            $chunkSize = 25;
+            $errors = [];
+            $successCount = 0;
+            $batchData = [];
+
+            while (!feof($handle)) {
+                $rowData = fgetcsv($handle);
+                
+                if ($rowData === false || empty(array_filter($rowData))) {
+                    continue;
+                }
+
+                try {
+                    // Map data using our column mapping
+                    $name = $rowData[$columnMap['name']] ?? null;
+                    $form = $rowData[$columnMap['form']] ?? null;
+                    $teacher = $rowData[$columnMap['teacher']] ?? null;
+                    $session = $rowData[$columnMap['session']] ?? null;
+
+                    // Validate required fields
+                    if (empty($name) || empty($form) || empty($session)) {
+                        throw new \Exception("Missing required fields (name, form, or session)");
+                    }
+
+                    // Handle teacher lookup
+                    $ct_id = null;
+                    if (!empty($teacher)) {
+                        $class_teacher = User::where('name', 'LIKE', '%' . $teacher . '%')->first();
+                        if (!$class_teacher) {
+                            throw new \Exception("Teacher not found: {$teacher}");
+                        }
+                        $ct_id = $class_teacher->id;
+                    }
+
+                    $batchData[] = [
+                        'name' => $name,
+                        'form_id' => $form,
+                        'classteacher_id' => $ct_id,
+                        'num_student' => 0,
+                        'session' => $session,
+                        'created_at' => now(),
+                        'updated_at' => now(),
+                    ];
+
+                    // Insert in chunks for better performance
+                    if (count($batchData) >= $chunkSize) {
+                        Classroom::insert($batchData);
+                        $successCount += count($batchData);
+                        $batchData = [];
+                    }
+
+                } catch (\Exception $e) {
+                    $errors[] = "Row " . ($successCount + count($batchData) + count($errors) + 1) . ": " . $e->getMessage();
+                    continue;
+                }
+            }
+
+            // Insert any remaining records
+            if (!empty($batchData)) {
+                Classroom::insert($batchData);
+                $successCount += count($batchData);
+            }
+
+            fclose($handle);
+
+            $message = "Successfully imported {$successCount} classroom records.";
+            if (!empty($errors)) {
+                $message .= " " . count($errors) . " records had errors.";
+                return redirect()->route('all_classroom')->with('blue-message', $message)->with('red-message', implode('<br>', array_slice($errors, 0, 5)));
+            }
+
+            return redirect()->route('all_classroom')->with('blue-message', $message);
+
+        } catch (\Exception $e) {
+            if (isset($handle) && is_resource($handle)) {
+                fclose($handle);
+            }
+            
+            return redirect()->route('all_classroom')->with('red-message', 'Import failed: ' . $e->getMessage());
         }
-        fclose($handle);
-
-        return redirect()->route('all_classroom')->with('blue-message', 'Successfully Import New Classroom Data!');
     }
 
     private function getClassroomData($id) {

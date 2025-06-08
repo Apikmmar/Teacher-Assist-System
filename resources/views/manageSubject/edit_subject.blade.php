@@ -68,8 +68,8 @@
         </div>
         <div class="card-body">
             @if ($teachers->isNotEmpty())
-                <div class="table-responsive">
-                    <table class="table table-hover align-middle">
+                <div class="table-responsive rounded-3 border overflow-hidden shadow-sm">
+                    <table class="table table-hover align-middle mb-0">
                         <thead class="table-light">
                             <tr>
                                 <th scope="col" style="width: 50px">#</th>
@@ -121,8 +121,8 @@
         </div>
         <div class="card-body">
             @if ($newTeachers->isNotEmpty())
-                <div class="table-responsive">
-                    <table class="table table-hover align-middle">
+                <div class="table-responsive rounded-3 border overflow-hidden shadow-sm">
+                    <table class="table table-hover align-middle mb-0">
                         <thead class="table-light">
                             <tr>
                                 <th scope="col" style="width: 50px">#</th>

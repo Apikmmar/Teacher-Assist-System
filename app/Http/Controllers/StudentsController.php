@@ -267,62 +267,147 @@ class StudentsController extends Controller
 
     public function importStudents(Request $request): RedirectResponse {
         $request->validate([
-            'import_csv' => ['required' , 'mimes:csv'],
+            'import_csv' => ['required', 'mimes:csv,txt']
         ]);
 
         $file = $request->file('import_csv');
-        $handle = fopen($file->path(), 'r');
-
-        fgetcsv($handle);
-
-        $chunksize = 25;
-
-        while (!feof($handle)) {
-            $chunkdata = [];
-
-            for ($i=0; $i < $chunksize; $i++) { 
-                $data = fgetcsv($handle);
-
-                if ($data === false) {
-                    break;
-                }
-                $chunkdata[] = $data;
+        
+        try {
+            $handle = fopen($file->path(), 'r');
+            if ($handle === false) {
+                throw new \Exception('Failed to open the CSV file.');
             }
 
-            foreach ($chunkdata as $column) {
-                $name = $column[0];
-                $ic_number = $column[1];
-                $gender = $column[2];
-                $dob = $column[3];
-                $jsd = $column[4];
+            // Read and process header row to determine column positions
+            $headers = fgetcsv($handle);
+            if ($headers === false) {
+                throw new \Exception('Empty CSV file or unable to read headers.');
+            }
 
-                if (strlen($ic_number) !== 12 || !ctype_digit($ic_number)) {
-                    return redirect()->route('all_student')->with('red-message', 'IC Number Must Be 12 Digit!');
+            // Normalize headers (trim, lowercase, etc.)
+            $headers = array_map(function($header) {
+                return strtolower(trim($header));
+            }, $headers);
+
+            // Define expected columns and their mappings
+            $expectedColumns = [
+                'name' => ['name', 'student name', 'fullname'],
+                'ic_number' => ['ic', 'ic number', 'nric', 'identification number'],
+                'gender' => ['gender', 'sex'],
+                'dob' => ['dob', 'date of birth', 'birth date'],
+                'jsd' => ['jsd', 'join date', 'join school date', 'admission date']
+            ];
+
+            // Map headers to our expected columns
+            $columnMap = [];
+            foreach ($expectedColumns as $dbField => $possibleHeaders) {
+                foreach ($possibleHeaders as $possibleHeader) {
+                    $foundKey = array_search($possibleHeader, $headers);
+                    if ($foundKey !== false) {
+                        $columnMap[$dbField] = $foundKey;
+                        break;
+                    }
                 }
-                
-                $dob = DateTime::createFromFormat('d/m/Y', $dob)?->format('Y-m-d');
-                $jsd = DateTime::createFromFormat('d/m/Y', $jsd)?->format('Y-m-d');
 
-                if (!$dob || !$jsd) {
+                if (!isset($columnMap[$dbField])) {
+                    throw new \Exception("Required column not found: " . implode('/', $possibleHeaders));
+                }
+            }
+
+            $chunkSize = 25;
+            $errors = [];
+            $successCount = 0;
+            $batchData = [];
+
+            while (!feof($handle)) {
+                $rowData = fgetcsv($handle);
+                
+                if ($rowData === false || empty(array_filter($rowData))) {
                     continue;
                 }
 
-                $student = new Student();
-                $student->classroom_id = NULL;
-                $student->student_id = 'ST'.rand(1111, 9999);
-                $student->name = $name;
-                $student->ic = $ic_number;
-                $student->gender = $gender;
-                $student->dob = $dob;
-                $student->join_school_date = $jsd;
-                $student->status = 'Active';
-                $student->save();
-                
-            }
-        }
-        fclose($handle);
+                try {
+                    // Map data using our column mapping
+                    $name = $rowData[$columnMap['name']] ?? null;
+                    $ic_number = $rowData[$columnMap['ic_number']] ?? null;
+                    $gender = $rowData[$columnMap['gender']] ?? null;
+                    $dob = $rowData[$columnMap['dob']] ?? null;
+                    $jsd = $rowData[$columnMap['jsd']] ?? null;
 
-        return redirect()->route('all_student')->with('blue-message', 'Successfully Import New Students Data!');
+                    // Validate required fields
+                    if (empty($name) || empty($ic_number) || empty($dob) || empty($jsd)) {
+                        throw new \Exception("Missing required fields");
+                    }
+
+                    // Validate IC number
+                    if (strlen($ic_number) !== 12 || !ctype_digit($ic_number)) {
+                        throw new \Exception("Invalid IC number (must be 12 digits)");
+                    }
+
+                    // Parse dates with multiple possible formats
+                    $dobDate = DateTime::createFromFormat('d/m/Y', $dob) ?: DateTime::createFromFormat('Y-m-d', $dob) ?: DateTime::createFromFormat('m-d-Y', $dob);
+                    
+                    $jsdDate = DateTime::createFromFormat('d/m/Y', $jsd) ?: DateTime::createFromFormat('Y-m-d', $jsd) ?: DateTime::createFromFormat('m-d-Y', $jsd);
+
+                    if (!$dobDate || !$jsdDate) {
+                        throw new \Exception("Invalid date format (use DD/MM/YYYY or YYYY-MM-DD)");
+                    }
+
+                    $formattedDob = $dobDate->format('Y-m-d');
+                    $formattedJsd = $jsdDate->format('Y-m-d');
+
+                    // Generate unique student ID
+                    $studentId = 'ST' . str_pad(mt_rand(1111, 9999), 4, '0', STR_PAD_LEFT);
+
+                    $batchData[] = [
+                        'classroom_id' => null,
+                        'student_id' => $studentId,
+                        'name' => $name,
+                        'ic' => $ic_number,
+                        'gender' => $gender,
+                        'dob' => $formattedDob,
+                        'join_school_date' => $formattedJsd,
+                        'status' => 'Active',
+                        'created_at' => now(),
+                        'updated_at' => now(),
+                    ];
+
+                    // Insert in chunks for better performance
+                    if (count($batchData) >= $chunkSize) {
+                        Student::insert($batchData);
+                        $successCount += count($batchData);
+                        $batchData = [];
+                    }
+
+                } catch (\Exception $e) {
+                    $errors[] = "Row " . ($successCount + count($batchData) + count($errors) + 1) . ": " . $e->getMessage();
+                    continue;
+                }
+            }
+
+            // Insert any remaining records
+            if (!empty($batchData)) {
+                Student::insert($batchData);
+                $successCount += count($batchData);
+            }
+
+            fclose($handle);
+
+            $message = "Successfully imported {$successCount} student records.";
+            if (!empty($errors)) {
+                $message .= " " . count($errors) . " records had errors.";
+                return redirect()->route('all_student')->with('blue-message', $message)->with('red-message', implode('<br>', array_slice($errors, 0, 5))); // Show first 5 errors
+            }
+
+            return redirect()->route('all_student')->with('blue-message', $message);
+
+        } catch (\Exception $e) {
+            if (isset($handle) && is_resource($handle)) {
+                fclose($handle);
+            }
+            
+            return redirect()->route('all_student')->with('red-message', 'Import failed: ' . $e->getMessage());
+        }
     }
 
     private function calculateAge($ic) {

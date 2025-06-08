@@ -168,8 +168,8 @@
                 </div>
             </form>
         </div>
-
-        <div class="card-body p-3">
+        <hr>
+        <div class="card-body">
             <div class="d-flex flex-column flex-md-row justify-content-between align-items-start align-items-md-center mb-4 gap-3">
                 <div>
                     <h4 class="mb-1"><i class="bi bi-upload me-2"></i>Bulk Classroom Registration</h4>
@@ -195,7 +195,7 @@
                             <div class="form-text">File format: .csv (Download template <a href="#">here</a>)</div>
                         </div>
                     </div>
-                    <div class="col-md-4 d-flex align-items-end">
+                    <div class="col-md-4 d-flex align-items-center pb-3">
                         <button type="submit" class="btn btn-success px-4 py-2 rounded-pill shadow-sm w-100">
                             <i class="bi bi-cloud-arrow-up me-1"></i>Import Classrooms
                         </button>

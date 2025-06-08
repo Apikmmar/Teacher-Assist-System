@@ -150,7 +150,7 @@
                             </div>
                         @enderror
                     </div>
-                    <div class="col-md-4 d-flex align-items-end">
+                    <div class="col-md-4 d-flex align-items-center pt-4">
                         <button type="submit" class="btn btn-primary w-100">
                             <i class="bi bi-plus-lg me-1"></i>Add Class
                         </button>
